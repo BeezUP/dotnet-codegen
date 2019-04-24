@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AssemblyName>dotnet-codegen</AssemblyName>
+    <ToolCommandName>dotnet-codegen</ToolCommandName>
+    <PackAsTool>true</PackAsTool>
+    <Title>Dotnet.CodeGen</Title>
+    <PackageId>Dotnet.CodeGen</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Colorful.Console" Version="1.2.9" />
+    <PackageReference Include="Handlebars.Net" Version="1.10.1" />
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="YamlDotNet" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>

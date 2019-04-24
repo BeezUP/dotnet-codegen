@@ -13,8 +13,9 @@ namespace Dotnet.CodeGen.CodeGen
         public static readonly Color ERROR_COLOR = Color.OrangeRed;
 
         public const string SOURCE_FILE_ARGUMENT = "source";
-        public const string TEMPLATE_PATH_OPTION = "-t | --template";
-        public const string OUTPUT_PATH_OPTION = "-o | --out";
+        public const string TEMPLATE_PATH_ARGUMENT = "template";
+        public const string OUTPUT_PATH_ARGUMENT = "out";
+
         public const string SCHEMA_TYPE_OPTION = "--type";
         public const SourceSchemaType DEFAULT_SCHEMA_TYPE = SourceSchemaType.OpenApi;
         private const string HelpOptions = "-? | -h | --help";
@@ -26,8 +27,8 @@ namespace Dotnet.CodeGen.CodeGen
             app.HelpOption(HelpOptions);
 
             var sourceFile = app.Argument(SOURCE_FILE_ARGUMENT, "Enter the path (relative or absolute) to an source document.");
-            var templatePath = app.Option(TEMPLATE_PATH_OPTION, "Enter the path (relative or absolute / single file or folder) to the template.", CommandOptionType.SingleValue);
-            var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue);
+            var templatePath = app.Argument(TEMPLATE_PATH_ARGUMENT, "Enter the path (relative or absolute / single file or folder) to the template.");
+            var outputPath = app.Argument(OUTPUT_PATH_ARGUMENT, "Enter the path (relative or absolute) to the output path (content will be overritten)");
             var schemaTypeName = app.Option(SCHEMA_TYPE_OPTION, $"Enter a schema type between those values [{string.Join(" | ", Enum.GetNames(typeof(SourceSchemaType)))}]", CommandOptionType.SingleValue);
 
 
@@ -36,10 +37,10 @@ namespace Dotnet.CodeGen.CodeGen
                 var errors = new List<string>();
                 if (sourceFile.Value == null)
                     errors.Add($"{SOURCE_FILE_ARGUMENT} parameter is required");
-                if (!templatePath.HasValue())
-                    errors.Add($"{TEMPLATE_PATH_OPTION} parameter is required");
-                if (!outputPath.HasValue())
-                    errors.Add($"{OUTPUT_PATH_OPTION} parameter is required");
+                if (templatePath.Value == null)
+                    errors.Add($"{TEMPLATE_PATH_ARGUMENT} parameter is required");
+                if (outputPath.Value == null)
+                    errors.Add($"{OUTPUT_PATH_ARGUMENT} parameter is required");
 
                 var schemaType = DEFAULT_SCHEMA_TYPE;
                 if (schemaTypeName.HasValue())
@@ -62,14 +63,15 @@ namespace Dotnet.CodeGen.CodeGen
 
                 var schemaLoader = schemaType.GetSchemaLoader();
 
-                await CodeGenRunner.RunAsync(sourceFile.Value, schemaLoader, templatePath.Value(), outputPath.Value());
+                await CodeGenRunner.RunAsync(sourceFile.Value, schemaLoader, templatePath.Value, outputPath.Value);
 
                 return 0;
             });
 
             try
             {
-                app.Execute(args);
+                var result = app.Execute(args);
+                Environment.Exit(result);
             }
             catch (Exception ex)
             {

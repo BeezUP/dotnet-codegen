@@ -59,10 +59,7 @@ namespace Dotnet.CodeGen.CodeGen
                     return 1;
                 }
 
-                // dotnet run -- ./_samples/swagger.json -o ././
-
                 var schemaLoader = schemaType.GetSchemaLoader();
-
                 await CodeGenRunner.RunAsync(sourceFile.Value, schemaLoader, templatePath.Value, outputPath.Value);
 
                 return 0;

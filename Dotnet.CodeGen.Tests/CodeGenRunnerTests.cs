@@ -22,9 +22,6 @@ namespace Dotnet.CodeGen.Tests
 
         [Theory]
         [InlineData(SourceSchemaType.RawJson, "./_samples/test1/schema.json", "./_samples/test1/template", "./_samples/test1/expected")]
-        //[InlineData(SchemaType.OpenApi, "./_samples/exceptions/BeezUP-om_invoice-exception-1.0-domain.json", "./_samples/exceptions/template", "./_samples/exceptions/expected")]
-        //[InlineData(SchemaType.OpenApi, "./_samples/enums/BeezUP-MKP_Feeds-schemas-1.0-domain.json", "./_samples/enums/template", "./_samples/enums/expected")]
-        //[InlineData(SchemaType.OpenApi, "./_samples/controllers/manually_merged.json", "./_samples/controllers/template", "./_samples/controllers/expected")]
         public async Task OpenApiTemplates(SourceSchemaType schemaType, string schemaPath, string templatePath, string expectedResultPath)
         {
             var tmpFolder = Path.GetRandomFileName();

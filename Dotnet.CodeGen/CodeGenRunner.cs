@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dotnet.CodeGen.CodeGen.CustomHandlebars;
 using Dotnet.CodeGen.CodeGen.Instructions;
 using Dotnet.CodeGen.CodeGen.Schemas;
+using Dotnet.CodeGen.CustomHandlebars;
 
 namespace Dotnet.CodeGen.CodeGen
 {
@@ -16,7 +16,7 @@ namespace Dotnet.CodeGen.CodeGen
 
             var templates = TemplateHelper.GetTemplates(templatePath, "*.hbs");
 
-            var handlebars = HandlebarsHelper.GetHandlebars();
+            var handlebars = HandlebarsConfigurationHelper.GetHandlebars();
 
             foreach (var template in templates)
             {

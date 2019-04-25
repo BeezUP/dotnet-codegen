@@ -20,4 +20,8 @@
     <PackageReference Include="YamlDotNet" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CustomHandlebars\Block\" />
+  </ItemGroup>
+
 </Project>

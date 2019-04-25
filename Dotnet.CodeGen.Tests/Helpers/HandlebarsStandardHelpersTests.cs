@@ -1,12 +1,13 @@
-﻿using Dotnet.CodeGen.CodeGen.CustomHandlebars;
+﻿using Dotnet.CodeGen.CustomHandlebars;
+using Dotnet.CodeGen.CustomHandlebars.Standard;
 using Shouldly;
 using System.IO;
 using System.Text;
 using Xunit;
 
-namespace BeezUP2.Framework.CodeGen.Tests.Helpers.UppercaseFirstLetterHelper
+namespace Dotnet.CodeGen.Tests.Helpers.UppercaseFirstLetterHelper
 {
-    public class CodeGenHandlebarsHelpersTests
+    public class HandlebarsStandardHelpersTests
     {
         [Theory]
         [InlineData("hello !", "Hello !")]
@@ -20,7 +21,7 @@ namespace BeezUP2.Framework.CodeGen.Tests.Helpers.UppercaseFirstLetterHelper
 
             using (var writer = new StringWriter(builder))
             {
-                CodeGenHandlebarsHelpers.UppercaseFirstLetterHelper(writer, null, input);
+                new UppercaseFirstLetter().Helper(writer, null, input);
             }
 
             var output = builder.ToString();

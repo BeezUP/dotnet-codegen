@@ -3,42 +3,20 @@ using System.Linq;
 using HandlebarsDotNet;
 using Newtonsoft.Json.Linq;
 
-namespace Dotnet.CodeGen.CodeGen.CustomHandlebars
+namespace Dotnet.CodeGen.CustomHandlebars
 {
     /// <summary>
-    /// Container for handler bar helpers
+    /// Container for handlerbars block helpers
     /// </summary>
-    public static class CodeGenHandlebarsHelpers
+    public static class HandlebarsBlockHelpers
     {
-        #region Normal
-
-        public static void UppercaseFirstLetterHelper(TextWriter output, object context, params object[] arguments)
-        {
-            var argument = arguments.First() as string;
-            if (string.IsNullOrEmpty(argument))
-            {
-                output.Write(string.Empty);
-            }
-            else
-            {
-                string res;
-                if (argument.Length == 1)
-                {
-                    res = argument.ToUpper();
-                }
-                else
-                {
-                    res = argument.Substring(0, 1).ToUpper() + argument.Substring(1);
-                }
-
-                output.Write(res);
-            }
-        }
-
-        #endregion
-
-        #region Block
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="options"></param>
+        /// <param name="context"></param>
+        /// <param name="arguments"></param>
         public static void EachWithSort(TextWriter output, HelperOptions options, dynamic context, params object[] arguments)
         {
             var children = ((JObject)arguments.First()).Children().Select(x => (JProperty)x).ToArray();
@@ -48,6 +26,13 @@ namespace Dotnet.CodeGen.CodeGen.CustomHandlebars
             options.Template(output, ret);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="options"></param>
+        /// <param name="context"></param>
+        /// <param name="arguments"></param>
         public static void IsRequiredHelper(TextWriter output, HelperOptions options, dynamic context, object[] arguments)
         {
             var argument = arguments.First() as string;
@@ -167,7 +152,5 @@ namespace Dotnet.CodeGen.CodeGen.CustomHandlebars
                 }
             }
         }
-
-        #endregion
     }
 }

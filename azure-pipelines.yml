@@ -16,13 +16,14 @@ steps:
 - script: PATH="$PATH:$HOME/.dotnet/tools"
   displayName: 'Adding dotnet global tools to PATH'
 
-- script: dotnet test --no-restore --configuration Release --logger trx;LogFileName=$(Build.ArtifactStagingDirectory)/testsResults.trx
+- script: dotnet test --no-restore --configuration Release --logger "trx;LogFileName=$(Build.ArtifactStagingDirectory)/testsResults.trx"
   displayName: 'dotnet test'
 
 - task: PublishTestResults@2  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml
+  condition: always()
   inputs:
     testResultsFormat: 'VSTest'
-    testResultsFiles: '$(Build.ArtifactStagingDirectory)/*.trx'
+    testResultsFiles: '$(Build.ArtifactStagingDirectory)/testsResults.trx'
 
 - script: dotnet pack ./Dotnet.CodeGen/Dotnet.CodeGen.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
   displayName: 'dotnet pack'

@@ -15,21 +15,21 @@ namespace Dotnet.CodeGen.Tests.Helpers
         [Fact]
         public void Test()
         {
-            var handleBar = Handlebars.Create(new HandlebarsConfiguration
-            {
-                BlockHelpers = {
-                    { "my_helper", HandlebarsBlockHelpers.IsEnum }
-                }
-            });
+//            var handleBar = Handlebars.Create(new HandlebarsConfiguration
+//            {
+//                BlockHelpers = {
+//                    { "my_helper", HandlebarsBlockHelpers.IsEnum }
+//                }
+//            });
 
-            var output = handleBar
-                .Compile(@"{{#my_helper this}}{{/my_helper}}")
-                (JObject.Parse("{}"))
-                ;
+//            var output = handleBar
+//                .Compile(@"{{#my_helper this}}{{/my_helper}}")
+//                (JObject.Parse("{}"))
+//                ;
 
-//"{{#each order_by values property}}"
+////"{{#each order_by values property}}"
 
-            output.ShouldBe("");
+//            output.ShouldBe("");
         }
     }
 }

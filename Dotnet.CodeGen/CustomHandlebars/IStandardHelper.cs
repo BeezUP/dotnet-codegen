@@ -13,18 +13,9 @@ namespace Dotnet.CodeGen.CustomHandlebars
         HandlebarsHelper Helper { get; }
     }
 
-    public abstract class StandardHelperBase : IStandardHelper
+    public abstract class StandardHelperBase : HelperBase, IStandardHelper
     {
-        public StandardHelperBase(string name, Func<HandlebarsHelper> getHelper)
-        {
-            Name = name;
-            _getHelper = getHelper;
-        }
-
-        public string Name { get; }
-
-        private readonly Func<HandlebarsHelper> _getHelper;
-
-        public HandlebarsHelper Helper => _getHelper();
+        public StandardHelperBase(string name) : base(name) { }
+        public abstract HandlebarsHelper Helper { get; }
     }
 }

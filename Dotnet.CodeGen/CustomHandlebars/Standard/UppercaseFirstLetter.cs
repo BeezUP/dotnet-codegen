@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using HandlebarsDotNet;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Standard
 {
@@ -11,14 +12,17 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
     [HandlebarsHelperSpecification("{ test: '42' }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: 'aa' }", "{{uppercase_first_letter test}}", "Aa")]
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
+    [HandlebarsHelperSpecification("{ test: 'AA' }", "test{{uppercase_first_letter test}}", "testAA")]
     public class UppercaseFirstLetter : StandardHelperBase
     {
-        public UppercaseFirstLetter() :
-            base(
-                "uppercase_first_letter",
-                () => (TextWriter output, object context, object[] arguments) =>
+        public UppercaseFirstLetter() : base("uppercase_first_letter") { }
+
+        public override HandlebarsHelper Helper =>
+            (TextWriter output, object context, object[] arguments) =>
                 {
-                    var argument = arguments.FirstOrDefault()?.ToString();
+                    EnsureArgumentsCount(arguments, 1);
+
+                    var argument = arguments[0].ToString();
 
                     if (string.IsNullOrEmpty(argument))
                     {
@@ -38,8 +42,6 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
 
                         output.Write(res);
                     }
-                })
-        {
-        }
+                };
     }
 }

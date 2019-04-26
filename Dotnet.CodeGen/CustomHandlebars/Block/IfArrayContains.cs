@@ -8,19 +8,34 @@ using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Block
 {
-    //[HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
-    public class IsRequired : BlockHelperBase
+    [HandlebarsHelperSpecification(@"
+{
+    'type' : 'object',
+    'required' : [ 'errorMessage' ],
+    'properties' : {
+        'errorMessage' : {
+            'type' : 'string'
+        },
+        'non_required_prop' : {
+            'type' : 'string'
+        }
+    }
+}", "{{#each properties}} {{is_required @key}}OK {{else}} {{/is_required}}  {{/each}}", "OK")]
+    public class IfArrayContains : BlockHelperBase
     {
-        public IsRequired() :
-            base(
-                "is_required",
-                () => (TextWriter output, HelperOptions options, dynamic context, object[] arguments) =>
+        public IfArrayContains() : base("is_required") { }
+
+        public override HandlebarsBlockHelper Helper =>
+            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
                 {
+                    EnsureArgumentsCount(arguments, 2);
+
                     var argument = arguments.FirstOrDefault() as string;
+
                     if (!string.IsNullOrEmpty(argument))
                     {
                         // First we look at the ancestors of the property node for the list of "required" properties
-                        var requiredProperties = ((JContainer)context)
+                        var requiredProperties = GetJContainerContext(context)
                             .Ancestors()
                             .OfType<JObject>()
                             .FirstOrDefault(jObject => jObject.ContainsKey("required"))
@@ -44,8 +59,6 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
                             }
                         }
                     }
-                })
-        {
-        }
+                };
     }
 }

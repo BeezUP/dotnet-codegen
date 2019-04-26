@@ -14,14 +14,15 @@ namespace Dotnet.CodeGen.Tests
     {
         [Theory]
         [MemberData(nameof(StandardHelpersTests_Data))]
-        public void StandardHelpersTests(string helperName, IStandardHelper helper, string json, string template, string expectedOutput)
+        public void StandardHelpersTests(IStandardHelper helper, string json, string template, string expectedOutput)
         {
             var handleBar = Handlebars.Create(new HandlebarsConfiguration
             {
-                Helpers = { { helperName, helper.Helper } }
+                Helpers = { { helper.Name, helper.Helper } }
             });
 
-            var output = handleBar.Compile(template).Invoke(JObject.Parse(json));
+            var hb = handleBar.Compile(template);
+            var output = hb.Invoke(JObject.Parse(json));
             output.ShouldBe(expectedOutput);
         }
 
@@ -30,20 +31,21 @@ namespace Dotnet.CodeGen.Tests
             foreach (var helper in HandlebarsConfigurationHelper.StandardHelpers)
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
-                    yield return new object[] { helper.Name, helper, att.Json, att.Template, att.ExpectedOutput };
+                    yield return new object[] { helper, att.Json, att.Template, att.ExpectedOutput };
                 }
         }
 
         [Theory]
         [MemberData(nameof(BlockHelpersTests_Data))]
-        public void BlockHelpersTests(string helperName, IBlockHelper helper, string json, string template, string expectedOutput)
+        public void BlockHelpersTests(IBlockHelper helper, string json, string template, string expectedOutput)
         {
             var handleBar = Handlebars.Create(new HandlebarsConfiguration
             {
-                BlockHelpers = { { helperName, helper.Helper } }
+                BlockHelpers = { { helper.Name, helper.Helper } }
             });
 
-            var output = handleBar.Compile(template).Invoke(JObject.Parse(json));
+            var hb = handleBar.Compile(template);
+            var output = hb.Invoke(JObject.Parse(json));
             output.ShouldBe(expectedOutput);
         }
 
@@ -52,7 +54,7 @@ namespace Dotnet.CodeGen.Tests
             foreach (var helper in HandlebarsConfigurationHelper.BlockHelpers)
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
-                    yield return new object[] { helper.Name, helper, att.Json, att.Template, att.ExpectedOutput };
+                    yield return new object[] { helper, att.Json, att.Template, att.ExpectedOutput };
                 }
         }
     }

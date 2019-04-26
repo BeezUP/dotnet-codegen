@@ -13,17 +13,10 @@ namespace Dotnet.CodeGen.CustomHandlebars
         HandlebarsBlockHelper Helper { get; }
     }
 
-    public abstract class BlockHelperBase : IBlockHelper
+    public abstract class BlockHelperBase : HelperBase, IBlockHelper
     {
-        public BlockHelperBase(string name, Func<HandlebarsBlockHelper> getHelper)
-        {
-            Name = name;
-            _getHelper = getHelper;
-        }
+        public BlockHelperBase(string name) : base(name) { }
 
-        public string Name { get; }
-
-        private readonly Func<HandlebarsBlockHelper> _getHelper;
-        public HandlebarsBlockHelper Helper => _getHelper();
+        public abstract HandlebarsBlockHelper Helper { get; }
     }
 }

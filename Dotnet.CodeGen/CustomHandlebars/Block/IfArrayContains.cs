@@ -8,56 +8,54 @@ using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Block
 {
-    [HandlebarsHelperSpecification(@"
-{
-    'type' : 'object',
-    'required' : [ 'errorMessage' ],
-    'properties' : {
-        'errorMessage' : {
-            'type' : 'string'
-        },
-        'non_required_prop' : {
-            'type' : 'string'
-        }
+    public static partial class SPECS
+    {
+        public const string IfArrayContains_TEST_DOCUMENT = @"
+        {
+            'type' : 'object',
+            'required' : [ 'errorMeSSage', 'test' ],
+            'properties' : {
+                'errorMessage' : {
+                    'type' : 'string'
+                },
+                'non_required_prop' : {
+                    'type' : 'int'
+                }
+            }
+        }";
     }
-}", "{{#each properties}} {{is_required @key}}OK {{else}} {{/is_required}}  {{/each}}", "OK")]
+
+    /// <summary>
+    /// Write the template if the second argument is found in the array passed as first argument
+    /// (values are compared with string insensitive comparison)
+    /// </summary>
+    [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'errorMessage'}}OK{{else}}NOK{{/if_array_contains}}", "OK")]
+    [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'test'}}OK{{else}}NOK{{/if_array_contains}}", "OK")]
+    [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'notFound'}}OK{{else}}NOK{{/if_array_contains}}", "NOK")]
+    [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#each properties}}{{#if_array_contains ../required @key}}{{type}}{{else}}{{/if_array_contains}}{{/each}}", "string")]
     public class IfArrayContains : BlockHelperBase
     {
-        public IfArrayContains() : base("is_required") { }
+        public IfArrayContains() : base("if_array_contains") { }
 
         public override HandlebarsBlockHelper Helper =>
             (TextWriter output, HelperOptions options, object context, object[] arguments) =>
                 {
                     EnsureArgumentsCount(arguments, 2);
 
-                    var argument = arguments.FirstOrDefault() as string;
+                    var array = GetArgumentAsArray(arguments, 0);
 
-                    if (!string.IsNullOrEmpty(argument))
+                    var search = GetArgumentStringValue(arguments, 1);
+
+                    if (array
+                        .Select(token => GetStringValue(token))
+                        .Any(s => string.Compare(s, search, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        )
                     {
-                        // First we look at the ancestors of the property node for the list of "required" properties
-                        var requiredProperties = GetJContainerContext(context)
-                            .Ancestors()
-                            .OfType<JObject>()
-                            .FirstOrDefault(jObject => jObject.ContainsKey("required"))
-                            ?.Property("required")
-                            ?.Value;
-
-                        if (requiredProperties == null)
-                        {
-                            options.Inverse(output, null);
-                        }
-                        else
-                        {
-                            var isRequiredProperty = requiredProperties.Any(req => req.Value<string>() == argument);
-                            if (isRequiredProperty)
-                            {
-                                options.Template(output, null);
-                            }
-                            else
-                            {
-                                options.Inverse(output, null);
-                            }
-                        }
+                        options.Template(output, context);
+                    }
+                    else
+                    {
+                        options.Inverse(output, context);
                     }
                 };
     }

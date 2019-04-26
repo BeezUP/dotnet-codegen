@@ -8,29 +8,26 @@ using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Block
 {
-    //[HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
+    /// <summary>
+    /// Performs a string comparison between 2 arguments
+    /// (all arguments are converted to string and case insensitive compared)
+    /// </summary>
+    [HandlebarsHelperSpecification("{}", "{{#if_are_equal 'test' 'teSt'}}OK{{else}}{{/if_are_equal}}", "OK")]
+    [HandlebarsHelperSpecification("{ a: '42', b: 42 }", "{{#if_are_equal a ./b }}OK{{else}}{{/if_are_equal}}", "OK")]
+    [HandlebarsHelperSpecification("{}", "{{#if_are_equal 'test' 'NO'}}OK{{else}}NOK{{/if_are_equal}}", "NOK")]
     public class IfAreEqual : BlockHelperBase
     {
         public IfAreEqual() : base("if_are_equal") { }
 
         public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, dynamic context, object[] arguments) =>
+            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
             {
                 EnsureArgumentsCount(arguments, 2);
 
-                string arg;
-                if (arguments[0] is JValue t)
-                {
-                    arg = t.Value.ToString();
-                }
-                else
-                {
-                    arg = arguments[0] as string;
-                }
+                var arg1 = GetArgumentStringValue(arguments, 0);
+                var arg2 = GetArgumentStringValue(arguments, 1);
 
-                var expected = arguments[1] as string;
-
-                if (arg == expected)
+                if (string.Compare(arg1, arg2, StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     options.Template(output, context);
                 }

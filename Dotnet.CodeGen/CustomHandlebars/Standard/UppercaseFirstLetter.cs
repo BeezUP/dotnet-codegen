@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Standard
 {
-    [HandlebarsHelperSpecification("{}", "{{uppercase_first_letter {}}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{uppercase_first_letter .}}", "{}")]
     [HandlebarsHelperSpecification("{ test: 42 }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: '42' }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: 'aa' }", "{{uppercase_first_letter test}}", "Aa")]

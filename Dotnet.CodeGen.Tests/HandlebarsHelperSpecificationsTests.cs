@@ -35,7 +35,7 @@ namespace Dotnet.CodeGen.Tests
         }
 
         [Theory]
-        [MemberData(nameof(StandardHelpersTests_Data))]
+        [MemberData(nameof(BlockHelpersTests_Data))]
         public void BlockHelpersTests(string helperName, IBlockHelper helper, string json, string template, string expectedOutput)
         {
             var handleBar = Handlebars.Create(new HandlebarsConfiguration

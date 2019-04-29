@@ -28,8 +28,5 @@
   <ItemGroup>
     <Compile Remove="_samples\**\*.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="_samples\test2\expected\" />
-  </ItemGroup>
 
 </Project>

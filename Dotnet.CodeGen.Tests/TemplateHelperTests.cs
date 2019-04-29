@@ -20,9 +20,9 @@ namespace Dotnet.CodeGen.Tests
                 (path:"_samples/test0/subFolder/template.cs.cshtml", fName:"template.cs", dir:"subFolder"),
                 (path:"_samples/test0/subFolder/template2.cshtml", fName:"template2", dir:"subFolder"),
                 (path:"_samples/test0/subFolder/subsub/temp.cshtml", fName:"temp", dir:"subFolder/subsub"),
-            };
+            }.OrderBy(x => x.path).ToArray();
 
-            var tInfos = TemplateHelper.GetTemplates("_samples/test0", extension: "*.cshtml").ToArray();
+            var tInfos = TemplateHelper.GetTemplates("_samples/test0", extension: "*.cshtml").OrderBy(i => i.FilePath).ToArray();
 
             for (int i = 0; i < expecteds.Length; i++)
             {

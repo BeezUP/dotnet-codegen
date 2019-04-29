@@ -15,11 +15,11 @@ namespace Dotnet.CodeGen.Tests
         {
             var expecteds = new[]
             {
-                (path:"_samples/test0\\template.cshtml", fName:"template", dir:""),
-                (path:"_samples/test0\\template2.txt.cshtml", fName:"template2.txt", dir:""),
-                (path:"_samples/test0\\subFolder\\template.cs.cshtml", fName:"template.cs", dir:"subFolder"),
-                (path:"_samples/test0\\subFolder\\template2.cshtml", fName:"template2", dir:"subFolder"),
-                (path:"_samples/test0\\subFolder\\subsub\\temp.cshtml", fName:"temp", dir:"subFolder\\subsub"),
+                (path:"_samples/test0/template.cshtml", fName:"template", dir:""),
+                (path:"_samples/test0/template2.txt.cshtml", fName:"template2.txt", dir:""),
+                (path:"_samples/test0/subFolder/template.cs.cshtml", fName:"template.cs", dir:"subFolder"),
+                (path:"_samples/test0/subFolder/template2.cshtml", fName:"template2", dir:"subFolder"),
+                (path:"_samples/test0/subFolder/subsub/temp.cshtml", fName:"temp", dir:"subFolder/subsub"),
             };
 
             var tInfos = TemplateHelper.GetTemplates("_samples/test0", extension: "*.cshtml").ToArray();
@@ -29,9 +29,9 @@ namespace Dotnet.CodeGen.Tests
                 var info = tInfos[i];
                 var (path, fName, dir) = expecteds[i];
 
-                info.FilePath.ShouldBe(path);
+                info.FilePath.Replace("\\", "/").ShouldBe(path);
                 info.FileName.ShouldBe(fName);
-                info.Directory.ShouldBe(dir);
+                info.Directory.Replace("\\", "/").ShouldBe(dir);
             }
 
             tInfos.Length.ShouldBe(expecteds.Length);

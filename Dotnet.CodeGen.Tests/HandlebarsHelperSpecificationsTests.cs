@@ -24,7 +24,7 @@ namespace Dotnet.CodeGen.Tests
             });
 
             var hb = handleBar.Compile(template);
-            var output = hb.Invoke(JObject.Parse(json));
+            var output = hb.Invoke(JToken.Parse(json));
             output.ShouldBe(expectedOutput);
         }
 
@@ -47,7 +47,7 @@ namespace Dotnet.CodeGen.Tests
             });
 
             var hb = handleBar.Compile(template);
-            var output = hb.Invoke(JObject.Parse(json));
+            var output = hb.Invoke(JToken.Parse(json));
             output.ShouldBe(expectedOutput);
         }
 

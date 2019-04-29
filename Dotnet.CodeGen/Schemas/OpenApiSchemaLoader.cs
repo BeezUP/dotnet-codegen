@@ -13,7 +13,7 @@ namespace Dotnet.CodeGen.CodeGen.Schemas
 {
     public class OpenApiSchemaLoader : ISchemaLoader
     {
-        public JObject LoadSchema(string documentUri)
+        public JToken LoadSchema(string documentUri)
         {
             var loader = new DocumentRefLoader(documentUri);
             var jObj = loader.GetRefResolvedJObject();

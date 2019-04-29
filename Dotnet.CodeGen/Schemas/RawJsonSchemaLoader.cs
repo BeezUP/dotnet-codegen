@@ -8,10 +8,10 @@ namespace Dotnet.CodeGen.CodeGen.Schemas
 {
     public class RawJsonSchemaLoader : ISchemaLoader
     {
-        public JObject LoadSchema(string documentUri)
+        public JToken LoadSchema(string documentUri)
         {
             var document = File.ReadAllText(documentUri);
-            return JObject.Parse(document);
+            return JToken.Parse(document);
         }
     }
 }

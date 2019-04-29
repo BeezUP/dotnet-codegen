@@ -7,6 +7,6 @@ namespace Dotnet.CodeGen.CodeGen.Schemas
 {
     public interface ISchemaLoader
     {
-        JObject LoadSchema(string documentUri);
+        JToken LoadSchema(string documentUri);
     }
 }

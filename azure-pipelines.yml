@@ -16,7 +16,7 @@ steps:
 # - script: PATH="$PATH:$HOME/.dotnet/tools"
 #   displayName: 'Adding dotnet global tools to PATH'
 
-- script: dotnet test --no-restore --configuration Release"
+- script: dotnet test --no-restore --configuration Release
   displayName: 'dotnet test'
 
 - script: dotnet test --no-restore --configuration Release --logger "trx;LogFileName=$(Build.ArtifactStagingDirectory)/testsResults.trx"

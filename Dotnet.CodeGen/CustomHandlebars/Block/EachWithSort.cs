@@ -29,39 +29,53 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
             {
                 EnsureArgumentsCountMin(arguments, 1);
                 EnsureArgumentsCountMax(arguments, 2);
-
-                var to_order = arguments[0];
-                if (!(to_order is IEnumerable enumerable))
-                    options.Template(output, context);
-
-
-                var jPath = arguments.Length == 2 ? arguments[1]?.ToString() : null;
-
-                object newContext;
-                switch (to_order)
-                {
-                    case JObject jObject:
-                        newContext = ((IEnumerable<KeyValuePair<string, JToken>>)jObject).OrderBy(t => (jPath == null) ? t.Key : t.Value.SelectToken(jPath));
-                        break;
-                    case JArray jArray:
-                        if (jPath == null)
-                            throw new CodeGenHelperException($"First argument being an Array, the second argument cannot be empty in the {Name} helper.");
-                        newContext = jArray.OrderBy(t => t.SelectToken(jPath));
-                        break;
-                    default:
-                        throw new NotImplementedException($"{Name} helper couldn't handle ordering on a {to_order?.GetType().Name} token.");
-                }
-
-                options.Template(output, newContext);
-
-
-
-
-                //var children = ((JObject)arguments.First()).Children().Select(x => (JProperty)x).ToArray();
-
-                //var ret = new JObject(children.OrderBy(x => x.Name));
-
-                //options.Template(output, ret);
+                Sort(output, options, context, arguments, SortDirection.Ascending, Name);
             };
+
+        internal enum SortDirection
+        {
+            Ascending,
+            Descending
+        }
+
+        internal static void Sort(TextWriter output, HelperOptions options, object context, object[] arguments, SortDirection direction, string name)
+        {
+            var to_order = arguments[0];
+            if (!(to_order is IEnumerable enumerable))
+                options.Template(output, context);
+
+
+            var jPath = arguments.Length == 2 ? arguments[1]?.ToString() : null;
+
+            object newContext;
+            switch (to_order)
+            {
+                case JObject jObject:
+                    {
+                        JToken keySelector(KeyValuePair<string, JToken> t) => (jPath == null) ? t.Key : t.Value.SelectToken(jPath);
+                        newContext = direction == SortDirection.Ascending
+                            ? ((IDictionary<string, JToken>)jObject).OrderBy(keySelector)
+                            : ((IDictionary<string, JToken>)jObject).OrderByDescending(keySelector)
+                            ;
+                    }
+                    break;
+                case JArray jArray:
+                    {
+                        if (jPath == null)
+                            throw new CodeGenHelperException($"First argument being an Array, the second argument cannot be empty in the {name} helper.");
+
+                        JToken keySelector(JToken t) => t.SelectToken(jPath);
+                        newContext = direction == SortDirection.Ascending
+                          ? jArray.OrderBy(keySelector)
+                          : jArray.OrderByDescending(keySelector)
+                          ;
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException($"{name} helper couldn't handle ordering on a {to_order?.GetType().Name} token.");
+            }
+
+            options.Template(output, newContext);
+        }
     }
 }

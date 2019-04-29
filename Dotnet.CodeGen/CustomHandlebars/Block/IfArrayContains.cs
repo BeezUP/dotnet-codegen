@@ -8,6 +8,7 @@ using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Block
 {
+#if DEBUG
     public static partial class SPECS
     {
         public const string IfArrayContains_TEST_DOCUMENT = @"
@@ -24,15 +25,17 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
             }
         }";
     }
-
+#endif
     /// <summary>
     /// Write the template if the second argument is found in the array passed as first argument
     /// (values are compared with string insensitive comparison)
     /// </summary>
+#if DEBUG
     [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'errorMessage'}}OK{{else}}NOK{{/if_array_contains}}", "OK")]
     [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'test'}}OK{{else}}NOK{{/if_array_contains}}", "OK")]
     [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'notFound'}}OK{{else}}NOK{{/if_array_contains}}", "NOK")]
     [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#each properties}}{{#if_array_contains ../required @key}}{{type}}{{else}}{{/if_array_contains}}{{/each}}", "string")]
+#endif
     public class IfArrayContains : BlockHelperBase
     {
         public IfArrayContains() : base("if_array_contains") { }

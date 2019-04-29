@@ -12,9 +12,11 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     /// Performs a string comparison between 2 arguments
     /// (all arguments are converted to string and case insensitive compared)
     /// </summary>
+#if DEBUG
     [HandlebarsHelperSpecification("{}", "{{#if_are_equal 'test' 'teSt'}}OK{{else}}{{/if_are_equal}}", "OK")]
     [HandlebarsHelperSpecification("{ a: '42', b: 42 }", "{{#if_are_equal a ./b }}OK{{else}}{{/if_are_equal}}", "OK")]
     [HandlebarsHelperSpecification("{}", "{{#if_are_equal 'test' 'NO'}}OK{{else}}NOK{{/if_are_equal}}", "NOK")]
+#endif
     public class IfAreEqual : BlockHelperBase
     {
         public IfAreEqual() : base("if_are_equal") { }

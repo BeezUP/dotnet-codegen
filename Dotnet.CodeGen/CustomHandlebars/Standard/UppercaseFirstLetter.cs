@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Dotnet.CodeGen.CustomHandlebars.Block;
 using HandlebarsDotNet;
 
 namespace Dotnet.CodeGen.CustomHandlebars.Standard
 {
+    /// <summary>
+    /// Write the template if the second argument is found in the array passed as first argument
+    /// (values are compared with string insensitive comparison)
+    /// </summary>
+#if DEBUG
     [HandlebarsHelperSpecification("{}", "{{uppercase_first_letter .}}", "{}")]
     [HandlebarsHelperSpecification("{ test: 42 }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: '42' }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: 'aa' }", "{{uppercase_first_letter test}}", "Aa")]
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
     [HandlebarsHelperSpecification("{ test: 'AA' }", "test{{uppercase_first_letter test}}", "testAA")]
+#endif
     public class UppercaseFirstLetter : StandardHelperBase
     {
         public UppercaseFirstLetter() : base("uppercase_first_letter") { }

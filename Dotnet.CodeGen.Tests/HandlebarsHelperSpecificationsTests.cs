@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
+#if DEBUG
+
 namespace Dotnet.CodeGen.Tests
 {
     public class HandlebarsHelperSpecificationsTests
@@ -59,3 +61,5 @@ namespace Dotnet.CodeGen.Tests
         }
     }
 }
+
+#endif

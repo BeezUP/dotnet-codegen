@@ -9,8 +9,7 @@ using HandlebarsDotNet;
 namespace Dotnet.CodeGen.CustomHandlebars.Standard
 {
     /// <summary>
-    /// Write the template if the second argument is found in the array passed as first argument
-    /// (values are compared with string insensitive comparison)
+    /// Uppercase the first letter
     /// </summary>
 #if DEBUG
     [HandlebarsHelperSpecification("{}", "{{uppercase_first_letter .}}", "{}")]

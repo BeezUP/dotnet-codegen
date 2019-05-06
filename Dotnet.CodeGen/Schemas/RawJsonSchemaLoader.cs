@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace Dotnet.CodeGen.CodeGen.Schemas
+namespace Dotnet.CodeGen.Schemas
 {
     public class RawJsonSchemaLoader : ISchemaLoader
     {

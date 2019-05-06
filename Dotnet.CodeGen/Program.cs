@@ -17,7 +17,6 @@ namespace Dotnet.CodeGen.CodeGen
         public const string OUTPUT_PATH_ARGUMENT = "out";
 
         public const string SCHEMA_TYPE_OPTION = "--type";
-        public const SourceSchemaType DEFAULT_SCHEMA_TYPE = SourceSchemaType.OpenApi;
         private const string HelpOptions = "-? | -h | --help";
 
         static async Task Main(string[] args)
@@ -42,7 +41,7 @@ namespace Dotnet.CodeGen.CodeGen
                 if (outputPath.Value == null)
                     errors.Add($"{OUTPUT_PATH_ARGUMENT} parameter is required");
 
-                var schemaType = DEFAULT_SCHEMA_TYPE;
+                var schemaType = SchemaTypeExtensions.DEFAULT_SHEMA_TYPE;
                 if (schemaTypeName.HasValue())
                 {
                     if (Enum.TryParse<SourceSchemaType>(schemaTypeName.Value(), out var s))

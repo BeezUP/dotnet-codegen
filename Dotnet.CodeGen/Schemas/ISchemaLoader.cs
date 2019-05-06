@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace Dotnet.CodeGen.CodeGen.Schemas
+namespace Dotnet.CodeGen.Schemas
 {
     public interface ISchemaLoader
     {

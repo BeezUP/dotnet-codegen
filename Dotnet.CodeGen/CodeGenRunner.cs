@@ -3,8 +3,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dotnet.CodeGen.CodeGen.Instructions;
-using Dotnet.CodeGen.CodeGen.Schemas;
 using Dotnet.CodeGen.CustomHandlebars;
+using Dotnet.CodeGen.Schemas;
 
 namespace Dotnet.CodeGen.CodeGen
 {

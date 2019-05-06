@@ -28,25 +28,25 @@ namespace Dotnet.CodeGen.Tests
             if (Directory.Exists(_tmpOutput))
                 Directory.Delete(_tmpOutput, true);
 
-            UninstallTool();
+            UninstallTool(_output, _solutionFolder, _tmpOutput);
         }
 
         [Fact]
         public void Should_pack_install_unistall()
         {
-            ListTools();
-            UninstallTool();
-            PackTool();
-            InstallTool();
-            ListTools();
+            ListTools(_output, _solutionFolder, _tmpOutput);
+            UninstallTool(_output, _solutionFolder, _tmpOutput);
+            PackTool(_output, _solutionFolder, _tmpOutput);
+            InstallTool(_output, _solutionFolder, _tmpOutput);
+            ListTools(_output, _solutionFolder, _tmpOutput);
         }
 
         [IgnoreOnLinuxFact]
         public void Should_pack_install_tool_execute()
         {
-            UninstallTool();
-            PackTool();
-            InstallTool();
+            UninstallTool(_output, _solutionFolder, _tmpOutput);
+            PackTool(_output, _solutionFolder, _tmpOutput);
+            InstallTool(_output, _solutionFolder, _tmpOutput);
 
             var outputPath = Path.GetRandomFileName();
 
@@ -76,16 +76,16 @@ namespace Dotnet.CodeGen.Tests
         }
 
 
-        private void InstallTool()
+        internal static void InstallTool(ITestOutputHelper output, string solutionFolder, string folder)
         {
             using (var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = $"tool install -g {PACKAGE_NAME} --add-source {_tmpOutput}",
+                Arguments = $"tool install -g {PACKAGE_NAME} --add-source {folder}",
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
-                WorkingDirectory = _solutionFolder
+                WorkingDirectory = solutionFolder
             }))
             {
                 process.WaitForExit();
@@ -94,7 +94,7 @@ namespace Dotnet.CodeGen.Tests
             }
         }
 
-        private void ListTools()
+        internal static void ListTools(ITestOutputHelper output, string solutionFolder, string folder)
         {
             using (var process = Process.Start(new ProcessStartInfo
             {
@@ -109,11 +109,11 @@ namespace Dotnet.CodeGen.Tests
                 if (process.ExitCode != 0)
                     throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
 
-                _output.WriteLine($"Tools list : '\n{process.StandardOutput.ReadToEnd()}\n'");
+                output.WriteLine($"Tools list : '\n{process.StandardOutput.ReadToEnd()}\n'");
             }
         }
 
-        private void UninstallTool()
+        internal static void UninstallTool(ITestOutputHelper output, string solutionFolder, string folder)
         {
             using (var process = Process.Start(new ProcessStartInfo
             {
@@ -122,7 +122,7 @@ namespace Dotnet.CodeGen.Tests
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
-                WorkingDirectory = _solutionFolder
+                WorkingDirectory = solutionFolder
             }))
             {
                 process.WaitForExit();
@@ -130,22 +130,22 @@ namespace Dotnet.CodeGen.Tests
             }
         }
 
-        private void PackTool()
+        internal static void PackTool(ITestOutputHelper output, string solutionFolder, string folder)
         {
             using (var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = $"pack ./{PACKAGE_NAME}/{PACKAGE_NAME}.csproj --configuration Release --output {_tmpOutput}",
+                Arguments = $"pack ./{PACKAGE_NAME}/{PACKAGE_NAME}.csproj --configuration Release --output {folder}",
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
-                WorkingDirectory = _solutionFolder
+                WorkingDirectory = solutionFolder
             }))
             {
                 process.WaitForExit();
                 if (process.ExitCode != 0)
                 {
-                    _output.WriteLine($"{process.StandardOutput.ReadToEnd()}");
+                    output.WriteLine($"{process.StandardOutput.ReadToEnd()}");
                     throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
                 }
             }

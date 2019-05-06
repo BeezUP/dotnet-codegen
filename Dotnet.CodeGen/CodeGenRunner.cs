@@ -14,9 +14,14 @@ namespace Dotnet.CodeGen.CodeGen
         {
             var jsonObject = schemaLoader.LoadSchema(sourcePath);
 
-            var templates = TemplateHelper.GetTemplates(templatePath, "*.hbs");
+            var templates = TemplateHelper.GetTemplates(templatePath, "*.hbs")
+                .Where(t => !t.FileName.StartsWith("_"))
+                .ToArray();
 
-            var handlebars = HandlebarsConfigurationHelper.GetHandlebars();
+            if (templatePath.Length == 0)
+                throw new InvalidDataException($"No template found in {templatePath}.");
+
+            var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatePath);
 
             foreach (var template in templates)
             {

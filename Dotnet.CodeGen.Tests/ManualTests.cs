@@ -20,8 +20,8 @@ namespace Dotnet.CodeGen.Tests
             _tmpOutput = Path.Combine(_solutionFolder, "_testsnugetpakage." + Path.GetRandomFileName());
         }
 
-        [Fact]
-        //[Fact(Skip = "Just to get the tooling installed on my computer without having to deploy on nuget.")]
+        //[Fact]
+        [Fact(Skip = "Just to get the tooling installed on my computer without having to deploy on nuget.")]
         public void ManualInstall()
         {
             PackAndUseTests.PackTool(_output, _solutionFolder, _tmpOutput);

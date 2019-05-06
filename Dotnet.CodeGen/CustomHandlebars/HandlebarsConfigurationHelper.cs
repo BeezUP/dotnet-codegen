@@ -1,6 +1,7 @@
 ﻿using HandlebarsDotNet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -45,13 +46,13 @@ namespace Dotnet.CodeGen.CustomHandlebars
         }
 
 
-        public static IHandlebars GetHandlebars()
+        public static IHandlebars GetHandlebars(string rootDirectory)
         {
-            var handlebars = Handlebars.Create(GetHandlebarsConfiguration());
+            var handlebars = Handlebars.Create(GetHandlebarsConfiguration(rootDirectory));
             return handlebars;
         }
 
-        public static HandlebarsConfiguration GetHandlebarsConfiguration()
+        public static HandlebarsConfiguration GetHandlebarsConfiguration(string rootDirectory)
         {
             var configuration = new HandlebarsConfiguration();
             foreach (var h in _blockHelpers)
@@ -63,23 +64,33 @@ namespace Dotnet.CodeGen.CustomHandlebars
                 configuration.Helpers.Add(h.Name, h.Helper);
             }
 
-            //{
-            //    BlockHelpers =
-            //    {
-            //        { "each_with_sort", HandlebarsBlockHelpers.EachWithSort},
-            //        { "is_required", HandlebarsBlockHelpers.IsRequiredHelper},
-            //        { "is_last_object_property", HandlebarsBlockHelpers.IsLastObjectProperty},
-            //        { "is_enum", HandlebarsBlockHelpers.IsEnum},
-            //        { "is_enum_default", HandlebarsBlockHelpers.IsEnumDefault},
-            //        { "are_equal", HandlebarsBlockHelpers.AreEqual }
-            //    },
-            //    Helpers =
-            //    {
-            //        { "uppercase_first_letter", HandlebarsStandardHelpers.UppercaseFirstLetterHelper}
-            //    }
-            //};
+            configuration.PartialTemplateResolver = new SameDirectoryPartialTemplateResolver(rootDirectory);
 
             return configuration;
+        }
+
+
+        public class SameDirectoryPartialTemplateResolver : IPartialTemplateResolver
+        {
+            private readonly string _rootDirectory;
+
+            public SameDirectoryPartialTemplateResolver(string rootDirectory)
+            {
+                _rootDirectory = rootDirectory;
+            }
+
+            public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
+            {
+                var partialPath = Path.Combine(_rootDirectory, $"_{partialName}.hbs");
+                if (!File.Exists(partialPath))
+                {
+                    return false;
+                    throw new IOException($"Unable to find the partial template file {partialPath}");
+                }
+
+                env.RegisterTemplate(partialName, File.ReadAllText(partialPath));
+                return true;
+            }
         }
     }
 }

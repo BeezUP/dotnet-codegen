@@ -7,16 +7,34 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public enum SourceSchemaType
     {
+        /// <summary>
+        /// Json document, no transformation
+        /// </summary>
         RawJson,
+        /// <summary>
+        /// Swagger v2 documents. Merging remote references
+        /// </summary>
         Swagger,
+        /// <summary>
+        /// Microsoft.OpenApi librairy capabilities. Input OpenApi v2 or v3 and output full resolved references OpenApi v3 json specification
+        /// /!\ NOT WORKING YET, DO NOT USE ! : https://github.com/microsoft/OpenAPI.NET/issues/406
+        /// </summary>
         OpenApi,
+        /// <summary>
+        /// GraphQL spec
+        /// (Not Implemented)
+        /// </summary>
         GraphQl,
+        /// <summary>
+        /// XML to Json
+        /// (Not Implemented)
+        /// </summary>
         RawXml
     }
 
     public static class SchemaTypeExtensions
     {
-        public const SourceSchemaType DEFAULT_SHEMA_TYPE = SourceSchemaType.OpenApi;
+        public const SourceSchemaType DEFAULT_SHEMA_TYPE = SourceSchemaType.Swagger;
 
         public static ISchemaLoader GetSchemaLoader(this SourceSchemaType schemaType)
         {

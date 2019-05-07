@@ -20,7 +20,7 @@ namespace Dotnet.CodeGen.CodeGen.Instructions
             var directory = Path.GetDirectoryName(path);
             Directory.CreateDirectory(directory);
 
-            var fileStream = File.Open(path, FileMode.CreateNew);
+            var fileStream = File.Open(path, FileMode.Create);
             _stream = new StreamWriter(fileStream);
             return Task.CompletedTask;
         }

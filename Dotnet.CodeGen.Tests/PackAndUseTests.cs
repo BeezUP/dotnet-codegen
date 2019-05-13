@@ -62,6 +62,7 @@ namespace Dotnet.CodeGen.Tests
                 }))
                 {
                     process.WaitForExit();
+                    _output.WriteLine(process.StandardOutput.ReadToEnd());
                     _output.WriteLine(process.StandardError.ReadToEnd());
 
                     if (process.ExitCode != 0)

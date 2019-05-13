@@ -10,7 +10,9 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     /// <summary>
     /// If a '$ref' property is found, it will be resolved and will replace the context object.
     /// </summary>
+#if DEBUG
     [HandlebarsHelperSpecification(GLOBAL_SPECS.SWAGGER_SAMPLE, "{{#each paths}}{{#each this}}{{#each parameters}}{{#ref_resolve}}{{ name }},{{/ref_resolve}}{{/each}}{{/each}}{{/each}}", "marketplaceBusinessCode,marketplaceBusinessCode,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,")]
+#endif
     public class RefResolve : BlockHelperBase
     {
         public const string REF = "$ref";

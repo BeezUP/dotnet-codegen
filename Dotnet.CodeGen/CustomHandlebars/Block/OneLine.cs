@@ -9,23 +9,29 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
 {
 
     /// <summary>
-    /// Append a single line, no matter how much the inner template is producing line breaks
+    /// Append a single line, taking out empty lines & meaningless whitespaces from the inner template
     /// </summary>
 #if DEBUG
-    [HandlebarsHelperSpecification("{}", "{{#one_line}} \n{{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}} \n {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}\n {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}\n{{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}} \r\n {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}\r\n{{/one_line}}", "")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}", "test      test")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} test{{/one_line}}", "test")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} a \n z {{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\n z{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\nz{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n z{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n \r\n \r\nz{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}", "test test")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}{{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}   test {{/one_line}}", "test")]
     [HandlebarsHelperSpecification("{}", "{{#one_line 5}}test{{/one_line}}", "     test")]
 #endif
     public class OneLine : BlockHelperBase
     {
-        static readonly Regex regex = new Regex(@" *[\r\n?|\n] *", RegexOptions.Compiled);
+        static readonly Regex regex = new Regex(@"(?: *[\r\n?|\n] *)+", RegexOptions.Compiled);
 
         public OneLine() : base("one_line") { }
 

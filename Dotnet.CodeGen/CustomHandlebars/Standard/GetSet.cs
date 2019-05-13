@@ -14,6 +14,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
     [HandlebarsHelperSpecification("{}", "{{set 'key', 'value'}}{{get 'key'}}", "value")]
     [HandlebarsHelperSpecification("{ key: 'value' }", "{{set 'k', . }}{{#with_get 'k'}}{{key}}{{/with_get}}", "value")]
     [HandlebarsHelperSpecification("{ key: 'value' }", "{{#with_set 'key', .key }}{{get 'key'}}{{/with_set}}{{get 'key'}}", "value")]
+    [HandlebarsHelperSpecification("{}", "{{set 'key', '42' }}{{get 'key'}}{{clear 'key'}}{{get 'key'}}", "42")]
 #endif
     public class GetSet : HelperBase
     {
@@ -45,6 +46,18 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
                 _values.Remove(key);
             };
 
+        public HandlebarsHelper ClearHelper =>
+            (TextWriter output, object context, object[] arguments) =>
+            {
+                EnsureArgumentsCount(arguments, 1);
+
+                var key = GetArgumentStringValue(arguments, 0) ?? throw new CodeGenHelperException($"Cannot set a value with no key");
+                if (_values.ContainsKey(key))
+                {
+                    _values.Remove(key);
+                }
+            };
+
         public HandlebarsHelper GetHelper =>
             (TextWriter output, object context, object[] arguments) =>
             {
@@ -59,27 +72,27 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
             };
 
         public HandlebarsBlockHelper WithGetHelper =>
-          (TextWriter output, HelperOptions options, object context, object[] arguments) =>
-          {
-              EnsureArgumentsCount(arguments, 1);
+            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
+            {
+                EnsureArgumentsCount(arguments, 1);
 
-              var key = GetArgumentStringValue(arguments, 0) ?? throw new CodeGenHelperException($"Cannot get a value with no key");
+                var key = GetArgumentStringValue(arguments, 0) ?? throw new CodeGenHelperException($"Cannot get a value with no key");
 
-              if (_values.TryGetValue(key, out var value))
-              {
-                  options.Template(output, value);
-              }
-              else
-              {
-                  options.Inverse(output, context);
-              }
-          };
-
+                if (_values.TryGetValue(key, out var value))
+                {
+                    options.Template(output, value);
+                }
+                else
+                {
+                    options.Inverse(output, context);
+                }
+            };
 
         public override void Setup(HandlebarsConfiguration configuration)
         {
             configuration.Helpers.Add("set", SetHelper);
             configuration.Helpers.Add("get", GetHelper);
+            configuration.Helpers.Add("clear", ClearHelper);
             configuration.BlockHelpers.Add("with_get", WithGetHelper);
             configuration.BlockHelpers.Add("with_set", WithSetHelper);
         }

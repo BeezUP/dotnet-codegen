@@ -9,7 +9,7 @@
 //namespace Dotnet.CodeGen.CustomHandlebars.Block
 //{
 //    //[HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
-//    public class IsLastObjectProperty : BlockHelperBase
+//    public class IsLastObjectProperty : SimpleBlockHelperBase
 //    {
 //        public IsLastObjectProperty() : base("is_last_object_property") { }
 

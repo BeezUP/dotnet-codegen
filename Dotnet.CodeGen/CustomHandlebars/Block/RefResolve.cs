@@ -13,7 +13,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
 #if DEBUG
     [HandlebarsHelperSpecification(GLOBAL_SPECS.SWAGGER_SAMPLE, "{{#each paths}}{{#each this}}{{#each parameters}}{{#ref_resolve}}{{ name }},{{/ref_resolve}}{{/each}}{{/each}}{{/each}}", "marketplaceBusinessCode,marketplaceBusinessCode,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,")]
 #endif
-    public class RefResolve : BlockHelperBase
+    public class RefResolve : SimpleBlockHelperBase
     {
         public const string REF = "$ref";
 

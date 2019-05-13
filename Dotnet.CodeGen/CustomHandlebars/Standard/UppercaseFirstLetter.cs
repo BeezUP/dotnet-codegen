@@ -19,7 +19,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
     [HandlebarsHelperSpecification("{ test: 'AA' }", "test{{uppercase_first_letter test}}", "testAA")]
 #endif
-    public class UppercaseFirstLetter : StandardHelperBase
+    public class UppercaseFirstLetter : SimpleStandardHelperBase
     {
         public UppercaseFirstLetter() : base("uppercase_first_letter") { }
 

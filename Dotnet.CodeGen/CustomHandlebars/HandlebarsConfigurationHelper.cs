@@ -9,40 +9,29 @@ namespace Dotnet.CodeGen.CustomHandlebars
 {
     public static class HandlebarsConfigurationHelper
     {
-        static public IEnumerable<IBlockHelper> BlockHelpers { get { foreach (var h in _blockHelpers) yield return h; } }
-        static public IEnumerable<IStandardHelper> StandardHelpers { get { foreach (var h in _standardHelpers) yield return h; } }
+        static public IEnumerable<IHelper> Helpers { get { foreach (var h in _Helpers) yield return h; } }
 
-
-        static readonly IBlockHelper[] _blockHelpers;
-        static readonly IStandardHelper[] _standardHelpers;
+        static readonly IHelper[] _Helpers;
 
 
         static HandlebarsConfigurationHelper()
         {
-            var blockHelpers = new List<IBlockHelper>();
-            var standardHelpers = new List<IStandardHelper>();
+            var helpers = new List<IHelper>();
 
             foreach (var type in typeof(HandlebarsConfigurationHelper).Assembly
                 .GetTypes()
                 .Where(t => !t.IsAbstract && !t.IsInterface)
                 )
             {
-                if (typeof(IBlockHelper).IsAssignableFrom(type))
+                if (typeof(IHelper).IsAssignableFrom(type))
                 {
                     var ctor = type.GetConstructor(new Type[0]);
                     var instance = ctor.Invoke(new object[0]);
-                    blockHelpers.Add((IBlockHelper)instance);
-                }
-                if (typeof(IStandardHelper).IsAssignableFrom(type))
-                {
-                    var ctor = type.GetConstructor(new Type[0]);
-                    var instance = ctor.Invoke(new object[0]);
-                    standardHelpers.Add((IStandardHelper)instance);
+                    helpers.Add((IHelper)instance);
                 }
             }
 
-            _blockHelpers = blockHelpers.ToArray();
-            _standardHelpers = standardHelpers.ToArray();
+            _Helpers = helpers.ToArray();
         }
 
 
@@ -55,13 +44,9 @@ namespace Dotnet.CodeGen.CustomHandlebars
         public static HandlebarsConfiguration GetHandlebarsConfiguration(string rootDirectory)
         {
             var configuration = new HandlebarsConfiguration();
-            foreach (var h in _blockHelpers)
+            foreach (var h in _Helpers)
             {
-                configuration.BlockHelpers.Add(h.Name, h.Helper);
-            }
-            foreach (var h in _standardHelpers)
-            {
-                configuration.Helpers.Add(h.Name, h.Helper);
+                h.Setup(configuration);
             }
 
             configuration.PartialTemplateResolver = new SameDirectoryPartialTemplateResolver(rootDirectory);

@@ -65,7 +65,7 @@ namespace Dotnet.CodeGen.CodeGen
             });
 
             try
-            {
+            {   
                 var result = app.Execute(args);
                 Environment.Exit(result);
             }

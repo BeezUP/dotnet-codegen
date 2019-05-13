@@ -17,7 +17,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     [HandlebarsHelperSpecification("{}", "{{#with_matching 'value1' 'value1' 'context1', '2', '2'}}{{.}}{{else}}NOT FOUND{{/with_matching}}", "context1")]
     [HandlebarsHelperSpecification("{ value: '42' }", "{{#with_matching value '42' . }}{{value}}{{else}}NOT FOUND{{/with_matching}}", "42")]
 #endif
-    public class WithMatching : BlockHelperBase
+    public class WithMatching : SimpleBlockHelperBase
     {
         public WithMatching() : base("with_matching") { }
 

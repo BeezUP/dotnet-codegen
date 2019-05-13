@@ -13,7 +13,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     [HandlebarsHelperSpecification("{ a: '42', b: 42 }", "{{#if_not_equals a ./b }}{{else}}NOK{{/if_not_equals}}", "NOK")]
     [HandlebarsHelperSpecification("{}", "{{#if_not_equals 'test' 'NO'}}OK{{else}}NOK{{/if_not_equals}}", "OK")]
 #endif
-    public class IfNotEquals : BlockHelperBase
+    public class IfNotEquals : SimpleBlockHelperBase
     {
         public IfNotEquals() : base("if_not_equals") { }
 

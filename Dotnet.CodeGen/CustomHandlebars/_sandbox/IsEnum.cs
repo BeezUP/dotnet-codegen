@@ -9,7 +9,7 @@
 //namespace Dotnet.CodeGen.CustomHandlebars.Block
 //{
 //    //[HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
-//    public class IsEnum : BlockHelperBase
+//    public class IsEnum : SimpleBlockHelperBase
 //    {
 //        public IsEnum() : base("is_enum") { }
 

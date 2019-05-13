@@ -29,7 +29,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     [HandlebarsHelperSpecification("{}", "{{#one_line}}   test {{/one_line}}", "test")]
     [HandlebarsHelperSpecification("{}", "{{#one_line 5}}test{{/one_line}}", "     test")]
 #endif
-    public class OneLine : BlockHelperBase
+    public class OneLine : SimpleBlockHelperBase
     {
         static readonly Regex regex = new Regex(@"(?: *[\r\n?|\n] *)+", RegexOptions.Compiled);
 

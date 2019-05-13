@@ -15,45 +15,21 @@ namespace Dotnet.CodeGen.Tests
     public class HandlebarsHelperSpecificationsTests
     {
         [Theory]
-        [MemberData(nameof(StandardHelpersTests_Data))]
-        public void StandardHelpersTests(IStandardHelper helper, string json, string template, string expectedOutput)
+        [MemberData(nameof(HelpersTests_Data))]
+        public void HelpersTests(IHelper helper, string json, string template, string expectedOutput)
         {
-            var handleBar = Handlebars.Create(new HandlebarsConfiguration
-            {
-                Helpers = { { helper.Name, helper.Helper } }
-            });
+            var configuration = new HandlebarsConfiguration();
+            helper.Setup(configuration);
+            var handleBar = Handlebars.Create(configuration);
 
             var hb = handleBar.Compile(template);
             var output = hb.Invoke(JToken.Parse(json));
             output.ShouldBe(expectedOutput);
         }
 
-        public static IEnumerable<object[]> StandardHelpersTests_Data()
+        public static IEnumerable<object[]> HelpersTests_Data()
         {
-            foreach (var helper in HandlebarsConfigurationHelper.StandardHelpers)
-                foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
-                {
-                    yield return new object[] { helper, att.Json, att.Template, att.ExpectedOutput };
-                }
-        }
-
-        [Theory]
-        [MemberData(nameof(BlockHelpersTests_Data))]
-        public void BlockHelpersTests(IBlockHelper helper, string json, string template, string expectedOutput)
-        {
-            var handleBar = Handlebars.Create(new HandlebarsConfiguration
-            {
-                BlockHelpers = { { helper.Name, helper.Helper } }
-            });
-
-            var hb = handleBar.Compile(template);
-            var output = hb.Invoke(JToken.Parse(json));
-            output.ShouldBe(expectedOutput);
-        }
-
-        public static IEnumerable<object[]> BlockHelpersTests_Data()
-        {
-            foreach (var helper in HandlebarsConfigurationHelper.BlockHelpers)
+            foreach (var helper in HandlebarsConfigurationHelper.Helpers)
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
                     yield return new object[] { helper, att.Json, att.Template, att.ExpectedOutput };

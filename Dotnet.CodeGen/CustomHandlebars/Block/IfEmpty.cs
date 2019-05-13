@@ -14,7 +14,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     [HandlebarsHelperSpecification("{}", "{{#if_empty ''}}OK{{else}}{{/if_empty}}", "OK")]
     [HandlebarsHelperSpecification("{}", "{{#if_empty 'test'}}OK{{else}}NOK{{/if_empty}}", "NOK")]
 #endif
-    public class IfEmpty : BlockHelperBase
+    public class IfEmpty : SimpleBlockHelperBase
     {
         public IfEmpty() : base("if_empty") { }
 

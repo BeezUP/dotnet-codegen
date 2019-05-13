@@ -18,7 +18,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{trim test 'A'}}", "")]
     [HandlebarsHelperSpecification("{ test: ' test ' }", "{{trim test ' t'}}", "es")]
 #endif
-    public class Trim : StandardHelperBase
+    public class Trim : SimpleStandardHelperBase
     {
         public Trim() : base("trim") { }
 
@@ -42,7 +42,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{trim_start test 'A'}}", "")]
     [HandlebarsHelperSpecification("{ test: ' test ' }", "{{trim_start test ' t'}}", "est ")]
 #endif
-    public class TrimStart : StandardHelperBase
+    public class TrimStart : SimpleStandardHelperBase
     {
         public TrimStart() : base("trim_start") { }
 
@@ -66,7 +66,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{trim_end test 'A'}}", "")]
     [HandlebarsHelperSpecification("{ test: ' test ' }", "{{trim_end test ' t'}}", " tes")]
 #endif
-    public class TrimEnd : StandardHelperBase
+    public class TrimEnd : SimpleStandardHelperBase
     {
         public TrimEnd() : base("trim_end") { }
 

@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HandlebarsDotNet;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars
 {
-    public class HelperBase
+    public abstract class HelperBase : IHelper
     {
         public HelperBase(string name)
         {
@@ -13,8 +14,9 @@ namespace Dotnet.CodeGen.CustomHandlebars
         }
 
         public string Name { get; }
-
         public override string ToString() => Name;
+
+        public abstract void Setup(HandlebarsConfiguration configuration);
 
 
         protected void EnsureArgumentsCount(object[] arguments, int count)

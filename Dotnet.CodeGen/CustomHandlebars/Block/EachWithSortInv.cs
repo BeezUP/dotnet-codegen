@@ -20,7 +20,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     [HandlebarsHelperSpecification("{ b : {}, a : {} }", "{{#each_with_sort_inv .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort_inv}}", "ba")]
     [HandlebarsHelperSpecification(GLOBAL_SPECS.SWAGGER_SAMPLE, "{{#each_with_sort_inv parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort_inv}}", "publicationIdParameter,marketplaceBusinessCodeParameter,feedTypeParameter,credentialParameter,accountIdParameter,")]
 #endif
-    public class EachWithSortInv : BlockHelperBase
+    public class EachWithSortInv : SimpleBlockHelperBase
     {
         public EachWithSortInv() : base("each_with_sort_inv") { }
 

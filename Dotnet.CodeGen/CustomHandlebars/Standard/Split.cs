@@ -14,7 +14,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
 #if DEBUG
     [HandlebarsHelperSpecification("{ '$ref' : '#/parameters/myDataType'}", "{{split_get_last ./$ref '/' }}", "myDataType")]
 #endif
-    public class SplitGetLast : StandardHelperBase
+    public class SplitGetLast : SimpleStandardHelperBase
     {
         public SplitGetLast() : base("split_get_last") { }
 
@@ -36,7 +36,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Standard
 #if DEBUG
     [HandlebarsHelperSpecification("{ '$ref' : '/myDataType/parameters/'}", "{{split_get_first ./$ref '/' }}", "myDataType")]
 #endif
-    public class SplitGetFirst : StandardHelperBase
+    public class SplitGetFirst : SimpleStandardHelperBase
     {
         public SplitGetFirst() : base("split_get_first") { }
 

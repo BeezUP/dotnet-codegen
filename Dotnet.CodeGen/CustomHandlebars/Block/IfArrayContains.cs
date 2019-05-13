@@ -36,7 +36,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Block
     [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#if_array_contains required 'notFound'}}OK{{else}}NOK{{/if_array_contains}}", "NOK")]
     [HandlebarsHelperSpecification(SPECS.IfArrayContains_TEST_DOCUMENT, "{{#each properties}}{{#if_array_contains ../required @key}}{{type}}{{else}}{{/if_array_contains}}{{/each}}", "string")]
 #endif
-    public class IfArrayContains : BlockHelperBase
+    public class IfArrayContains : SimpleBlockHelperBase
     {
         public IfArrayContains() : base("if_array_contains") { }
 

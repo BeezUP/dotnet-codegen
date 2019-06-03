@@ -3,6 +3,8 @@ using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
+#if DEBUG
+
 namespace Dotnet.CodeGen.Tests
 {
     public class PrintoutHelpersList
@@ -42,3 +44,5 @@ namespace Dotnet.CodeGen.Tests
         }
     }
 }
+
+#endif

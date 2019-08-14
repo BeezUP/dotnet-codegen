@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    
+    <Version>0.0.0.2</Version>
+    <Description>$ref yaml/json document loader</Description>
+    <PackageTags>codegen generator generation swagger openapi handlebars mustache yaml ref</PackageTags>
+    <Copyright>Copyright 2019 © BeezUP</Copyright>
+    <Authors>BeezUP awesome team</Authors>
+
+    <PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

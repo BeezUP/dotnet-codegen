@@ -19,7 +19,7 @@ namespace Dotnet.CodeGen.Tests
         public PackAndUseTests(ITestOutputHelper output)
         {
             _output = output;
-            _solutionFolder = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "../../../.."));
+            _solutionFolder = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "../../../../.."));
             _tmpOutput = Path.Combine(_solutionFolder, "_testsnugetpakage." + Path.GetRandomFileName());
         }
 
@@ -136,7 +136,7 @@ namespace Dotnet.CodeGen.Tests
             using (var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = $"pack ./{PACKAGE_NAME}/{PACKAGE_NAME}.csproj --configuration Release --output {folder}",
+                Arguments = $"pack ./src/{PACKAGE_NAME}/{PACKAGE_NAME}.csproj --configuration Release --output {folder}",
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,

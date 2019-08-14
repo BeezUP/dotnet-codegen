@@ -1,5 +1,4 @@
-﻿using DocumentRefLoader;
-using Shouldly;
+﻿using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,11 +8,11 @@ using Xunit.Abstractions;
 
 namespace DocumentRefLoader.Tests
 {
-    public class DocumentRefLoaderTests
+    public class ReferenceLoaderTests
     {
         private readonly ITestOutputHelper _output;
 
-        public DocumentRefLoaderTests(ITestOutputHelper output)
+        public ReferenceLoaderTests(ITestOutputHelper output)
         {
             _output = output;
         }

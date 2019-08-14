@@ -69,6 +69,7 @@ namespace DocumentRefLoader
             switch (_strategy)
             {
                 case ReferenceLoaderStrategy.RawCopy:
+                case ReferenceLoaderStrategy.RawCopyNoRemote:
                     return GetRefResolvedJObject().ToString();
                 case ReferenceLoaderStrategy.OpenApiV2Merge:
                     return GetRefResolvedJObject().ToString().Replace("\"x-exclude\": \"true\"", "\"x-exclude\": true");
@@ -205,6 +206,7 @@ namespace DocumentRefLoader
                 switch (_strategy)
                 {
                     case ReferenceLoaderStrategy.RawCopy:
+                    case ReferenceLoaderStrategy.RawCopyNoRemote:
                         refProp.Parent.Replace(replacement);
                         break;
                     case ReferenceLoaderStrategy.OpenApiV2Merge:
@@ -254,9 +256,10 @@ namespace DocumentRefLoader
         private JToken GetRefJToken(string refPath)
         {
             var refInfo = GetRefInfo(refPath);
-            //if (!refInfo.IsLocal)
-            //    return null; // TODO : Be able to load external (http) documents with credentials (swagger hub)
+            if (!refInfo.IsLocal && _strategy == ReferenceLoaderStrategy.RawCopyNoRemote)
+                return null;
 
+            // TODO : Be able to load external (http) documents with credentials (swagger hub)
             var loader = GetYamlLoader(refInfo);
             var replacement = loader.GetDocumentPart(refInfo.InDocumentPath, loader != this);
 

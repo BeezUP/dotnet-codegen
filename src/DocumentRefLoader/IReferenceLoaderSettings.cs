@@ -48,6 +48,8 @@ namespace DocumentRefLoader
     {
         public virtual string SerializeToJson(JObject jObject) => base.JsonSerialize(jObject).Replace("\"x-exclude\": \"true\"", "\"x-exclude\": true");
 
+        readonly string[] _handledDefinitionTypes = new[] { "definitions", "parameters", "responses" };
+
         public override void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement)
         {
             var refSplit = refProperty.Value.ToString().Split('/');
@@ -55,51 +57,35 @@ namespace DocumentRefLoader
             var defType = refSplit[refSplit.Length - 2];
             var defName = refSplit.Last();
 
-            if (defType == "definitions")
+            if (_handledDefinitionTypes.Contains(defType))
             {
-                var currentDef = rootJObj["definitions"];
-                if (!currentDef.Children<JProperty>().Any(x => x.Name == defName))
-                {
-                    if (currentDef.Last == null)
-                    {
-                        ((JObject)currentDef).Add(new JProperty(defName, replacement));
-                    }
-                    else
-                    {
-                        currentDef.Last.AddAfterSelf(new JProperty(defName, replacement));
-                    }
-                }
-            }
-            else if (defType == "parameters")
-            {
-                var currentParams = rootJObj["parameters"];
-                if (currentParams == null)
-                {
-                    rootJObj.Add("parameters", new JObject { { defName, replacement } });
-                }
-                else if (!currentParams.Children<JProperty>().Any(x => x.Name == defName))
-                {
-                    currentParams.Last.AddAfterSelf(new JProperty(defName, replacement));
-                }
-            }
-            else if (defType == "responses")
-            {
-                var currentResponses = rootJObj["responses"];
-                if (currentResponses == null)
-                {
-                    rootJObj.Add("responses", new JObject { { defName, replacement } });
-                }
-                else if (!currentResponses.Children<JProperty>().Any(x => x.Name == defName))
-                {
-                    currentResponses.Last.AddAfterSelf(new JProperty(defName, replacement));
-                }
+                AddElement(defType, rootJObj, defName, replacement);
             }
             else
             {
-                throw new Exception($"'{defType}' definition type not handled.");
+                throw new InvalidOperationException($"'{defType}' definition type not handled.");
             }
 
             refProperty.Value = $"#/{defType}/{defName}";
+        }
+
+        private static void AddElement(string collectionName, JObject rootJObj, string defName, JToken content)
+        {
+            if (!(rootJObj[collectionName] is JObject collection))
+            {
+                rootJObj.Add(collectionName, new JObject { { defName, content } });
+            }
+            else if (!collection.Children<JProperty>().Any(x => x.Name == defName))
+            {
+                if (collection.Last == null)
+                {
+                    collection.Add(new JProperty(defName, content));
+                }
+                else
+                {
+                    collection.Last.AddAfterSelf(new JProperty(defName, content));
+                }
+            }
         }
     }
 }

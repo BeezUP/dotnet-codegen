@@ -17,7 +17,7 @@ namespace DocumentRefLoader
     {
         public const string REF_KEYWORD = "$ref";
         private readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
-        private readonly ReferenceLoaderStrategy _strategy;
+        private readonly IReferenceLoaderSettings _settings;
         private readonly Uri _documentUri;
         private readonly string _originalDocument;
         private readonly Uri _documentFolder;
@@ -31,6 +31,10 @@ namespace DocumentRefLoader
         { }
 
         private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, ReferenceLoaderStrategy strategy)
+            : this(documentUri, otherLoaders, strategy.GetSettings())
+        { }
+
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, IReferenceLoaderSettings settings)
         {
             _documentUri = documentUri;
             if (!_documentUri.IsAbsoluteUri)
@@ -38,7 +42,7 @@ namespace DocumentRefLoader
             _documentFolder = new Uri(_documentUri, ".");
 
             _otherLoaders = otherLoaders ?? new Dictionary<Uri, ReferenceLoader>() { { _documentUri, this } };
-            _strategy = strategy;
+            _settings = settings;
 
             using (var webClient = new WebClient())
             {
@@ -54,122 +58,15 @@ namespace DocumentRefLoader
             _rootJObj = JObject.Parse(json);
         }
 
-        private readonly JsonSerializer _jsonSerializer = new JsonSerializer();
-        public string GetRefResolvedYaml()
-        {
-            var jObj = GetRefResolvedJObject();
 
-            var deserializedObject = jObj.ToObject<ExpandoObject>(_jsonSerializer);
-
-            return s_yamlSerializer.Serialize(deserializedObject);
-        }
-
-        public string GetRefResolvedJson()
-        {
-            switch (_strategy)
-            {
-                case ReferenceLoaderStrategy.RawCopy:
-                case ReferenceLoaderStrategy.RawCopyNoRemote:
-                    return GetRefResolvedJObject().ToString();
-                case ReferenceLoaderStrategy.OpenApiV2Merge:
-                    return GetRefResolvedJObject().ToString().Replace("\"x-exclude\": \"true\"", "\"x-exclude\": true");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(_strategy));
-            }
-        }
-
-        public Dictionary<string, JToken> Parameters = new Dictionary<string, JToken>();
-        public Dictionary<string, JToken> Responses = new Dictionary<string, JToken>();
-        public Dictionary<string, JToken> Definitions = new Dictionary<string, JToken>();
-
+        public string GetRefResolvedYaml() => _settings.YamlSerialize(GetRefResolvedJObject());
+        public string GetRefResolvedJson() => _settings.JsonSerialize(GetRefResolvedJObject());
 
         public JObject GetRefResolvedJObject()
         {
             EnsureRefResolved();
-
-            if (_strategy == ReferenceLoaderStrategy.OpenApiV2Merge)
-            {
-                var allDef = _otherLoaders
-                  .SelectMany(x => x.Value.Definitions)
-                  .Concat(Definitions)
-                  .GroupBy(x => x.Key)
-                  .Select(x => x.First())
-                  .ToDictionary(x => x.Key, y => y.Value);
-
-                var currentDef = _rootJObj["definitions"];
-
-                foreach (var def in allDef)
-                {
-                    try
-                    {
-                        if (!currentDef.Children<JProperty>().Any(x => x.Name == def.Key))
-                        {
-                            if (currentDef.Last == null)
-                            {
-                                ((JObject)currentDef).Add(new JProperty(def.Key, def.Value));
-                            }
-                            else
-                            {
-                                currentDef.Last.AddAfterSelf(new JProperty(def.Key, def.Value));
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
-                    }
-                }
-
-                var allParams = _otherLoaders
-                    .SelectMany(x => x.Value.Parameters)
-                    .Concat(Parameters)
-                    .GroupBy(x => x.Key)
-                    .Select(x => x.First())
-                    .ToDictionary(x => x.Key, y => y.Value);
-
-                var currentParams = _rootJObj["parameters"];
-
-                foreach (var param in allParams)
-                {
-                    if (currentParams == null)
-                    {
-                        _rootJObj.Add("parameters", new JObject { { param.Key, param.Value } });
-                        currentParams = _rootJObj["parameters"];
-                    }
-                    else if (!currentParams.Children<JProperty>().Any(x => x.Name == param.Key))
-                    {
-                        currentParams.Last.AddAfterSelf(new JProperty(param.Key, param.Value));
-                    }
-                }
-
-                var allResps = _otherLoaders
-                    .SelectMany(x => x.Value.Responses)
-                    .Concat(Responses)
-                    .GroupBy(x => x.Key)
-                    .Select(x => x.First())
-                    .ToDictionary(x => x.Key, y => y.Value);
-
-                var currentResponses = _rootJObj["responses"];
-
-                foreach (var resp in allResps)
-                {
-                    if (currentResponses == null)
-                    {
-                        _rootJObj.Add("responses", new JObject { { resp.Key, resp.Value } });
-                        currentResponses = _rootJObj["responses"];
-                    }
-                    else if (!currentResponses.Children<JProperty>().Any(x => x.Name == resp.Key))
-                    {
-                        currentResponses.Last.AddAfterSelf(new JProperty(resp.Key, resp.Value));
-                    }
-                }
-            }
-
             return _rootJObj;
         }
-
-
 
         bool _isResolved = false;
         private void EnsureRefResolved()
@@ -191,63 +88,19 @@ namespace DocumentRefLoader
                 .Where(p => p.Name == REF_KEYWORD)
                 .ToList();
 
-            foreach (var refProp in refProps)
+            foreach (var refProperty in refProps)
             {
-                var replacement = GetRefJToken(refProp.Value.ToString());
+                var replacement = GetRefJToken(refProperty.Value.ToString());
                 if (replacement == null)
                     continue;
 
                 ResolveRef(replacement);
 
-                if (refProp.Parent?.Parent == null)
+                if (refProperty.Parent?.Parent == null)
                     // When a property has already been replaced by recursions, it has no more Parent
                     continue;
 
-                switch (_strategy)
-                {
-                    case ReferenceLoaderStrategy.RawCopy:
-                    case ReferenceLoaderStrategy.RawCopyNoRemote:
-                        refProp.Parent.Replace(replacement);
-                        break;
-                    case ReferenceLoaderStrategy.OpenApiV2Merge:
-                        var refSplit = refProp.Value.ToString().Split('/');
-
-                        var defType = refSplit[refSplit.Length - 2];
-                        var defName = refSplit.Last();
-
-
-                        if (defType == "definitions")
-                        {
-                            if (!Definitions.ContainsKey(defName))
-                            {
-                                Definitions.Add(defName, replacement);
-                            }
-                        }
-                        else if (defType == "parameters")
-                        {
-                            if (!Parameters.ContainsKey(defName))
-                            {
-                                Parameters.Add(defName, replacement);
-                            }
-                        }
-                        else if (defType == "responses")
-                        {
-                            if (!Responses.ContainsKey(defName))
-                            {
-                                Responses.Add(defName, replacement);
-                            }
-                        }
-                        else
-                        {
-                            throw new Exception("bfiohfhifweiofhweiofhweiohf");
-                        }
-
-                        refProp.Value = $"#/{defType}/{defName}";
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(_strategy));
-                }
+                _settings.ApplyRefReplacement(_rootJObj, refProperty, replacement);
             }
 
             return container;
@@ -256,11 +109,11 @@ namespace DocumentRefLoader
         private JToken GetRefJToken(string refPath)
         {
             var refInfo = GetRefInfo(refPath);
-            if (!refInfo.IsLocal && _strategy == ReferenceLoaderStrategy.RawCopyNoRemote)
+            if (!refInfo.IsLocal && _settings.DisableRemoteReferenceLoading)
                 return null;
 
             // TODO : Be able to load external (http) documents with credentials (swagger hub)
-            var loader = GetYamlLoader(refInfo);
+            var loader = GetReferenceLoader(refInfo);
             var replacement = loader.GetDocumentPart(refInfo.InDocumentPath, loader != this);
 
             return replacement;
@@ -285,8 +138,7 @@ namespace DocumentRefLoader
             return token;
         }
 
-
-        private ReferenceLoader GetYamlLoader(RefInfo refInfo)
+        private ReferenceLoader GetReferenceLoader(RefInfo refInfo)
         {
             if (refInfo.IsNestedInThisDocument)
                 return this;
@@ -294,7 +146,7 @@ namespace DocumentRefLoader
             if (_otherLoaders.TryGetValue(refInfo.AbsoluteDocumentUri, out var loader))
                 return loader;
 
-            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _strategy);
+            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _settings);
             _otherLoaders[refInfo.AbsoluteDocumentUri] = loader;
             return loader;
         }

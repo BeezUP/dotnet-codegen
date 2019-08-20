@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DocumentRefLoader
+namespace DocumentRefLoader.Settings
 {
     public static class ReferenceLoaderSettingsFactory
     {

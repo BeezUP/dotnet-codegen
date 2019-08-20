@@ -51,18 +51,17 @@ namespace DocumentRefLoader.Settings
                            tags.Value = new JArray { basePathTag };
                    })
                    : null;
-                MergeAllProperties(PATHS_KEYWORD, rootJObj, replacement, transformProperty);
+                MergeAllProperties(PATHS_KEYWORD, rootJObj, replacement, false, transformProperty);
 
-                MergeAllProperties(DEFINITIONS_KEYWORD, rootJObj, replacement);
-                MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement);
-                MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement);
+                MergeAllProperties(DEFINITIONS_KEYWORD, rootJObj, replacement, true);
+                MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement, true);
+                MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement, true);
             }
             else if (_handledDefinitionTypes.Any(t => propertyPath.Contains(t)))
             {
                 var defType = refSplit[refSplit.Length - 2];
                 var defName = refSplit.Last();
-                replacement.Last?.AddAfterSelf(new JProperty(X_EXCLUDE_KEYWORD, "true"));
-                TryAddElement(defType, rootJObj, defName, replacement);
+                TryAddElement(defType, rootJObj, defName, replacement, true);
                 refProperty.Value = $"#/{defType}/{defName}";
             }
             else
@@ -71,20 +70,25 @@ namespace DocumentRefLoader.Settings
             }
         }
 
-        private static void MergeAllProperties(string keyword, JObject rootJObj, JToken replacement, Action<JProperty> transformProperty = null)
+        private static void MergeAllProperties(string keyword, JObject rootJObj, JToken replacement, bool addExclude, Action<JProperty> transformProperty = null)
         {
             if (replacement[keyword] is JContainer definitions)
             {
                 foreach (var jprop in definitions.OfType<JProperty>())
                 {
                     transformProperty?.Invoke(jprop);
-                    TryAddElement(keyword, rootJObj, jprop.Name, jprop.Value);
+                    TryAddElement(keyword, rootJObj, jprop.Name, jprop.Value, addExclude);
                 }
             }
         }
 
-        private static void TryAddElement(string collectionName, JObject rootJObj, string defName, JToken content)
+        private static void TryAddElement(string collectionName, JObject rootJObj, string defName, JToken content, bool addExclude)
         {
+            if (addExclude)
+            {
+                content.Last?.AddAfterSelf(new JProperty(X_EXCLUDE_KEYWORD, "true"));
+            }
+
             if (!(rootJObj[collectionName] is JObject collection))
             {
                 rootJObj.Add(collectionName, new JObject { { defName, content } });

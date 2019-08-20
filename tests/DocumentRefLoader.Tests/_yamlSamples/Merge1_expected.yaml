@@ -573,6 +573,7 @@ definitions:
         default: false
     xml:
       name: Order
+    x-exclude: true
   User:
     type: object
     properties:
@@ -597,6 +598,7 @@ definitions:
         description: User Status
     xml:
       name: User
+    x-exclude: true
   Category:
     type: object
     properties:
@@ -607,6 +609,7 @@ definitions:
         type: string
     xml:
       name: Category
+    x-exclude: true
   Tag:
     type: object
     properties:
@@ -617,6 +620,7 @@ definitions:
         type: string
     xml:
       name: Tag
+    x-exclude: true
   Pet:
     type: object
     required:
@@ -654,6 +658,7 @@ definitions:
         - sold
     xml:
       name: Pet
+    x-exclude: true
   ApiResponse:
     type: object
     properties:
@@ -664,3 +669,4 @@ definitions:
         type: string
       message:
         type: string
+    x-exclude: true

@@ -11,7 +11,11 @@ namespace DocumentRefLoader.Settings
 
         public virtual string SerializeToJson(JObject jObject) => GetSanitizedJsonString(base.JsonSerialize(jObject));
 
+        private const string TAGS_KEYWORD = "tags";
+        private const string TAGS_NAME_KEYWORD = "name";
+        private const string TAGS_DESC_KEYWORD = "description";
         private const string PATHS_KEYWORD = "paths";
+        private const string BASEPATH_KEYWORD = "basePath";
         private const string DEFINITIONS_KEYWORD = "definitions";
         private const string PARAMETERS_KEYWORD = "parameters";
         private const string RESPONSES_KEYWORD = "responses";
@@ -20,17 +24,38 @@ namespace DocumentRefLoader.Settings
 
         readonly string[] _handledDefinitionTypes = new[] { DEFINITIONS_KEYWORD, PARAMETERS_KEYWORD, RESPONSES_KEYWORD };
 
-        public override void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement)
+        public override void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument)
         {
             var refSplit = refProperty.Value.ToString().Split('/');
 
             var propertyPath = refProperty.Path;
             if (propertyPath.Contains(X_DEPENDENCIES_KEYWORD))
             {
-                MergeAllElements(PATHS_KEYWORD, rootJObj, replacement);
-                MergeAllElements(DEFINITIONS_KEYWORD, rootJObj, replacement);
-                MergeAllElements(PARAMETERS_KEYWORD, rootJObj, replacement);
-                MergeAllElements(PARAMETERS_KEYWORD, rootJObj, replacement);
+                var basePath = replacement[BASEPATH_KEYWORD]?.ToString();
+                var basePathTag = basePath?.TrimStart('/'); // remove '/' at the begining of the base path
+
+                var basePathTagMerge = basePathTag != null;
+                if (basePathTagMerge)
+                {
+                    if (!(rootJObj[TAGS_KEYWORD] is JArray globalTags))
+                        rootJObj[TAGS_KEYWORD] = globalTags = new JArray();
+
+                    if (!(globalTags.FirstOrDefault(t => t[TAGS_NAME_KEYWORD] == (JToken)basePathTag) is JObject))
+                        globalTags.Add(new JObject { { TAGS_NAME_KEYWORD, basePathTag }, { TAGS_DESC_KEYWORD, $"{basePath} - {fromDocument}" } });
+                }
+
+                var transformProperty = basePathTagMerge
+                   ? (Action<JProperty>)(jProp =>
+                   {
+                       foreach (var tags in jProp.Descendants().OfType<JProperty>().Where(p => p.Name == TAGS_KEYWORD))
+                           tags.Value = new JArray { basePathTag };
+                   })
+                   : null;
+                MergeAllProperties(PATHS_KEYWORD, rootJObj, replacement, transformProperty);
+
+                MergeAllProperties(DEFINITIONS_KEYWORD, rootJObj, replacement);
+                MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement);
+                MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement);
             }
             else if (_handledDefinitionTypes.Any(t => propertyPath.Contains(t)))
             {
@@ -46,13 +71,14 @@ namespace DocumentRefLoader.Settings
             }
         }
 
-        private static void MergeAllElements(string keyword, JObject rootJObj, JToken replacement)
+        private static void MergeAllProperties(string keyword, JObject rootJObj, JToken replacement, Action<JProperty> transformProperty = null)
         {
             if (replacement[keyword] is JContainer definitions)
             {
-                foreach (var item in definitions.OfType<JProperty>())
+                foreach (var jprop in definitions.OfType<JProperty>())
                 {
-                    TryAddElement(keyword, rootJObj, item.Name, item.Value);
+                    transformProperty?.Invoke(jprop);
+                    TryAddElement(keyword, rootJObj, jprop.Name, jprop.Value);
                 }
             }
         }

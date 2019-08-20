@@ -105,7 +105,7 @@ namespace DocumentRefLoader
                     // When a property has already been replaced by recursions, it has no more Parent
                     continue;
 
-                _settings.ApplyRefReplacement(_rootJObj, refProperty, replacement);
+                _settings.ApplyRefReplacement(_rootJObj, refProperty, replacement, refInfo.AbsoluteDocumentUri);
             }
         }
 

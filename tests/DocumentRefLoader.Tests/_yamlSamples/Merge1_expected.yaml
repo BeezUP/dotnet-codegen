@@ -2,6 +2,8 @@
 tags:
 - name: Global
   description: All global operations
+- name: v2
+  description: /v2 - https://petstore.swagger.io/v2/swagger.json
 x-dependencies:
 - group: OM - Subscription
   refs:
@@ -10,7 +12,7 @@ paths:
   /pet:
     post:
       tags:
-      - pet
+      - v2
       summary: Add a new pet to the store
       description: ''
       operationId: addPet
@@ -36,7 +38,7 @@ paths:
         - read:pets
     put:
       tags:
-      - pet
+      - v2
       summary: Update an existing pet
       description: ''
       operationId: updatePet
@@ -67,7 +69,7 @@ paths:
   /pet/findByStatus:
     get:
       tags:
-      - pet
+      - v2
       summary: Finds Pets by status
       description: Multiple status values can be provided with comma separated strings
       operationId: findPetsByStatus
@@ -104,7 +106,7 @@ paths:
   /pet/findByTags:
     get:
       tags:
-      - pet
+      - v2
       summary: Finds Pets by tags
       description: Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
       operationId: findPetsByTags
@@ -137,7 +139,7 @@ paths:
   /pet/{petId}:
     get:
       tags:
-      - pet
+      - v2
       summary: Find pet by ID
       description: Returns a single pet
       operationId: getPetById
@@ -164,7 +166,7 @@ paths:
       - api_key: []
     post:
       tags:
-      - pet
+      - v2
       summary: Updates a pet in the store with form data
       description: ''
       operationId: updatePetWithForm
@@ -199,7 +201,7 @@ paths:
         - read:pets
     delete:
       tags:
-      - pet
+      - v2
       summary: Deletes a pet
       description: ''
       operationId: deletePet
@@ -229,7 +231,7 @@ paths:
   /pet/{petId}/uploadImage:
     post:
       tags:
-      - pet
+      - v2
       summary: uploads an image
       description: ''
       operationId: uploadFile
@@ -266,7 +268,7 @@ paths:
   /store/inventory:
     get:
       tags:
-      - store
+      - v2
       summary: Returns pet inventories by status
       description: Returns a map of status codes to quantities
       operationId: getInventory
@@ -286,7 +288,7 @@ paths:
   /store/order:
     post:
       tags:
-      - store
+      - v2
       summary: Place an order for a pet
       description: ''
       operationId: placeOrder
@@ -310,7 +312,7 @@ paths:
   /store/order/{orderId}:
     get:
       tags:
-      - store
+      - v2
       summary: Find purchase order by ID
       description: For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions
       operationId: getOrderById
@@ -337,7 +339,7 @@ paths:
           description: Order not found
     delete:
       tags:
-      - store
+      - v2
       summary: Delete purchase order by ID
       description: For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
       operationId: deleteOrder
@@ -360,7 +362,7 @@ paths:
   /user:
     post:
       tags:
-      - user
+      - v2
       summary: Create user
       description: This can only be done by the logged in user.
       operationId: createUser
@@ -380,7 +382,7 @@ paths:
   /user/createWithArray:
     post:
       tags:
-      - user
+      - v2
       summary: Creates list of users with given input array
       description: ''
       operationId: createUsersWithArrayInput
@@ -402,7 +404,7 @@ paths:
   /user/createWithList:
     post:
       tags:
-      - user
+      - v2
       summary: Creates list of users with given input array
       description: ''
       operationId: createUsersWithListInput
@@ -424,7 +426,7 @@ paths:
   /user/login:
     get:
       tags:
-      - user
+      - v2
       summary: Logs user into the system
       description: ''
       operationId: loginUser
@@ -461,7 +463,7 @@ paths:
   /user/logout:
     get:
       tags:
-      - user
+      - v2
       summary: Logs out current logged in user session
       description: ''
       operationId: logoutUser
@@ -475,7 +477,7 @@ paths:
   /user/{username}:
     get:
       tags:
-      - user
+      - v2
       summary: Get user by user name
       description: ''
       operationId: getUserByName
@@ -499,7 +501,7 @@ paths:
           description: User not found
     put:
       tags:
-      - user
+      - v2
       summary: Updated user
       description: This can only be done by the logged in user.
       operationId: updateUser
@@ -525,7 +527,7 @@ paths:
           description: User not found
     delete:
       tags:
-      - user
+      - v2
       summary: Delete user
       description: This can only be done by the logged in user.
       operationId: deleteUser

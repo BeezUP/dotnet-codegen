@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace DocumentRefLoader
         bool ShouldResolveReference(RefInfo refInfo);
 
 
-        void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement);
+        void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument);
 
         // Todo : add a tag/property to be able to discriminate "imported"/"merged" definitions ... (think x-exclude)
         void TransformResolvedReplacement(JToken jToken);

@@ -24,9 +24,8 @@ namespace DocumentRefLoader
         private readonly JObject _rootJObj;
 
         private static readonly Deserializer s_yamlDeserializer = new Deserializer();
-        private static readonly Serializer s_yamlSerializer = new Serializer();
 
-        public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy = ReferenceLoaderStrategy.RawCopy)
+        public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
             : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), null, strategy)
         { }
 
@@ -78,10 +77,10 @@ namespace DocumentRefLoader
             ResolveRef(_rootJObj);
         }
 
-        private JToken ResolveRef(JToken token)
+        private void ResolveRef(JToken token)
         {
             if (!(token is JContainer container))
-                return token;
+                return;
 
             var refProps = container.Descendants()
                 .OfType<JProperty>()
@@ -90,11 +89,16 @@ namespace DocumentRefLoader
 
             foreach (var refProperty in refProps)
             {
-                var replacement = GetRefJToken(refProperty.Value.ToString());
-                if (replacement == null)
-                    continue;
+                var refPath = refProperty.Value.ToString();
+                var refInfo = GetRefInfo(refPath);
+
+                if (!_settings.ShouldResolveReference(refInfo)) continue;
+
+                var replacement = GetRefJToken(refInfo);
 
                 ResolveRef(replacement);
+
+                _settings.TransformResolvedReplacement(replacement);
 
                 if (refProperty.Parent?.Parent == null)
                     // When a property has already been replaced by recursions, it has no more Parent
@@ -102,36 +106,35 @@ namespace DocumentRefLoader
 
                 _settings.ApplyRefReplacement(_rootJObj, refProperty, replacement);
             }
-
-            return container;
         }
 
-        private JToken GetRefJToken(string refPath)
+        private JToken GetRefJToken(RefInfo refInfo)
         {
-            var refInfo = GetRefInfo(refPath);
-            if (!refInfo.IsLocal && _settings.DisableRemoteReferenceLoading)
-                return null;
-
             // TODO : Be able to load external (http) documents with credentials (swagger hub)
             var loader = GetReferenceLoader(refInfo);
-            var replacement = loader.GetDocumentPart(refInfo.InDocumentPath, loader != this);
-
+            var replacement = loader.GetDocumentPart(refInfo.InDocumentPath);
             return replacement;
         }
 
-        private JToken GetDocumentPart(string path, bool ensureResolved)
+        private JToken GetDocumentPart(string path)
         {
-            if (ensureResolved)
-                EnsureRefResolved();
+            EnsureRefResolved();
 
-            var parts = path.Split('/');
+            var parts = path.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
 
             JToken token = _rootJObj;
             foreach (var part in parts)
             {
                 if (!string.IsNullOrWhiteSpace(part))
                 {
-                    token = token[part];
+                    try
+                    {
+                        token = token[part];
+                    }
+                    catch (Exception)
+                    {
+                        throw new InvalidDataException($"Unable to find path '{path}' in the document '{_documentUri}'.");
+                    }
                 }
             }
 
@@ -179,22 +182,6 @@ namespace DocumentRefLoader
                 uri = new Uri(_documentFolder, uri);
 
             return new RefInfo(false, uri.IsFile, uri, refParts.path);
-        }
-
-        internal class RefInfo
-        {
-            public RefInfo(bool isNested, bool isLocal, Uri absoluteUri, string path)
-            {
-                IsNestedInThisDocument = isNested;
-                IsLocal = isLocal;
-                AbsoluteDocumentUri = absoluteUri;
-                InDocumentPath = path;
-            }
-
-            public bool IsNestedInThisDocument { get; }
-            public bool IsLocal { get; }
-            public Uri AbsoluteDocumentUri { get; }
-            public string InDocumentPath { get; }
         }
     }
 }

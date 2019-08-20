@@ -1,0 +1,11 @@
+﻿swagger: '2.0'
+
+tags:
+- name: Global
+  description: All global operations 
+
+x-dependencies:
+- group: OM - Subscription
+  refs: 
+  - $ref: https://petstore.swagger.io/v2/swagger.json
+    

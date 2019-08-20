@@ -8,11 +8,11 @@ using Xunit.Abstractions;
 
 namespace DocumentRefLoader.Tests
 {
-    public class ReferenceLoaderTests
+    public class ReferenceLoaderTests_RawCopy
     {
         private readonly ITestOutputHelper _output;
 
-        public ReferenceLoaderTests(ITestOutputHelper output)
+        public ReferenceLoaderTests_RawCopy(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -30,7 +30,7 @@ namespace DocumentRefLoader.Tests
         [InlineData("https://petstore.swagger.io/v2/swagger.json", "../test.json#fragment", false, false, "https://petstore.swagger.io/test.json", "fragment")]
         public void GetRefInfo(string document, string @ref, bool expectedIsNested, bool expectedIsLocal, string expectedUri, string expectedPath)
         {
-            var sut = new ReferenceLoader(document);
+            var sut = new ReferenceLoader(document, ReferenceLoaderStrategy.RawCopy);
 
             var refInfo = sut.GetRefInfo(@ref);
 
@@ -55,7 +55,7 @@ namespace DocumentRefLoader.Tests
         [Fact]
         public void Should_resolve_nested_references()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/petshop.yaml");
+            var sut = new ReferenceLoader("./_yamlSamples/petshop.yaml", ReferenceLoaderStrategy.RawCopy);
             {
                 var yaml = sut.GetRefResolvedYaml();
                 _output.WriteLine(yaml);
@@ -71,7 +71,7 @@ namespace DocumentRefLoader.Tests
         [Fact]
         public void Should_resolve_external_references()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/petshop_with_external.yaml");
+            var sut = new ReferenceLoader("./_yamlSamples/petshop_with_external.yaml", ReferenceLoaderStrategy.RawCopy);
             {
                 var yaml = sut.GetRefResolvedYaml();
                 _output.WriteLine(yaml);
@@ -94,7 +94,7 @@ namespace DocumentRefLoader.Tests
             {
                 File.WriteAllText(fileName, document);
 
-                var sut = new ReferenceLoader(fileName);
+                var sut = new ReferenceLoader(fileName, ReferenceLoaderStrategy.RawCopy);
                 var yaml = sut.GetRefResolvedYaml();
 
                 yaml.InvariantNewline().ShouldBe(expectedYaml.InvariantNewline());
@@ -218,7 +218,7 @@ myref2:
         [Fact]
         public void VeryTrickyTest()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/simple1.yaml");
+            var sut = new ReferenceLoader("./_yamlSamples/simple1.yaml", ReferenceLoaderStrategy.RawCopy);
             var yaml = sut.GetRefResolvedYaml();
 
             yaml.InvariantNewline().ShouldBe(

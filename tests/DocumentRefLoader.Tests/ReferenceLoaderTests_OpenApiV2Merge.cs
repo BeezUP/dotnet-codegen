@@ -27,5 +27,16 @@ namespace DocumentRefLoader.Tests
                 yaml.InvariantNewline().ShouldBe(File.ReadAllText("./_yamlSamples/" + expected).InvariantNewline());
             }
         }
+
+        [Theory]
+        [InlineData("https://api.swaggerhub.com/apis/BeezUP/backends/1.0", "./_yamlSamples/Merge1_expected.yaml")]
+        public void Should_match_expected_online(string uri, string expected)
+        {
+            var sut = new ReferenceLoader(uri, ReferenceLoaderStrategy.OpenApiV2Merge);
+            {
+                var yaml = sut.GetRefResolvedYaml();
+                yaml.InvariantNewline().ShouldBe(File.ReadAllText(expected).InvariantNewline());
+            }
+        }
     }
 }

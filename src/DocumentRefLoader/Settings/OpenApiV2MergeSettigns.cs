@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using YamlDotNet.Serialization.EventEmitters;
 
 namespace DocumentRefLoader.Settings
 {
@@ -84,9 +85,9 @@ namespace DocumentRefLoader.Settings
 
         private static void TryAddElement(string collectionName, JObject rootJObj, string defName, JToken content, bool addExclude)
         {
-            if (addExclude)
+            if (addExclude && !content.Children<JProperty>().Any(p => p.Name == X_EXCLUDE_KEYWORD))
             {
-                content.Last?.AddAfterSelf(new JProperty(X_EXCLUDE_KEYWORD, "true"));
+                content.Last?.AddAfterSelf(new JProperty(X_EXCLUDE_KEYWORD, true));
             }
 
             if (!(rootJObj[collectionName] is JObject collection))

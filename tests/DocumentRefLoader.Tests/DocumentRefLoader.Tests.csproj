@@ -24,4 +24,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="_yamlSamples\BeezUP_backends_expected.yaml" />
+  </ItemGroup>
 </Project>

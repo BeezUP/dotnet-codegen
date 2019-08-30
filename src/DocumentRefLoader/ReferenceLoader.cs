@@ -24,8 +24,7 @@ namespace DocumentRefLoader
         private readonly Uri _documentFolder;
         private readonly JObject _rootJObj;
 
-        private static readonly Deserializer s_yamlDeserializer = new Deserializer();
-
+      
         public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
             : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), null, strategy)
         { }
@@ -49,13 +48,7 @@ namespace DocumentRefLoader
                 _originalDocument = webClient.DownloadString(_documentUri);
             }
 
-            object yamlObject;
-            using (var sr = new StringReader(_originalDocument))
-            {
-                yamlObject = s_yamlDeserializer.Deserialize(sr);
-            }
-            var json = JsonConvert.SerializeObject(yamlObject);
-            _rootJObj = JObject.Parse(json);
+            _rootJObj = DeserialiserHelper.Deserialise(_originalDocument, documentUri.ToString());
         }
 
 

@@ -6,7 +6,7 @@ using YamlDotNet.Serialization.EventEmitters;
 
 namespace DocumentRefLoader.Settings
 {
-    public class OpenApiV2MergeSettigns : DefaultSettings
+    public class OpenApiV2MergeSettings : DefaultSettings
     {
         public override bool ShouldResolveReference(RefInfo refInfo) => !refInfo.IsNestedInThisDocument || refInfo.IsFalseAbsoluteRef;
 

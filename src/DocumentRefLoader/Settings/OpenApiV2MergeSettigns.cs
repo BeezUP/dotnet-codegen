@@ -20,6 +20,7 @@ namespace DocumentRefLoader.Settings
         private const string DEFINITIONS_KEYWORD = "definitions";
         private const string PARAMETERS_KEYWORD = "parameters";
         private const string RESPONSES_KEYWORD = "responses";
+        private const string SECURITY_DEFINITIONS_KEYWORD = "securityDefinitions";
         private const string X_EXCLUDE_KEYWORD = "x-exclude";
         private const string X_DEPENDENCIES_KEYWORD = "x-dependencies";
 
@@ -57,6 +58,7 @@ namespace DocumentRefLoader.Settings
                 MergeAllProperties(DEFINITIONS_KEYWORD, rootJObj, replacement, true);
                 MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement, true);
                 MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement, true);
+                MergeAllProperties(SECURITY_DEFINITIONS_KEYWORD, rootJObj, replacement, true);
             }
             else if (_handledDefinitionTypes.Any(t => propertyPath.Contains(t)))
             {

@@ -8,7 +8,7 @@ namespace DocumentRefLoader.Settings
 {
     public class OpenApiV2MergeSettigns : DefaultSettings
     {
-        public override bool ShouldResolveReference(RefInfo refInfo) => !refInfo.IsNestedInThisDocument;
+        public override bool ShouldResolveReference(RefInfo refInfo) => !refInfo.IsNestedInThisDocument || refInfo.IsFalseAbsoluteRef;
 
         public virtual string SerializeToJson(JObject jObject) => GetSanitizedJsonString(base.JsonSerialize(jObject));
 
@@ -24,9 +24,9 @@ namespace DocumentRefLoader.Settings
         private const string X_EXCLUDE_KEYWORD = "x-exclude";
         private const string X_DEPENDENCIES_KEYWORD = "x-dependencies";
 
-        readonly string[] _handledDefinitionTypes = new[] { DEFINITIONS_KEYWORD, PARAMETERS_KEYWORD, RESPONSES_KEYWORD };
+        readonly string[] _handledDefinitionTypes = new[] { DEFINITIONS_KEYWORD, PARAMETERS_KEYWORD, RESPONSES_KEYWORD, SECURITY_DEFINITIONS_KEYWORD };
 
-        public override void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument)
+        public override void ApplyRefReplacement(RefInfo refInfo, JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument)
         {
             var refSplit = refProperty.Value.ToString().Split('/');
 
@@ -54,17 +54,16 @@ namespace DocumentRefLoader.Settings
                    })
                    : null;
                 MergeAllProperties(PATHS_KEYWORD, rootJObj, replacement, false, transformProperty);
-
                 MergeAllProperties(DEFINITIONS_KEYWORD, rootJObj, replacement, true);
                 MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement, true);
                 MergeAllProperties(PARAMETERS_KEYWORD, rootJObj, replacement, true);
-                MergeAllProperties(SECURITY_DEFINITIONS_KEYWORD, rootJObj, replacement, true);
+                MergeAllProperties(SECURITY_DEFINITIONS_KEYWORD, rootJObj, replacement, false);
             }
             else if (_handledDefinitionTypes.Any(t => propertyPath.Contains(t)))
             {
                 var defType = refSplit[refSplit.Length - 2];
                 var defName = refSplit.Last();
-                TryAddElement(defType, rootJObj, defName, replacement, true);
+                TryAddElement(defType, rootJObj, defName, replacement, !refInfo.IsFalseAbsoluteRef);
                 refProperty.Value = $"#/{defType}/{defName}";
             }
             else

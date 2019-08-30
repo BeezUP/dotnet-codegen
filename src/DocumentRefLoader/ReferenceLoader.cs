@@ -17,14 +17,14 @@ namespace DocumentRefLoader
     public class ReferenceLoader
     {
         public const string REF_KEYWORD = "$ref";
-        private readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
+        internal readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
         private readonly IReferenceLoaderSettings _settings;
         private readonly Uri _documentUri;
         private readonly string _originalDocument;
         private readonly Uri _documentFolder;
         private readonly JObject _rootJObj;
+        private readonly string _originalJson;
 
-      
         public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
             : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), null, strategy)
         { }
@@ -49,7 +49,11 @@ namespace DocumentRefLoader
             }
 
             _rootJObj = DeserialiserHelper.Deserialise(_originalDocument, documentUri.ToString());
+            OriginalJson = _rootJObj.ToString();
         }
+
+        public string OriginalJson { get; }
+        public string FinalJson => _rootJObj.ToString();
 
 
         public string GetRefResolvedYaml() => _settings.YamlSerialize(GetRefResolvedJObject());
@@ -98,7 +102,9 @@ namespace DocumentRefLoader
                     // When a property has already been replaced by recursions, it has no more Parent
                     continue;
 
-                _settings.ApplyRefReplacement(_rootJObj, refProperty, replacement, refInfo.AbsoluteDocumentUri);
+                var before = _rootJObj.ToString();
+                _settings.ApplyRefReplacement(refInfo, _rootJObj, refProperty, replacement, refInfo.AbsoluteDocumentUri);
+                var after = _rootJObj.ToString();
             }
         }
 
@@ -154,28 +160,32 @@ namespace DocumentRefLoader
             if (parts.Length > 2)
                 throw new ArgumentException(REF_KEYWORD + " value should not have more than 1 '#' char.", nameof(refPath));
 
-            (bool embeded, string doc, string path) refParts;
+            (bool embeded, string doc, string path, bool falseAbsoluteRef) refParts;
             if (parts.Length == 1) // uri only
             {
-                refParts = (false, parts[0], "");
+                refParts = (false, parts[0], "", false);
             }
             else if (string.IsNullOrWhiteSpace(parts[0]))
             {
-                refParts = (true, "", parts[1]);
+                refParts = (true, "", parts[1], false);
+            }
+            else if (string.Compare(parts[0], _documentUri.ToString(), StringComparison.InvariantCultureIgnoreCase) == 0)
+            {
+                refParts = (true, parts[0], parts[1], true);
             }
             else
             {
-                refParts = (false, parts[0], parts[1]);
+                refParts = (false, parts[0], parts[1], false);
             }
 
             if (refParts.embeded)
-                return new RefInfo(true, _documentUri.IsFile, _documentUri, refParts.path);
+                return new RefInfo(true, _documentUri.IsFile, _documentUri, refParts.path, refParts.falseAbsoluteRef);
 
             var uri = new Uri(refParts.doc, UriKind.RelativeOrAbsolute);
             if (!uri.IsAbsoluteUri)
                 uri = new Uri(_documentFolder, uri);
 
-            return new RefInfo(false, uri.IsFile, uri, refParts.path);
+            return new RefInfo(false, uri.IsFile, uri, refParts.path, refParts.falseAbsoluteRef);
         }
     }
 }

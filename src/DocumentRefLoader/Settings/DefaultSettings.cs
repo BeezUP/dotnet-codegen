@@ -16,7 +16,7 @@ namespace DocumentRefLoader.Settings
     {
         public virtual bool ShouldResolveReference(RefInfo refInfo) => true;
 
-        public virtual void ApplyRefReplacement(JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument)
+        public virtual void ApplyRefReplacement(RefInfo refInfo, JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument)
         {
             refProperty.Parent.Replace(replacement);
         }

@@ -1,4 +1,5 @@
-﻿using JsonDiffPatchDotNet;
+﻿using DiffLib;
+using JsonDiffPatchDotNet;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System;
@@ -43,8 +44,54 @@ namespace DocumentRefLoader.Tests
             }
         }
 
-
         public void DumpDifferences(ReferenceLoader refLoader)
+        {
+            foreach (var kv in refLoader._otherLoaders)
+            {
+                _output.WriteLine("====================================================================================");
+                _output.WriteLine("====================================================================================");
+                _output.WriteLine($"\n{kv.Key}\n");
+                _output.WriteLine("====================================================================================");
+                _output.WriteLine("");
+
+                var rl = kv.Value;
+                var leftLines = rl.OriginalJson.InvariantNewline().Split("\n");
+                var rightLines = rl.FinalJson.InvariantNewline().Split("\n");
+                var diff = Diff.CalculateSections(leftLines, rightLines);
+
+                var left = 0;
+                var right = 0;
+                foreach (var section in diff)
+                {
+                    if (section.IsMatch)
+                    {
+                        //_output.WriteLine($"==================================================================================== line {left}, identical:");
+                        //_output.WriteLine(string.Join(Environment.NewLine, leftLines.Skip(left).Take(section.LengthInCollection1)));
+                    }
+                    else
+                    {
+                        if (section.LengthInCollection1 != 0)
+                        {
+                            _output.WriteLine($"==================================================================================== line {left}, removed:");
+                            _output.WriteLine(string.Join(Environment.NewLine, leftLines.Skip(left).Take(section.LengthInCollection1).Select(s => $"- {s}")));
+                            _output.WriteLine("");
+                        }
+                        if (section.LengthInCollection2 != 0)
+                        {
+                            _output.WriteLine($"==================================================================================== line {right}, added:");
+                            _output.WriteLine(string.Join(Environment.NewLine, leftLines.Skip(right).Take(section.LengthInCollection2).Select(s => $"+ {s}")));
+                            _output.WriteLine("");
+                        }
+                    }
+
+                    left += section.LengthInCollection1;
+                    right += section.LengthInCollection2;
+                }
+
+            }
+        }
+
+        public void DumpJsonDifferences(ReferenceLoader refLoader)
         {
             foreach (var kv in refLoader._otherLoaders)
             {

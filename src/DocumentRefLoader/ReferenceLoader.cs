@@ -48,7 +48,7 @@ namespace DocumentRefLoader
                 _originalDocument = webClient.DownloadString(_documentUri);
             }
 
-            _rootJObj = DeserialiserHelper.Deserialise(_originalDocument, documentUri.ToString());
+            _rootJObj = _settings.Deserialise(_originalDocument, documentUri.ToString());
             OriginalJson = _rootJObj.ToString();
         }
 
@@ -93,14 +93,16 @@ namespace DocumentRefLoader
                 if (!_settings.ShouldResolveReference(refInfo)) continue;
 
                 var replacement = GetRefJToken(refInfo);
-
                 ResolveRef(replacement);
 
-                _settings.TransformResolvedReplacement(replacement);
+                //_settings.TransformResolvedReplacement(replacement.DeepClone());
 
                 if (refProperty.Parent?.Parent == null)
                     // When a property has already been replaced by recursions, it has no more Parent
                     continue;
+
+                // clone to avoid destroying the original documents
+                replacement = replacement.DeepClone();
 
                 var before = _rootJObj.ToString();
                 _settings.ApplyRefReplacement(refInfo, _rootJObj, refProperty, replacement, refInfo.AbsoluteDocumentUri);

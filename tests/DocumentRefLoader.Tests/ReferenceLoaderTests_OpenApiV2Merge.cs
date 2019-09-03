@@ -1,4 +1,7 @@
 ﻿using DiffLib;
+using DiffPlex;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
 using JsonDiffPatchDotNet;
 using Newtonsoft.Json.Linq;
 using Shouldly;
@@ -22,7 +25,8 @@ namespace DocumentRefLoader.Tests
         }
 
         [Theory]
-        [InlineData("Merge1.yaml", "Merge1_expected.yaml")]
+        //[InlineData("Merge1.yaml", "Merge1_expected.yaml")]
+        [InlineData("Merge2A.yaml", "Merge2_expected.yaml")]
         public void Should_match_expected(string file, string expected)
         {
             var sut = new ReferenceLoader("./_yamlSamples/" + file, ReferenceLoaderStrategy.OpenApiV2Merge);
@@ -39,20 +43,58 @@ namespace DocumentRefLoader.Tests
             var sut = new ReferenceLoader(uri, ReferenceLoaderStrategy.OpenApiV2Merge);
             {
                 var yaml = sut.GetRefResolvedYaml();
-                DumpDifferences(sut);
+                DumpFiles(sut);
                 yaml.InvariantNewline().ShouldBe(File.ReadAllText(expected).InvariantNewline());
             }
         }
 
-        public void DumpDifferences(ReferenceLoader refLoader)
+        public static void DumpFiles(ReferenceLoader refLoader)
+        {
+            var tmpFolder = "_tmp";
+            Directory.CreateDirectory(tmpFolder);
+            foreach (var kv in refLoader._otherLoaders)
+            {
+                var fileName = kv.Key.ToString().Replace("/", "_").Replace(":", "");
+                File.WriteAllText(Path.Combine(tmpFolder, fileName + "_before"), kv.Value.OriginalJson);
+                File.WriteAllText(Path.Combine(tmpFolder, fileName + "_after"), kv.Value.FinalJson);
+            }
+        }
+
+        public void DumpDifferences3(ReferenceLoader refLoader)
         {
             foreach (var kv in refLoader._otherLoaders)
             {
-                _output.WriteLine("====================================================================================");
-                _output.WriteLine("====================================================================================");
+                _output.WriteLine("=====================================================================================");
+                _output.WriteLine("=====================================================================================");
                 _output.WriteLine($"\n{kv.Key}\n");
-                _output.WriteLine("====================================================================================");
-                _output.WriteLine("");
+
+                var rl = kv.Value;
+
+                var diffBuilder = new InlineDiffBuilder(new Differ());
+                var diff = diffBuilder.BuildDiffModel(rl.OriginalJson.InvariantNewline(), rl.FinalJson.InvariantNewline());
+
+                foreach (var line in diff.Lines)
+                {
+                    switch (line.Type)
+                    {
+                        case ChangeType.Inserted:
+                            _output.WriteLine("+ " + line.Text);
+                            break;
+                        case ChangeType.Deleted:
+                            _output.WriteLine("- " + line.Text);
+                            break;
+                    }
+                }
+            }
+        }
+
+        public void DumpDifferences2(ReferenceLoader refLoader)
+        {
+            foreach (var kv in refLoader._otherLoaders)
+            {
+                _output.WriteLine("=====================================================================================");
+                _output.WriteLine("=====================================================================================");
+                _output.WriteLine($"\n{kv.Key}\n");
 
                 var rl = kv.Value;
                 var leftLines = rl.OriginalJson.InvariantNewline().Split("\n");
@@ -63,24 +105,27 @@ namespace DocumentRefLoader.Tests
                 var right = 0;
                 foreach (var section in diff)
                 {
-                    if (section.IsMatch)
+                    if (section.LengthInCollection1 != 0 || section.LengthInCollection2 != 0)
                     {
-                        //_output.WriteLine($"==================================================================================== line {left}, identical:");
-                        //_output.WriteLine(string.Join(Environment.NewLine, leftLines.Skip(left).Take(section.LengthInCollection1)));
-                    }
-                    else
-                    {
+                        var lefties = leftLines.Skip(left).Take(section.LengthInCollection1).ToArray();
+                        var righties = rightLines.Skip(right).Take(section.LengthInCollection2).ToArray();
+                        if (string.Join(Environment.NewLine, lefties) == string.Join(Environment.NewLine, righties)) continue;
+
+                        _output.WriteLine("");
+                        _output.WriteLine($"===================================================================================== lines left:{left} / right:{right}");
+
+                        string removed = string.Join(Environment.NewLine, lefties.Select(s => $"- {s}"));
+                        string added = string.Join(Environment.NewLine, righties.Select(s => $"+ {s}"));
                         if (section.LengthInCollection1 != 0)
                         {
-                            _output.WriteLine($"==================================================================================== line {left}, removed:");
-                            _output.WriteLine(string.Join(Environment.NewLine, leftLines.Skip(left).Take(section.LengthInCollection1).Select(s => $"- {s}")));
                             _output.WriteLine("");
+
+                            _output.WriteLine(removed);
                         }
                         if (section.LengthInCollection2 != 0)
                         {
-                            _output.WriteLine($"==================================================================================== line {right}, added:");
-                            _output.WriteLine(string.Join(Environment.NewLine, leftLines.Skip(right).Take(section.LengthInCollection2).Select(s => $"+ {s}")));
                             _output.WriteLine("");
+                            _output.WriteLine(added);
                         }
                     }
 

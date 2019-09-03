@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="difflib" Version="2017.7.26.1241" />
+    <PackageReference Include="difflib" Version="2017.8.15.1113-beta" />
+    <PackageReference Include="DiffPlex" Version="1.4.4" />
     <PackageReference Include="JsonDiffPatch.Net" Version="2.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
@@ -29,5 +30,9 @@
 
   <ItemGroup>
     <None Remove="_yamlSamples\BeezUP_backends_expected.yaml" />
+    <None Remove="_yamlSamples\Merge2A.yaml" />
+    <None Remove="_yamlSamples\Merge2B.yaml" />
+    <None Remove="_yamlSamples\Merge2C.yaml" />
+    <None Remove="_yamlSamples\Merge2_expected.yaml" />
   </ItemGroup>
 </Project>

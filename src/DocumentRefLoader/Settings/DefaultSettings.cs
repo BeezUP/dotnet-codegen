@@ -26,8 +26,7 @@ namespace DocumentRefLoader.Settings
         }
 
         private static readonly IDeserializer _yamlDeserializer = new DeserializerBuilder()
-            //.WithNodeDeserializer<ForcedTypesNodeDeserializer>(inner => new ForcedTypesNodeDeserializer(inner), s => s.InsteadOf<ObjectNodeDeserializer>())
-            .WithNodeTypeResolver<ForcedNodeTypeResolver>(inner => new ForcedNodeTypeResolver(inner), s => s.InsteadOf<YamlConvertibleTypeResolver>())
+            .WithNodeTypeResolver(inner => new ForcedNodeTypeResolver(inner), s => s.InsteadOf<YamlConvertibleTypeResolver>())
             .Build()
             ;
 

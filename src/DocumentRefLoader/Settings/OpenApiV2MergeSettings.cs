@@ -8,7 +8,7 @@ namespace DocumentRefLoader.Settings
 {
     public class OpenApiV2MergeSettings : DefaultSettings
     {
-        public override bool ShouldResolveReference(RefInfo refInfo) => !refInfo.IsNestedInThisDocument || refInfo.IsFalseAbsoluteRef;
+        public override bool ShouldResolveReference(RefInfo refInfo, ResolveRefState state) => state.HasEnteredNonNestedReference || !refInfo.IsNestedInThisDocument || refInfo.IsFalseAbsoluteRef;
 
         public virtual string SerializeToJson(JObject jObject) => GetSanitizedJsonString(base.JsonSerialize(jObject));
 

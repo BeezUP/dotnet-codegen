@@ -12,12 +12,8 @@ namespace DocumentRefLoader
         string JsonSerialize(JObject jObject);
         string YamlSerialize(JObject jObject);
 
-        bool ShouldResolveReference(RefInfo refInfo);
+        bool ShouldResolveReference(RefInfo refInfo, ResolveRefState state);
 
         void ApplyRefReplacement(RefInfo refInfo, JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument);
-        
-
-        // Todo : add a tag/property to be able to discriminate "imported"/"merged" definitions ... (think x-exclude)
-        //void TransformResolvedReplacement(JToken jToken);
     }
 }

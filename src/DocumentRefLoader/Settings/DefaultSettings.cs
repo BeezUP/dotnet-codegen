@@ -46,7 +46,7 @@ namespace DocumentRefLoader.Settings
             return JObject.Parse(json);
         }
 
-        public virtual bool ShouldResolveReference(RefInfo refInfo) => true;
+        public virtual bool ShouldResolveReference(RefInfo refInfo, ResolveRefState state) => true;
 
         public virtual void ApplyRefReplacement(RefInfo refInfo, JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument)
         {

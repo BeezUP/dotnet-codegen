@@ -14,26 +14,28 @@ namespace DocumentRefLoader
     /// <summary>
     /// https://swagger.io/docs/specification/using-ref/
     /// </summary>
-    public class ReferenceLoader
+    public sealed class ReferenceLoader
     {
         public const string REF_KEYWORD = "$ref";
         internal readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
+        //private ResolveRefState CurrentLoaderState { get => _statesStack.Count == 1 ? _statesStack.Peek() : ResolveRefState.Default(); }
+        private readonly Stack<ResolveRefState> _statesStack;
+
         private readonly IReferenceLoaderSettings _settings;
         private readonly Uri _documentUri;
         private readonly string _originalDocument;
         private readonly Uri _documentFolder;
         private readonly JObject _rootJObj;
-        private readonly string _originalJson;
 
         public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
-            : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), null, strategy)
+            : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), null, null, strategy)
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, ReferenceLoaderStrategy strategy)
-            : this(documentUri, otherLoaders, strategy.GetSettings())
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, Stack<ResolveRefState> statesStack, ReferenceLoaderStrategy strategy)
+            : this(documentUri, otherLoaders, statesStack, strategy.GetSettings())
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, IReferenceLoaderSettings settings)
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, Stack<ResolveRefState> statesStack, IReferenceLoaderSettings settings)
         {
             _documentUri = documentUri;
             if (!_documentUri.IsAbsoluteUri)
@@ -41,6 +43,7 @@ namespace DocumentRefLoader
             _documentFolder = new Uri(_documentUri, ".");
 
             _otherLoaders = otherLoaders ?? new Dictionary<Uri, ReferenceLoader>() { { _documentUri, this } };
+            _statesStack = statesStack ?? new Stack<ResolveRefState>();
             _settings = settings;
 
             using (var webClient = new WebClient())
@@ -52,8 +55,9 @@ namespace DocumentRefLoader
             OriginalJson = _rootJObj.ToString();
         }
 
-        public string OriginalJson { get; }
-        public string FinalJson => _rootJObj.ToString();
+        internal string OriginalJson { get; }
+        internal string FinalJson => _rootJObj.ToString();
+
 
 
         public string GetRefResolvedYaml() => _settings.YamlSerialize(GetRefResolvedJObject());
@@ -72,10 +76,10 @@ namespace DocumentRefLoader
                 return;
 
             _isResolved = true;
-            ResolveRef(_rootJObj);
+            ResolveRef(_rootJObj, ResolveRefState.Default());
         }
 
-        private void ResolveRef(JToken token)
+        private void ResolveRef(JToken token, ResolveRefState state)
         {
             if (!(token is JContainer container))
                 return;
@@ -90,12 +94,12 @@ namespace DocumentRefLoader
                 var refPath = refProperty.Value.ToString();
                 var refInfo = GetRefInfo(refPath);
 
-                if (!_settings.ShouldResolveReference(refInfo)) continue;
+                state.HandleRefInfo(refInfo);
+
+                if (!_settings.ShouldResolveReference(refInfo, state)) continue;
 
                 var replacement = GetRefJToken(refInfo);
-                ResolveRef(replacement);
-
-                //_settings.TransformResolvedReplacement(replacement.DeepClone());
+                ResolveRef(replacement, ResolveRefState.FromParent(state));
 
                 if (refProperty.Parent?.Parent == null)
                     // When a property has already been replaced by recursions, it has no more Parent
@@ -104,9 +108,7 @@ namespace DocumentRefLoader
                 // clone to avoid destroying the original documents
                 replacement = replacement.DeepClone();
 
-                var before = _rootJObj.ToString();
                 _settings.ApplyRefReplacement(refInfo, _rootJObj, refProperty, replacement, refInfo.AbsoluteDocumentUri);
-                var after = _rootJObj.ToString();
             }
         }
 
@@ -151,7 +153,7 @@ namespace DocumentRefLoader
             if (_otherLoaders.TryGetValue(refInfo.AbsoluteDocumentUri, out var loader))
                 return loader;
 
-            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _settings);
+            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _statesStack, _settings);
             _otherLoaders[refInfo.AbsoluteDocumentUri] = loader;
             return loader;
         }

@@ -6,6 +6,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
@@ -29,7 +33,21 @@
     <Compile Remove="_samples\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="_samples\test3\sample_swagger.json" />
+    <None Remove="_samples\test3\template1\path1.hbs" />
+    <None Remove="_samples\test3\template2\path2.hbs" />
+    <None Remove="_samples\test4\template1\path1.hbs" />
+    <None Remove="_samples\test4\template1\path2.hbs" />
+    <None Remove="_samples\test4\template1\path3.hbs" />
+    <None Remove="_samples\test4\template2\path1.hbs" />
+    <None Remove="_samples\test4\template2\path2.hbs" />
+    <None Remove="_samples\test4\template3\path4.hbs" />
+    <None Remove="_samples\test4\template4\path3.hbs" />
+    <None Remove="_samples\test4\template4\path4.hbs" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Schemas\" />
+    <Folder Include="_samples\test3\expected\" />
   </ItemGroup>
 
 </Project>

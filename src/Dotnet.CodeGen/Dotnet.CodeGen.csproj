@@ -23,6 +23,10 @@
     <RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Colorful.Console" Version="1.2.9" />
     <PackageReference Include="Handlebars.Net" Version="1.10.1" />

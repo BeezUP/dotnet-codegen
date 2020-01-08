@@ -12,8 +12,8 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
 #if DEBUG
     [HandlebarsHelperSpecification("{}", "{{#start_with 'test' 'test-one'}}OK{{else}}{{/start_with}}", "OK")]
     [HandlebarsHelperSpecification("{}", "{{#start_with 'test' 'one-test'}}OK{{else}}NOK{{/start_with}}", "NOK")]
-    [HandlebarsHelperSpecification("{one: 'test-one', two: 'one-test'}", "{{#start_with 'test' ./one}}OK{{else}}{{/start_with}}", "OK")]
-    [HandlebarsHelperSpecification("{one: 'test-one', two: 'one-test'}", "{{#start_with 'test' ./two}}OK{{else}}NOK{{/start_with}}", "NOK")]
+    [HandlebarsHelperSpecification("{one: 'test-one', two: 'one-test'}", "{{#start_with 'test' one}}OK{{else}}{{/start_with}}", "OK")]
+    [HandlebarsHelperSpecification("{one: 'test-one', two: 'one-test'}", "{{#start_with 'test' two}}OK{{else}}NOK{{/start_with}}", "NOK")]
 #endif
     public class StartWith : SimpleBlockHelperBase
     {

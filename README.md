@@ -86,6 +86,12 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 | trim_start | `"{ test: '- aa' }"` | `"{{trim_start test '-'}}"` | `" aa"` |
 | trim_start | `"{ test: 'AA' }"` | `"{{trim_start test 'A'}}"` | `""` |
 | trim_start | `"{ test: ' test ' }"` | `"{{trim_start test ' t'}}"` | `"est "` |
+| trim_block | `"{}"` | `"{{#trim_block ','}},,1,2,3,4,,{{/trim_block}}"` | `"1,2,3,4"` |
+| trim_block | `"{ a: '42', b: 42, c: 42 }"` | `"{{#trim_block ','}}{{#each this}}{{@key}},{{/each}}{{/trim_block}}"` | `"a,b,c"` |
+| trim_block_start | `"{}"` | `"{{#trim_block_start ','}},,1,2,3,4,,{{/trim_block_start}}"` | `"1,2,3,4,,"` |
+| trim_block_start | `"{ a: '42', b: 42, c: 42 }"` | `"{{#trim_block_start ','}}{{#each this}}{{@key}},{{/each}}{{/trim_block_start}}"` | `"a,b,c,"` |
+| trim_block_end | `"{}"` | `"{{#trim_block_end ','}},,1,2,3,4,,{{/trim_block_end}}"` | `",,1,2,3,4"` |
+| trim_block_end | `"{ a: '42', b: 42, c: 42 }"` | `"{{#trim_block_end ','}}{{#each this}}{{@key}},{{/each}}{{/trim_block_end}}"` | `"a,b,c"` |
 | uppercase_first_letter | `"{}"` | `"{{uppercase_first_letter .}}"` | `"{}"` |
 | uppercase_first_letter | `"{ test: 42 }"` | `"{{uppercase_first_letter test}}"` | `"42"` |
 | uppercase_first_letter | `"{ test: '42' }"` | `"{{uppercase_first_letter test}}"` | `"42"` |
@@ -95,8 +101,6 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 | with_matching | `"{}"` | `"{{#with_matching 'test' '1' '1', '2', '2'}}{{else}}NOT FOUND{{/with_matching}}"` | `"NOT FOUND"` |
 | with_matching | `"{}"` | `"{{#with_matching 'value1' 'value1' 'context1', '2', '2'}}{{.}}{{else}}NOT FOUND{{/with_matching}}"` | `"context1"` |
 | with_matching | `"{ value: '42' }"` | `"{{#with_matching value '42' . }}{{value}}{{else}}NOT FOUND{{/with_matching}}"` | `"42"` |
-
-
 
 ### Update
 

@@ -101,6 +101,8 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 | with_matching | `"{}"` | `"{{#with_matching 'test' '1' '1', '2', '2'}}{{else}}NOT FOUND{{/with_matching}}"` | `"NOT FOUND"` |
 | with_matching | `"{}"` | `"{{#with_matching 'value1' 'value1' 'context1', '2', '2'}}{{.}}{{else}}NOT FOUND{{/with_matching}}"` | `"context1"` |
 | with_matching | `"{ value: '42' }"` | `"{{#with_matching value '42' . }}{{value}}{{else}}NOT FOUND{{/with_matching}}"` | `"42"` |
+| start_with | `"{}"` | `"{{#start_with 'test' 'test-one'}}OK{{else}}{{/start_with}}"` | `"OK"` |
+| start_with | `"{one: 'test-one', two: 'one-test'}"` | `"{{#start_with 'test' one}}OK{{else}}{{/start_with}}"` | `"OK"` |
 
 ### Update
 

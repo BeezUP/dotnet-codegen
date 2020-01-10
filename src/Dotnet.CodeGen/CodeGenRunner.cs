@@ -9,31 +9,26 @@ using Dotnet.CodeGen.Schemas;
 
 namespace Dotnet.CodeGen.CodeGen
 {
-    public class CodeGenRunner
+    public static class CodeGenRunner
     {
-        private static IEnumerable<TemplateInfos> ConsolidateTemplates(IGrouping<string,TemplateInfos>[] templateInfos, IGrouping<string, TemplateInfos>[] duplicateTemplateInfos, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
+        private static IEnumerable<TemplateInfos> ConsolidateTemplates(IGrouping<string, TemplateInfos>[] templateInfos, IGrouping<string, TemplateInfos>[] duplicateTemplateInfos, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
         {
             switch (templateDuplicationHandlingStrategy)
             {
                 case TemplateDuplicationHandlingStrategy.Throw:
-                    
-                    throw new InvalidDataException("Possible template(s) duplication - please use a unique template name [" + duplicateTemplateInfos.Select(templateGroup => templateGroup.Key).Aggregate((template1, template2) => $"{template1} | {template2}" + "]"));
-               
+                    var templateNames = string.Join(" | ", duplicateTemplateInfos.Select(g => g.Key));
+                    throw new InvalidDataException($"Possible template(s) duplication - please use a unique template name [{templateNames}]");
                 case TemplateDuplicationHandlingStrategy.KeepFirst:
-
                     foreach (var templateGroup in templateInfos)
                     {
                         yield return templateGroup.First();
                     }
-
                     break;
                 case TemplateDuplicationHandlingStrategy.KeepLast:
-
                     foreach (var templateGroup in templateInfos)
                     {
                         yield return templateGroup.Last();
                     }
-
                     break;
             }
         }
@@ -55,7 +50,7 @@ namespace Dotnet.CodeGen.CodeGen
 
 
             return ConsolidateTemplates(templateGroups, templatesGroupDuplicates, templateDuplicationHandlingStrategy);
-        }  
+        }
 
         public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
         {

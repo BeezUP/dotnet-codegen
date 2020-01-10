@@ -62,7 +62,6 @@ namespace Dotnet.CodeGen.Tests
                 {
                     Assert.Contains(expectedMd5, actualMd5Output);
                 }
-
             }
             finally
             {

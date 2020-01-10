@@ -1,56 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp2.2</TargetFramework>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="Shouldly" Version="3.0.2" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+		<PackageReference Include="Shouldly" Version="3.0.2" />
+		<PackageReference Include="xunit" Version="2.4.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Dotnet.CodeGen\Dotnet.CodeGen.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\DocumentRefLoader.Tests\StringTestsHelperExtensions.cs" Link="StringTestsHelperExtensions.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="_samples\**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="_samples\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="_samples\test3\sample_swagger.json" />
-    <None Remove="_samples\test3\template1\path1.hbs" />
-    <None Remove="_samples\test3\template2\path2.hbs" />
-    <None Remove="_samples\test4\template1\path1.hbs" />
-    <None Remove="_samples\test4\template1\path2.hbs" />
-    <None Remove="_samples\test4\template1\path3.hbs" />
-    <None Remove="_samples\test4\template2\path1.hbs" />
-    <None Remove="_samples\test4\template2\path2.hbs" />
-    <None Remove="_samples\test4\template3\path4.hbs" />
-    <None Remove="_samples\test4\template4\path3.hbs" />
-    <None Remove="_samples\test4\template4\path4.hbs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\DocumentRefLoader.Tests\StringTestsHelperExtensions.cs" Link="StringTestsHelperExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Schemas\" />
-    <Folder Include="_samples\test3\expected\" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Dotnet.CodeGen\Dotnet.CodeGen.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="_samples\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Compile Remove="_samples\**\*.cs" />
+	</ItemGroup>
 
 </Project>

@@ -82,7 +82,6 @@ namespace Dotnet.CodeGen.CodeGen
                  Environment.Exit(result);
 #endif
 
-
             }
             catch (Exception ex)
             {

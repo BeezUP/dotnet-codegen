@@ -26,10 +26,10 @@ namespace Dotnet.CodeGen.CodeGen
 
             if (templateDuplicationHandlingStrategy == TemplateDuplicationHandlingStrategy.Throw)
             {
-                var dupplicates = templateGroups.Where(group => group.Count() > 1).ToArray();
-                if (dupplicates.Length != 0)
+                var duplicates = templateGroups.Where(group => group.Count() > 1).ToArray();
+                if (duplicates.Length != 0)
                 {
-                    var templateNames = string.Join(" | ", dupplicates.Select(g => g.Key));
+                    var templateNames = string.Join(" | ", duplicates.Select(g => g.Key).OrderBy(template => template));
                     throw new InvalidDataException($"Possible template(s) duplication - please use a unique template name [{templateNames}]");
                 }
             }

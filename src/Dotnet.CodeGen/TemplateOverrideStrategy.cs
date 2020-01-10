@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Dotnet.CodeGen
+﻿namespace Dotnet.CodeGen
 {
     public enum TemplateDuplicationHandlingStrategy
     {

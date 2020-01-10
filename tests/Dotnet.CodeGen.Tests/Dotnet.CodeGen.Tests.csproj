@@ -46,6 +46,9 @@
     <None Remove="_samples\test4\template4\path4.hbs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\DocumentRefLoader.Tests\StringTestsHelperExtensions.cs" Link="StringTestsHelperExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Schemas\" />
     <Folder Include="_samples\test3\expected\" />
   </ItemGroup>

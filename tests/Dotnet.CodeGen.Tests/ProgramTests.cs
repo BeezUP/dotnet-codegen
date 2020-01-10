@@ -14,15 +14,17 @@ namespace Dotnet.CodeGen.Tests
     public class ProgramTests
     {
         //https://stackoverflow.com/questions/10520048/calculate-md5-checksum-for-a-file
-        static string CalculateMD5(string filename)
+        /// <summary>
+        /// Compute MD5 for a file, after replace replacing windows new lines
+        /// </summary>
+        static string ComputeMD5(string filename)
         {
+            var fileContent = File.ReadAllText(filename).InvariantNewline();
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.OpenRead(filename))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-                }
+                var bytes = Encoding.UTF8.GetBytes(fileContent);
+                var hash = md5.ComputeHash(bytes);
+                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
 
@@ -39,8 +41,7 @@ namespace Dotnet.CodeGen.Tests
         [InlineData("./_samples/test3/sample_swagger.json", new[] { "./_samples/test3/template1/path1.hbs", "./_samples/test3/template2/path2.hbs" }, "./_samples/test3/expected", TemplateDuplicationHandlingStrategy.KeepLast, SourceSchemaType.RawJson)]
         public async Task ShouldParseCommandLineArgumentsAndApplyTemplate(string source, string[] templates, string expectedDirectory, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy, SourceSchemaType sourceSchemaType)
         {
-
-            var expectedMd5Output = Directory.GetFiles(expectedDirectory).Select(file => CalculateMD5(file)).ToList();
+            var expectedMd5Output = Directory.GetFiles(expectedDirectory).Select(file => ComputeMD5(file)).ToList();
 
             var templateDuplicationHandlingStrategyOption = $" {templateDuplicationHandlingStrategy}";
             var sourceSchemaTypeOption = $" {sourceSchemaType}";
@@ -53,7 +54,7 @@ namespace Dotnet.CodeGen.Tests
 
                 await Program.Main(args);
 
-                var actualMd5Output = Directory.GetFiles(outputDirectory).Select(file => CalculateMD5(file)).ToList();
+                var actualMd5Output = Directory.GetFiles(outputDirectory).Select(file => ComputeMD5(file)).ToList();
 
                 Assert.Equal(expectedMd5Output.Count, actualMd5Output.Count);
 

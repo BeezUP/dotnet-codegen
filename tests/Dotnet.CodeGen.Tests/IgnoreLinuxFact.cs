@@ -16,4 +16,15 @@ namespace Dotnet.CodeGen.Tests
             }
         }
     }
+
+    public sealed class IgnoreOnLinuxTheory : TheoryAttribute
+    {
+        public IgnoreOnLinuxTheory()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Skip = "Ignore on Linux";
+            }
+        }
+    }
 }

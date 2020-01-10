@@ -11,7 +11,7 @@
     <Title>Dotnet.CodeGen</Title>
     <PackageId>Dotnet.CodeGen</PackageId>
 
-    <Version>0.0.0.4</Version>
+    <Version>0.0.0.5</Version>
     <Description>Code generator </Description>
     <PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
     <Copyright>Copyright 2019 © BeezUP</Copyright>
@@ -21,6 +21,10 @@
     <PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

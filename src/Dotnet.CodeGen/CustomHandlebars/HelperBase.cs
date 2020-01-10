@@ -48,12 +48,35 @@ namespace Dotnet.CodeGen.CustomHandlebars
         protected JArray GetArgumentAsArray(object[] arguments, int argumentIndex)
         {
             return arguments[argumentIndex] as JArray
-                ?? throw new CodeGenHelperException($"Argument {argumentIndex} shouldbe an array but is of type '{arguments[argumentIndex]?.GetType().Name}'.");
+                ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be an array but is of type '{arguments[argumentIndex]?.GetType().Name}'.");
         }
 
         protected string GetArgumentStringValue(object[] arguments, int argumentIndex)
         {
             return arguments[argumentIndex]?.ToString();
+        }
+
+        protected char GetArgumentCharValue(object[] arguments, int argumentIndex)
+        {
+            if (argumentIndex >= arguments.Length ||  arguments[argumentIndex] == null) throw new CodeGenHelperException($"{Name} needs an argument at position {argumentIndex}.");
+
+            if (!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
+
+            return @char;
+        }
+
+        protected char GetArgumentCharValueOrDefault(object[] arguments, int argumentIndex, char defaultValue = default)
+        {
+            if (argumentIndex >= arguments.Length || arguments[argumentIndex] == null)
+            {
+                if (defaultValue == default) throw new CodeGenHelperException($"{Name} needs an argument at position {argumentIndex}.");
+
+                return defaultValue;
+            }
+
+            if(!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
+
+            return @char;
         }
 
         protected string GetStringValue(object obj)

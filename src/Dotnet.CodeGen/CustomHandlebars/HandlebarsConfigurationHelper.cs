@@ -13,7 +13,6 @@ namespace Dotnet.CodeGen.CustomHandlebars
 
         static readonly IHelper[] _Helpers;
 
-
         static HandlebarsConfigurationHelper()
         {
             var helpers = new List<IHelper>();
@@ -41,19 +40,76 @@ namespace Dotnet.CodeGen.CustomHandlebars
             return handlebars;
         }
 
+        public static IHandlebars GetHandlebars(List<string> directories)
+        {
+            var handlebars = Handlebars.Create(GetHandlebarsConfiguration(directories));
+            return handlebars;
+        }
+
+        private static void RegisterHelpers(HandlebarsConfiguration handlebarsConfiguration)
+        {
+            foreach (var h in _Helpers)
+            {
+                h.Setup(handlebarsConfiguration);
+            }
+        }
+        
         public static HandlebarsConfiguration GetHandlebarsConfiguration(string rootDirectory)
         {
             var configuration = new HandlebarsConfiguration();
-            foreach (var h in _Helpers)
-            {
-                h.Setup(configuration);
-            }
+
+            RegisterHelpers(configuration);
 
             configuration.PartialTemplateResolver = new SameDirectoryPartialTemplateResolver(rootDirectory);
 
             return configuration;
         }
 
+        public static HandlebarsConfiguration GetHandlebarsConfiguration(List<string> directories)
+        {
+            var configuration = new HandlebarsConfiguration();
+
+            RegisterHelpers(configuration);
+
+            configuration.PartialTemplateResolver = new MultipleDirectoriesPartialTemplateResolver(directories);
+
+            return configuration;
+        }
+
+        private static bool TryRegisterPartial(string directory, IHandlebars env, string partialName)
+        {
+            var partialPath = Path.Combine(directory, $"_{partialName}.hbs");
+            if (!File.Exists(partialPath))
+            {
+                return false;
+                throw new IOException($"Unable to find the partial template file {partialPath}");
+            }
+
+            env.RegisterTemplate(partialName, File.ReadAllText(partialPath));
+            return true;
+        }
+
+        public class MultipleDirectoriesPartialTemplateResolver : IPartialTemplateResolver
+        {
+            private readonly List<string> _directories;
+
+            public MultipleDirectoriesPartialTemplateResolver(List<string> directories)
+            {
+                _directories = directories;
+            }
+
+            public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
+            {
+                var result = true;
+
+                foreach (var directory in _directories)
+                {
+                    result = result && HandlebarsConfigurationHelper.TryRegisterPartial(directory, env, partialName);
+                }
+
+                return result;
+            }
+        }
 
         public class SameDirectoryPartialTemplateResolver : IPartialTemplateResolver
         {
@@ -66,15 +122,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
 
             public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
             {
-                var partialPath = Path.Combine(_rootDirectory, $"_{partialName}.hbs");
-                if (!File.Exists(partialPath))
-                {
-                    return false;
-                    throw new IOException($"Unable to find the partial template file {partialPath}");
-                }
-
-                env.RegisterTemplate(partialName, File.ReadAllText(partialPath));
-                return true;
+                return HandlebarsConfigurationHelper.TryRegisterPartial(_rootDirectory, env, partialName);
             }
         }
     }

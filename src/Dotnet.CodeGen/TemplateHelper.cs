@@ -8,30 +8,6 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public static class TemplateHelper
     {
-        public class TemplateInfos
-        {
-            internal TemplateInfos(string filePath, string fileName, string directory)
-            {
-                FilePath = filePath;
-                FileName = fileName;
-                Directory = directory;
-            }
-
-            /// <summary>
-            /// Full path of the file
-            /// </summary>
-            public string FilePath { get; }
-
-            /// <summary>
-            /// Expected file name (without the template extension)
-            /// </summary>
-            public string FileName { get; }
-
-            /// <summary>
-            /// Expected relative directory (from the template root)
-            /// </summary>
-            public string Directory { get; }
-        }
 
         public static IEnumerable<TemplateInfos> GetTemplates(string path, string extension = "*.handlebars")
         {

@@ -10,10 +10,10 @@ Installation is very easy. Just run this command and the tool will be installed.
 
 ### Usage
 
-`dotnet-codegen <Open_Api_File_Uri> <Template_Folder> <Output_Folder>`
+`dotnet-codegen <Open_Api_File_Uri> <Output_Folder> <Template_Folder1> [Template_Folder2] [Template_Folder3] [...]`
 
 example :
-`dotnet-codegen "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" "my/template" "output/folder"`
+`dotnet-codegen "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" "output/folder" "my/template"`
 
 # Custom handlebars helper
 

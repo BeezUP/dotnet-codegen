@@ -1,8 +1,6 @@
-﻿using DiffLib;
-using DiffPlex;
+﻿using DiffPlex;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
-using JsonDiffPatchDotNet;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System;
@@ -58,8 +56,11 @@ namespace DocumentRefLoader.Tests
             }
         }
 
-        public void DumpDifferences3(ReferenceLoader refLoader)
+
+        void DumpDifferences3(ReferenceLoader refLoader)
         {
+
+           
             foreach (var kv in refLoader._otherLoaders)
             {
                 _output.WriteLine("=====================================================================================");
@@ -86,7 +87,7 @@ namespace DocumentRefLoader.Tests
             }
         }
 
-        public void DumpDifferences2(ReferenceLoader refLoader)
+        void DumpDifferences2(ReferenceLoader refLoader)
         {
             foreach (var kv in refLoader._otherLoaders)
             {
@@ -97,7 +98,7 @@ namespace DocumentRefLoader.Tests
                 var rl = kv.Value;
                 var leftLines = rl.OriginalJson.InvariantNewline().Split("\n");
                 var rightLines = rl.FinalJson.InvariantNewline().Split("\n");
-                var diff = Diff.CalculateSections(leftLines, rightLines);
+                var diff = DiffLib.Diff.CalculateSections(leftLines, rightLines);
 
                 var left = 0;
                 var right = 0;
@@ -134,13 +135,13 @@ namespace DocumentRefLoader.Tests
             }
         }
 
-        public void DumpJsonDifferences(ReferenceLoader refLoader)
+        void DumpJsonDifferences(ReferenceLoader refLoader)
         {
             foreach (var kv in refLoader._otherLoaders)
             {
                 var rl = kv.Value;
 
-                var jdp = new JsonDiffPatch();
+                var jdp = new JsonDiffPatchDotNet.JsonDiffPatch();
                 var patch = jdp.Diff(JToken.Parse(rl.OriginalJson), JToken.Parse(rl.FinalJson));
                 _output.WriteLine($"\n\n\n{kv.Key}\n\n");
                 _output.WriteLine(patch.ToString());

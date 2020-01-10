@@ -25,14 +25,20 @@ namespace Dotnet.CodeGen.CodeGen
             var templateGroups = templates.GroupBy(template => template.FileName).ToArray();
 
             if (templateDuplicationHandlingStrategy == TemplateDuplicationHandlingStrategy.Throw)
-                EnsureNoDupplicates(templateGroups);
-
+            {
+                var dupplicates = templateGroups.Where(group => group.Count() > 1).ToArray();
+                if (dupplicates.Length != 0)
+                {
+                    var templateNames = string.Join(" | ", dupplicates.Select(g => g.Key));
+                    throw new InvalidDataException($"Possible template(s) duplication - please use a unique template name [{templateNames}]");
+                }
+            }
 
             return templateGroups.Select(g =>
             {
                 switch (templateDuplicationHandlingStrategy)
                 {
-                    case TemplateDuplicationHandlingStrategy.Throw: //
+                    case TemplateDuplicationHandlingStrategy.Throw: // should be only one element in the group now
                     case TemplateDuplicationHandlingStrategy.KeepFirst:
                         return g.First();
                     case TemplateDuplicationHandlingStrategy.KeepLast:
@@ -43,20 +49,8 @@ namespace Dotnet.CodeGen.CodeGen
             });
         }
 
-        private static void EnsureNoDupplicates(IGrouping<string, TemplateInfos>[] templateGroups)
-        {
-            var dupplicates = templateGroups.Where(group => group.Count() > 1).ToArray();
-            if (dupplicates.Length != 0)
-            {
-                var templateNames = string.Join(" | ", dupplicates.Select(g => g.Key));
-                throw new InvalidDataException($"Possible template(s) duplication - please use a unique template name [{templateNames}]");
-            }
-        }
-
         public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
-        {
-            return RunAsync(sourcePath, schemaLoader, new List<string>() { templatePath }, outputPath);
-        }
+            => RunAsync(sourcePath, schemaLoader, new List<string>() { templatePath }, outputPath, templateDuplicationHandlingStrategy);
 
         public static async Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, List<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
         {

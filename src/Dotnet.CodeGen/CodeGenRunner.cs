@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,45 +12,45 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public static class CodeGenRunner
     {
-        private static IEnumerable<TemplateInfos> ConsolidateTemplates(IGrouping<string, TemplateInfos>[] templateInfos, IGrouping<string, TemplateInfos>[] duplicateTemplateInfos, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
-        {
-            switch (templateDuplicationHandlingStrategy)
-            {
-                case TemplateDuplicationHandlingStrategy.Throw:
-                    var templateNames = string.Join(" | ", duplicateTemplateInfos.Select(g => g.Key));
-                    throw new InvalidDataException($"Possible template(s) duplication - please use a unique template name [{templateNames}]");
-                case TemplateDuplicationHandlingStrategy.KeepFirst:
-                    foreach (var templateGroup in templateInfos)
-                    {
-                        yield return templateGroup.First();
-                    }
-                    break;
-                case TemplateDuplicationHandlingStrategy.KeepLast:
-                    foreach (var templateGroup in templateInfos)
-                    {
-                        yield return templateGroup.Last();
-                    }
-                    break;
-            }
-        }
-
         public static IEnumerable<TemplateInfos> GetTemplates(List<string> templatesPaths, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
         {
-            var templates = templatesPaths.SelectMany(templatePath => TemplateHelper.GetTemplates(templatePath, "*.hbs").Where(t => !t.FileName.StartsWith("_")))
-                                          .ToArray();
+            var templates = templatesPaths
+                .SelectMany(templatePath => TemplateHelper.GetTemplates(templatePath, "*.hbs"))
+                .Where(t => !t.FileName.StartsWith("_"))
+                .ToArray();
 
             if (templates.Length == 0)
-                throw new InvalidDataException("No template found in path(s) " + templatesPaths.Aggregate((path1, path2) => $"{path1} | {path2}"));
+                throw new InvalidDataException($"No template found in path(s) : {string.Join(" | ", templatesPaths)}");
 
-            var templateGroups = templates.GroupBy(template => template.FileName)
-                                          .ToArray();
+            var templateGroups = templates.GroupBy(template => template.FileName).ToArray();
 
-            var templatesGroupDuplicates = templateGroups.Where(group => group.Count() > 1).ToArray();
-
-            if (templatesGroupDuplicates.Length == 0) return templates;
+            if (templateDuplicationHandlingStrategy == TemplateDuplicationHandlingStrategy.Throw)
+                EnsureNoDupplicates(templateGroups);
 
 
-            return ConsolidateTemplates(templateGroups, templatesGroupDuplicates, templateDuplicationHandlingStrategy);
+            return templateGroups.Select(g =>
+            {
+                switch (templateDuplicationHandlingStrategy)
+                {
+                    case TemplateDuplicationHandlingStrategy.Throw: //
+                    case TemplateDuplicationHandlingStrategy.KeepFirst:
+                        return g.First();
+                    case TemplateDuplicationHandlingStrategy.KeepLast:
+                        return g.Last();
+                    default:
+                        throw new NotImplementedException();
+                }
+            });
+        }
+
+        private static void EnsureNoDupplicates(IGrouping<string, TemplateInfos>[] templateGroups)
+        {
+            var dupplicates = templateGroups.Where(group => group.Count() > 1).ToArray();
+            if (dupplicates.Length != 0)
+            {
+                var templateNames = string.Join(" | ", dupplicates.Select(g => g.Key));
+                throw new InvalidDataException($"Possible template(s) duplication - please use a unique template name [{templateNames}]");
+            }
         }
 
         public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)

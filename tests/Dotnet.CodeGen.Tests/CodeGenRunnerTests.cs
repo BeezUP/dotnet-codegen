@@ -63,9 +63,9 @@ namespace Dotnet.CodeGen.Tests
         }
 
         [Theory]
-        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2" }, TemplateDuplicationHandlingStrategy.Throw, "Possible template(s) duplication - please use a unique template name [path1 | path2 | path3]")]
+        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2" }, TemplateDuplicationHandlingStrategy.Throw, "Possible template(s) duplication - please use a unique template name [path1 | path2 | path5]")]
         [InlineData(new[] { "./_samples/test4/template3", "./_samples/test4/template4" }, TemplateDuplicationHandlingStrategy.Throw, "Possible template(s) duplication - please use a unique template name [path3 | path4]")]
-        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2", "./_samples/test4/template2.2" }, TemplateDuplicationHandlingStrategy.Throw, "Possible template(s) duplication - please use a unique template name [path1 | path2 | path3]")]
+        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2", "./_samples/test4/template2.2" }, TemplateDuplicationHandlingStrategy.Throw, "Possible template(s) duplication - please use a unique template name [path1 | path2 | path5]")]
         public void ShouldThrowExceptionOnConsolidateTemplates(string[] templatesPaths, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy, string expectedMessage)
         {
             Should.Throw<InvalidDataException>(() =>
@@ -82,7 +82,7 @@ namespace Dotnet.CodeGen.Tests
         {
             var templates = CodeGenRunner.GetTemplates(templatesPaths.ToList(), templateDuplicationHandlingStrategy).ToList();
 
-            Assert.Equal(4, templates.Count);
+            Assert.Equal(5, templates.Count);
 
             Assert.Contains(templates, template => template.FileName == "path1");
             Assert.Contains(templates, template => template.FileName == "path2");
@@ -91,15 +91,15 @@ namespace Dotnet.CodeGen.Tests
         }
 
         [Theory]
-        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2" }, "template1", TemplateDuplicationHandlingStrategy.KeepFirst)]
-        [InlineData(new[] { "./_samples/test4/template3", "./_samples/test4/template4" }, "template3", TemplateDuplicationHandlingStrategy.KeepFirst)]
-        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2" }, "template2", TemplateDuplicationHandlingStrategy.KeepLast)]
-        [InlineData(new[] { "./_samples/test4/template3", "./_samples/test4/template4" }, "template4", TemplateDuplicationHandlingStrategy.KeepLast)]
-        public void ShouldKeepOnConsolidateTemplates(string[] templatesPaths, string expectedTemplateFolder, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
+        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2" }, "template1", TemplateDuplicationHandlingStrategy.KeepFirst, 3)]
+        [InlineData(new[] { "./_samples/test4/template3", "./_samples/test4/template4" }, "template3", TemplateDuplicationHandlingStrategy.KeepFirst, 2)]
+        [InlineData(new[] { "./_samples/test4/template1", "./_samples/test4/template2" }, "template2", TemplateDuplicationHandlingStrategy.KeepLast, 3)]
+        [InlineData(new[] { "./_samples/test4/template3", "./_samples/test4/template4" }, "template4", TemplateDuplicationHandlingStrategy.KeepLast, 2)]
+        public void ShouldKeepOnConsolidateTemplates(string[] templatesPaths, string expectedTemplateFolder, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy, int expectedTemplatesCount)
         {
             var templates = CodeGenRunner.GetTemplates(templatesPaths.ToList(), templateDuplicationHandlingStrategy).ToList();
 
-            Assert.Equal(2, templates.Count);
+            templates.Count.ShouldBe(expectedTemplatesCount);
 
             foreach (var template in templates)
             {

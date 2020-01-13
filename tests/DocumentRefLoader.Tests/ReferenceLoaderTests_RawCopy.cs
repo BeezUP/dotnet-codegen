@@ -59,12 +59,12 @@ namespace DocumentRefLoader.Tests
             {
                 var yaml = sut.GetRefResolvedYaml();
                 _output.WriteLine(yaml);
-                yaml.Contains(ReferenceLoader.REF_KEYWORD).ShouldBeFalse();
+                yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
                 var json = sut.GetRefResolvedJson();
                 _output.WriteLine(json);
-                json.Contains(ReferenceLoader.REF_KEYWORD).ShouldBeFalse();
+                json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
         }
 
@@ -75,12 +75,12 @@ namespace DocumentRefLoader.Tests
             {
                 var yaml = sut.GetRefResolvedYaml();
                 _output.WriteLine(yaml);
-                yaml.Contains(ReferenceLoader.REF_KEYWORD).ShouldBeFalse();
+                yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
                 var json = sut.GetRefResolvedJson();
                 _output.WriteLine(json);
-                json.Contains(ReferenceLoader.REF_KEYWORD).ShouldBeFalse();
+                json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
         }
 
@@ -116,9 +116,9 @@ myref:
   data: test
 ",
 @"test:
-  data: test
+  data: ""test""
 myref:
-  data: test
+  data: ""test""
 "
             };
             yield return new[]
@@ -133,11 +133,11 @@ myref:
 ",
 @"test:
   data1:
-    data: test
+    data: ""test""
   data2:
-    data: test
+    data: ""test""
 myref:
-  data: test
+  data: ""test""
 "
             };
             yield return new[]
@@ -158,18 +158,18 @@ myref2:
   data1:
     data:
       content:
-        data: test
+        data: ""test""
   data2:
     data:
       content:
-        data: test
+        data: ""test""
 myref:
   data:
     content:
-      data: test
+      data: ""test""
 myref2:
   content:
-    data: test
+    data: ""test""
 "
             };
             yield return new[] // works with json
@@ -199,18 +199,18 @@ myref2:
   data1:
     data:
       content:
-        data: test
+        data: ""test""
   data2:
     data:
       content:
-        data: test
+        data: ""test""
 myref:
   data:
     content:
-      data: test
+      data: ""test""
 myref2:
   content:
-    data: test
+    data: ""test""
 "
             };
         }
@@ -223,12 +223,12 @@ myref2:
 
             yaml.InvariantNewline().ShouldBe(
 @"test:
-  this: will load multiple files
+  this: ""will load multiple files""
 finalvalue:
-  value: this is the real final value
+  value: ""this is the real final value""
 value:
   subvalue:
-    value: this is the real final value
+    value: ""this is the real final value""
 ".InvariantNewline());
         }
     }

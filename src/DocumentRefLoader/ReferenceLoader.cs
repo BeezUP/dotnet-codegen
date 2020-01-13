@@ -16,7 +16,6 @@ namespace DocumentRefLoader
     /// </summary>
     public sealed class ReferenceLoader
     {
-        public const string REF_KEYWORD = "$ref";
         internal readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
         //private ResolveRefState CurrentLoaderState { get => _statesStack.Count == 1 ? _statesStack.Peek() : ResolveRefState.Default(); }
         private readonly Stack<ResolveRefState> _statesStack;
@@ -86,7 +85,7 @@ namespace DocumentRefLoader
 
             var refProps = container.Descendants()
                 .OfType<JProperty>()
-                .Where(p => p.Name == REF_KEYWORD)
+                .Where(p => p.Name == Constants.REF_KEYWORD)
                 .ToList();
 
             foreach (var refProperty in refProps)
@@ -162,7 +161,7 @@ namespace DocumentRefLoader
         {
             var parts = refPath.Split('#');
             if (parts.Length > 2)
-                throw new ArgumentException(REF_KEYWORD + " value should not have more than 1 '#' char.", nameof(refPath));
+                throw new ArgumentException(Constants.REF_KEYWORD + " value should not have more than 1 '#' char.", nameof(refPath));
 
             (bool embeded, string doc, string path, bool falseAbsoluteRef) refParts;
             if (parts.Length == 1) // uri only

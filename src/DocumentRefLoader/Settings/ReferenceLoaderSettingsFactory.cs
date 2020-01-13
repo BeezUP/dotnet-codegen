@@ -8,8 +8,8 @@ namespace DocumentRefLoader.Settings
         {
             switch (strategy)
             {
-                case ReferenceLoaderStrategy.RawCopy: return new DefaultSettings();
-                case ReferenceLoaderStrategy.RawCopyNoRemote: return new RawCopyNoRemoteSettings();
+                case ReferenceLoaderStrategy.RefContentCopy: return new DefaultSettings();
+                case ReferenceLoaderStrategy.RefContentCopyNoRemote: return new RefContentCopyNoRemoteSettings();
                 case ReferenceLoaderStrategy.OpenApiV2Merge: return new OpenApiV2MergeSettings();
                 default: throw new NotImplementedException($"{strategy} settings strategy not implemented");
             }

@@ -21,13 +21,13 @@ namespace DocumentRefLoader
         private readonly Stack<ResolveRefState> _statesStack;
 
         private readonly IReferenceLoaderSettings _settings;
-        private readonly Uri _documentUri;
+        internal readonly Uri _documentUri;
+        internal readonly Uri _documentFolder;
         private readonly string _originalDocument;
-        private readonly Uri _documentFolder;
         private readonly JObject _rootJObj;
 
         public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
-            : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), null, null, strategy)
+            : this(fileUri.GetAbsoluteUri(), null, null, strategy)
         { }
 
         private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, Stack<ResolveRefState> statesStack, ReferenceLoaderStrategy strategy)
@@ -36,23 +36,18 @@ namespace DocumentRefLoader
 
         private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, Stack<ResolveRefState> statesStack, IReferenceLoaderSettings settings)
         {
-            _documentUri = documentUri;
-            if (!_documentUri.IsAbsoluteUri)
-                _documentUri = new Uri(new Uri(Path.Combine(Directory.GetCurrentDirectory(), ".")), _documentUri);
-            _documentFolder = new Uri(_documentUri, ".");
+            _documentUri = documentUri.GetAbsolute();
+            _documentFolder = documentUri.GetFolder();
 
             _otherLoaders = otherLoaders ?? new Dictionary<Uri, ReferenceLoader>() { { _documentUri, this } };
             _statesStack = statesStack ?? new Stack<ResolveRefState>();
             _settings = settings;
 
-            using (var webClient = new WebClient())
-            {
-                _originalDocument = webClient.DownloadString(_documentUri);
-            }
-
+            _originalDocument = _documentUri.DownloadDocumentAsync().Result;
             _rootJObj = _settings.Deserialise(_originalDocument, documentUri.ToString());
             OriginalJson = _rootJObj.ToString();
         }
+
 
         internal string OriginalJson { get; }
         internal string FinalJson => _rootJObj.ToString();
@@ -91,7 +86,7 @@ namespace DocumentRefLoader
             foreach (var refProperty in refProps)
             {
                 var refPath = refProperty.Value.ToString();
-                var refInfo = GetRefInfo(refPath);
+                var refInfo = RefInfo.GetRefInfo(_documentUri, refPath);
 
                 state.HandleRefInfo(refInfo);
 
@@ -155,40 +150,6 @@ namespace DocumentRefLoader
             loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _statesStack, _settings);
             _otherLoaders[refInfo.AbsoluteDocumentUri] = loader;
             return loader;
-        }
-
-        internal RefInfo GetRefInfo(string refPath)
-        {
-            var parts = refPath.Split('#');
-            if (parts.Length > 2)
-                throw new ArgumentException(Constants.REF_KEYWORD + " value should not have more than 1 '#' char.", nameof(refPath));
-
-            (bool embeded, string doc, string path, bool falseAbsoluteRef) refParts;
-            if (parts.Length == 1) // uri only
-            {
-                refParts = (false, parts[0], "", false);
-            }
-            else if (string.IsNullOrWhiteSpace(parts[0]))
-            {
-                refParts = (true, "", parts[1], false);
-            }
-            else if (string.Compare(parts[0], _documentUri.ToString(), StringComparison.InvariantCultureIgnoreCase) == 0)
-            {
-                refParts = (true, parts[0], parts[1], true);
-            }
-            else
-            {
-                refParts = (false, parts[0], parts[1], false);
-            }
-
-            if (refParts.embeded)
-                return new RefInfo(true, _documentUri.IsFile, _documentUri, refParts.path, refParts.falseAbsoluteRef);
-
-            var uri = new Uri(refParts.doc, UriKind.RelativeOrAbsolute);
-            if (!uri.IsAbsoluteUri)
-                uri = new Uri(_documentFolder, uri);
-
-            return new RefInfo(false, uri.IsFile, uri, refParts.path, refParts.falseAbsoluteRef);
         }
     }
 }

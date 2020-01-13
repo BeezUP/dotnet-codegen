@@ -2,8 +2,8 @@
 {
     public enum ReferenceLoaderStrategy
     {
-        RawCopy,
-        RawCopyNoRemote,
+        RefContentCopy,
+        RefContentCopyNoRemote,
         OpenApiV2Merge
     }
 }

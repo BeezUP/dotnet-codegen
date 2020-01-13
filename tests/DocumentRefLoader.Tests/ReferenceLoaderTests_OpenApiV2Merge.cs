@@ -26,10 +26,8 @@ namespace DocumentRefLoader.Tests
         public void Should_match_expected(string file, string expected)
         {
             var sut = new ReferenceLoader("./_yamlSamples/" + file, ReferenceLoaderStrategy.OpenApiV2Merge);
-            {
-                var yaml = sut.GetRefResolvedYaml();
-                yaml.InvariantNewline().ShouldBe(File.ReadAllText("./_yamlSamples/" + expected).InvariantNewline());
-            }
+            var yaml = sut.GetRefResolvedYaml();
+            yaml.InvariantNewline().ShouldBe(File.ReadAllText("./_yamlSamples/" + expected).InvariantNewline());
         }
 
         [Theory]
@@ -37,11 +35,9 @@ namespace DocumentRefLoader.Tests
         public void Should_match_expected_online(string uri, string expected)
         {
             var sut = new ReferenceLoader(uri, ReferenceLoaderStrategy.OpenApiV2Merge);
-            {
-                var yaml = sut.GetRefResolvedYaml();
-                DumpFiles(sut);
-                yaml.InvariantNewline().ShouldBe(File.ReadAllText(expected).InvariantNewline());
-            }
+            var yaml = sut.GetRefResolvedYaml();
+            DumpFiles(sut);
+            yaml.InvariantNewline().ShouldBe(File.ReadAllText(expected).InvariantNewline());
         }
 
         public static void DumpFiles(ReferenceLoader refLoader)
@@ -60,7 +56,7 @@ namespace DocumentRefLoader.Tests
         void DumpDifferences3(ReferenceLoader refLoader)
         {
 
-           
+
             foreach (var kv in refLoader._otherLoaders)
             {
                 _output.WriteLine("=====================================================================================");

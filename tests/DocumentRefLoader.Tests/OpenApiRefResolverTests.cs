@@ -2,17 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace DocumentRefLoader.Tests
 {
-    public class ReferenceLoaderTests_RawCopy
+    public class ReferenceLoaderTests_RawCopy2
     {
         private readonly ITestOutputHelper _output;
 
-        public ReferenceLoaderTests_RawCopy(ITestOutputHelper output)
+        public ReferenceLoaderTests_RawCopy2(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -20,14 +19,14 @@ namespace DocumentRefLoader.Tests
         [Fact]
         public void Should_resolve_nested_references()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/petshop.yaml", ReferenceLoaderStrategy.RefContentCopy);
+            var sut = new OpenApiRefResolver("./_yamlSamples/petshop.yaml");
             {
-                var yaml = sut.GetRefResolvedYaml();
+                var yaml = sut.GetRefResolvedYamlAsync().Result;
                 _output.WriteLine(yaml);
                 yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
-                var json = sut.GetRefResolvedJson();
+                var json = sut.GetRefResolvedJsonAsync().Result;
                 _output.WriteLine(json);
                 json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
@@ -36,14 +35,14 @@ namespace DocumentRefLoader.Tests
         [Fact]
         public void Should_resolve_external_references()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/petshop_with_external.yaml", ReferenceLoaderStrategy.RefContentCopy);
+            var sut = new OpenApiRefResolver("./_yamlSamples/petshop_with_external.yaml");
             {
-                var yaml = sut.GetRefResolvedYaml();
+                var yaml = sut.GetRefResolvedYamlAsync().Result;
                 _output.WriteLine(yaml);
                 yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
-                var json = sut.GetRefResolvedJson();
+                var json = sut.GetRefResolvedJsonAsync().Result;
                 _output.WriteLine(json);
                 json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
@@ -59,8 +58,8 @@ namespace DocumentRefLoader.Tests
             {
                 File.WriteAllText(fileName, document);
 
-                var sut = new ReferenceLoader(fileName, ReferenceLoaderStrategy.RefContentCopy);
-                var yaml = sut.GetRefResolvedYaml();
+                var sut = new OpenApiRefResolver(fileName);
+                var yaml = sut.GetRefResolvedYamlAsync().Result;
 
                 yaml.InvariantNewline().ShouldBe(expectedYaml.InvariantNewline());
             }
@@ -183,8 +182,8 @@ myref2:
         [Fact]
         public void VeryTrickyTest()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/simple1.yaml", ReferenceLoaderStrategy.RefContentCopy);
-            var yaml = sut.GetRefResolvedYaml();
+            var sut = new OpenApiRefResolver("./_yamlSamples/simple1.yaml");
+            var yaml = sut.GetRefResolvedYamlAsync().Result;
 
             yaml.InvariantNewline().ShouldBe(
 @"test:

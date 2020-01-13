@@ -32,39 +32,24 @@ namespace DocumentRefLoader
         static readonly Deserializer YamlDeserializer = new Deserializer();
         static readonly Serializer YamlSerializer = new Serializer();
 
+        public OpenApiRefResolver(string fileUri, string authorization = null, Dictionary<Uri, OpenApiRefResolver> otherResolvers = null)
+         : this(new Uri(fileUri, UriKind.RelativeOrAbsolute), authorization, otherResolvers)
+        { }
+
         public OpenApiRefResolver(Uri documentUri, string authorization = null, Dictionary<Uri, OpenApiRefResolver> otherResolvers = null)
         {
-            DocumentUri = documentUri.IsAbsoluteUri
-                ? documentUri
-                : new Uri(new Uri(Path.Combine(Directory.GetCurrentDirectory(), ".")), DocumentUri);
-
+            DocumentUri = documentUri.GetAbsolute();
             DocumentFolder = new Uri(DocumentUri, ".");
-
             Authorization = authorization;
-
             OtherResolvers = otherResolvers ?? new Dictionary<Uri, OpenApiRefResolver>();
         }
 
         async Task EnsureIsDownloadedAsync()
         {
             if (IsDownloaded) return;
-            await DownloadFileAsync();
-            IsDownloaded = true;
-        }
-
-        async Task DownloadFileAsync()
-        {
             Console.WriteLine($"Downloading: {DocumentUri}");
-
-            using (var webClient = new WebClient())
-            {
-                if (Authorization != null)
-                {
-                    webClient.Headers.Add("Authorization", Authorization);
-                }
-
-                OriginalDocument = await webClient.DownloadStringTaskAsync(DocumentUri);
-            }
+            OriginalDocument = await DocumentUri.DownloadDocumentAsync(Authorization);
+            IsDownloaded = true;
         }
 
         async Task EnsureIsReadAsync()
@@ -102,7 +87,7 @@ namespace DocumentRefLoader
             IsResolved = true;
         }
 
-        OpenApiRefResolver GetYamlLoader(OpenApiRefInfo refInfo)
+        OpenApiRefResolver GetYamlLoader(RefInfo refInfo)
         {
             if (refInfo.IsNestedInThisDocument)
                 return this;
@@ -195,7 +180,7 @@ namespace DocumentRefLoader
 
         public async Task<RefPropertyHolder> GetRefJTokenAsync(string refPath)
         {
-            var refInfo = OpenApiRefInfo.GetRefInfo(DocumentUri, DocumentFolder, refPath);
+            var refInfo = RefInfo.GetRefInfo(DocumentUri, refPath);
             var loader = GetYamlLoader(refInfo);
             var propertyValue = await loader.GetDocumentPartAsync(refInfo.InDocumentPath, true);
 

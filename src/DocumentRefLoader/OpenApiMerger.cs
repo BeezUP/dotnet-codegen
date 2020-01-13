@@ -4,35 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace DocumentRefLoader
 {
-    public class OpenApiRefMergerOverridingValues
-    {
-        public string Title { get; set; }
-
-        public string Description { get; set; }
-
-        public string LogoUrl { get; set; }
-
-        public string LogoBackgroundColor { get; set; }
-
-        public string ContactEmail { get; set; }
-
-        public string LicenseName { get; set; }
-
-        public string LicenseUrl { get; set; }
-
-        public string ExternalDocDescription { get; set; }
-
-        public string ExternalDocUrl { get; set; }
-
-        public string Host { get; set; }
-
-        public string BasePath { get; set; }
-    }
-
-    public class OpenApiRefMerger
+    public class OpenApiMerger
     {
         readonly Action<JObject, OpenApiGeneralInfo[]> CustomizeDocument;
         readonly Action<(string basePath, string title, string itemType, JToken item)> CustomizeItem;
@@ -40,7 +14,7 @@ namespace DocumentRefLoader
         bool IsResolved;
         JObject MergedRootJObject;
 
-        public static OpenApiRefMerger GetMergerForDoc(string[] fileUris, OpenApiRefMergerOverridingValues overridingValues, string authorization = null)
+        public static OpenApiMerger GetMergerForDoc(string[] fileUris, OpenApiRefMergerOverridingValues overridingValues, string authorization = null)
         {
             void CustomizeDocument(JObject rootJObject, OpenApiGeneralInfo[] generalInfos)
             {
@@ -142,7 +116,7 @@ namespace DocumentRefLoader
                 }
             }
 
-            return new OpenApiRefMerger(
+            return new OpenApiMerger(
                         fileUris.Select(x => new Uri(x, UriKind.RelativeOrAbsolute)).ToArray(),
                         CustomizeDocument,
                         CustomizeItem,
@@ -150,11 +124,12 @@ namespace DocumentRefLoader
                         );
         }
 
-        public OpenApiRefMerger(
+        public OpenApiMerger(
             Uri[] fileUris,
             Action<JObject, OpenApiGeneralInfo[]> customizeDocument = null,
             Action<(string basePath, string title, string itemType, JToken item)> customizeItem = null,
-            string authorization = null)
+            string authorization = null
+            )
         {
             CustomizeDocument = customizeDocument ?? delegate { };
             CustomizeItem = customizeItem ?? delegate { };

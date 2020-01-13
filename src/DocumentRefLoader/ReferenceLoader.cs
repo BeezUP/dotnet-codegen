@@ -1,13 +1,10 @@
-﻿using System;
+﻿using DocumentRefLoader.Settings;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using DocumentRefLoader.Settings;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using YamlDotNet.Serialization;
+using System.Threading.Tasks;
 
 namespace DocumentRefLoader
 {
@@ -21,56 +18,61 @@ namespace DocumentRefLoader
         private readonly IReferenceLoaderSettings _settings;
         internal readonly Uri _documentUri;
         internal readonly Uri _documentFolder;
-        private readonly string _originalDocument;
-        private readonly JObject _rootJObj;
 
         public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
             : this(fileUri.GetAbsoluteUri(), null, strategy)
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, ReferenceLoaderStrategy strategy)
-            : this(documentUri, otherLoaders, strategy.GetSettings())
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, ReferenceLoaderStrategy strategy, string authorization = null)
+            : this(documentUri, otherLoaders, strategy.GetSettings(), authorization)
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, IReferenceLoaderSettings settings)
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, IReferenceLoaderSettings settings, string authorization = null)
         {
             _documentUri = documentUri.GetAbsolute();
             _documentFolder = documentUri.GetFolder();
 
             _otherLoaders = otherLoaders ?? new Dictionary<Uri, ReferenceLoader>() { { _documentUri, this } };
             _settings = settings;
-
-            _originalDocument = _documentUri.DownloadDocumentAsync().Result;
-            _rootJObj = _settings.Deserialise(_originalDocument, documentUri.ToString());
-            OriginalJson = _rootJObj.ToString();
         }
 
-
-        internal string OriginalJson { get; }
-        internal string FinalJson => _rootJObj.ToString();
-
-
-
-        public string GetRefResolvedYaml() => _settings.YamlSerialize(GetRefResolvedJObject());
-        public string GetRefResolvedJson() => _settings.JsonSerialize(GetRefResolvedJObject());
-
-        public JObject GetRefResolvedJObject()
+        internal string _originalJson;
+        private JObject _rootJObj;
+        private async Task EnsureJsonLoadedAsync()
         {
-            EnsureRefResolved();
-            return _rootJObj;
+            if (_rootJObj != null) return;
+            var originalDocument = await _documentUri.DownloadDocumentAsync();
+            _rootJObj = _settings.Deserialise(originalDocument, _documentUri.ToString());
+            _originalJson = _settings.JsonSerialize(_rootJObj);
+
         }
 
         bool _isResolved = false;
-        private void EnsureRefResolved()
+        internal string _finalJson;
+        private async Task EnsureRefResolvedAsync()
         {
             if (_isResolved)
                 return;
 
+            await EnsureJsonLoadedAsync();
+
             _isResolved = true;
-            ResolveRef(_rootJObj);
+            await ResolveRefAsync(_rootJObj);
+            _finalJson = _settings.JsonSerialize(_rootJObj);
         }
 
-        private void ResolveRef(JToken token)
+
+
+        public async Task<string> GetRefResolvedYamlAsync() => _settings.YamlSerialize(await GetRefResolvedJObjectAsync());
+        public async Task<string> GetRefResolvedJsonAsync() => _settings.JsonSerialize(await GetRefResolvedJObjectAsync());
+
+        public async Task<JObject> GetRefResolvedJObjectAsync()
+        {
+            await EnsureRefResolvedAsync();
+            return _rootJObj;
+        }
+
+        private async Task ResolveRefAsync(JToken token)
         {
             if (!(token is JContainer container))
                 return;
@@ -85,12 +87,10 @@ namespace DocumentRefLoader
                 var refPath = refProperty.Value.ToString();
                 var refInfo = RefInfo.GetRefInfo(_documentUri, refPath);
 
-              
-
                 if (!_settings.ShouldResolveReference(refInfo)) continue;
 
-                var replacement = GetRefJToken(refInfo);
-                ResolveRef(replacement);
+                var replacement = await GetRefJTokenAsync(refInfo);
+                await ResolveRefAsync(replacement);
 
                 if (refProperty.Parent?.Parent == null)
                     // When a property has already been replaced by recursions, it has no more Parent
@@ -103,17 +103,16 @@ namespace DocumentRefLoader
             }
         }
 
-        private JToken GetRefJToken(RefInfo refInfo)
+        private async Task<JToken> GetRefJTokenAsync(RefInfo refInfo)
         {
-            // TODO : Be able to load external (http) documents with credentials (swagger hub)
             var loader = GetReferenceLoader(refInfo);
-            var replacement = loader.GetDocumentPart(refInfo.InDocumentPath);
+            var replacement = await loader.GetDocumentPartAsync(refInfo.InDocumentPath);
             return replacement;
         }
 
-        private JToken GetDocumentPart(string path)
+        private async Task<JToken> GetDocumentPartAsync(string path)
         {
-            EnsureRefResolved();
+            await EnsureRefResolvedAsync();
 
             var parts = path.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
 

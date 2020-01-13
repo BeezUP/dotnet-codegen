@@ -6,6 +6,7 @@ using Shouldly;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,19 +24,19 @@ namespace DocumentRefLoader.Tests
         [Theory]
         //[InlineData("Merge1.yaml", "Merge1_expected.yaml")]
         [InlineData("Merge2A.yaml", "Merge2_expected.yaml")]
-        public void Should_match_expected(string file, string expected)
+        public async Task Should_match_expected(string file, string expected)
         {
             var sut = new ReferenceLoader("./_yamlSamples/" + file, ReferenceLoaderStrategy.OpenApiV2Merge);
-            var yaml = sut.GetRefResolvedYaml();
+            var yaml = await sut.GetRefResolvedYamlAsync();
             yaml.InvariantNewline().ShouldBe(File.ReadAllText("./_yamlSamples/" + expected).InvariantNewline());
         }
 
         [Theory]
         [InlineData("https://api.swaggerhub.com/apis/BeezUP/backends/1.0", "./_yamlSamples/BeezUP_backends_expected.yaml")]
-        public void Should_match_expected_online(string uri, string expected)
+        public async Task Should_match_expected_online(string uri, string expected)
         {
             var sut = new ReferenceLoader(uri, ReferenceLoaderStrategy.OpenApiV2Merge);
-            var yaml = sut.GetRefResolvedYaml();
+            var yaml = await sut.GetRefResolvedYamlAsync();
             DumpFiles(sut);
             yaml.InvariantNewline().ShouldBe(File.ReadAllText(expected).InvariantNewline());
         }
@@ -47,8 +48,8 @@ namespace DocumentRefLoader.Tests
             foreach (var kv in refLoader._otherLoaders)
             {
                 var fileName = kv.Key.ToString().Replace("/", "_").Replace(":", "");
-                File.WriteAllText(Path.Combine(tmpFolder, fileName + "_before"), kv.Value.OriginalJson);
-                File.WriteAllText(Path.Combine(tmpFolder, fileName + "_after"), kv.Value.FinalJson);
+                File.WriteAllText(Path.Combine(tmpFolder, fileName + "_before"), kv.Value._originalJson);
+                File.WriteAllText(Path.Combine(tmpFolder, fileName + "_after"), kv.Value._finalJson);
             }
         }
 
@@ -66,7 +67,7 @@ namespace DocumentRefLoader.Tests
                 var rl = kv.Value;
 
                 var diffBuilder = new InlineDiffBuilder(new Differ());
-                var diff = diffBuilder.BuildDiffModel(rl.OriginalJson.InvariantNewline(), rl.FinalJson.InvariantNewline());
+                var diff = diffBuilder.BuildDiffModel(rl._originalJson.InvariantNewline(), rl._finalJson.InvariantNewline());
 
                 foreach (var line in diff.Lines)
                 {
@@ -92,8 +93,8 @@ namespace DocumentRefLoader.Tests
                 _output.WriteLine($"\n{kv.Key}\n");
 
                 var rl = kv.Value;
-                var leftLines = rl.OriginalJson.InvariantNewline().Split("\n");
-                var rightLines = rl.FinalJson.InvariantNewline().Split("\n");
+                var leftLines = rl._originalJson.InvariantNewline().Split("\n");
+                var rightLines = rl._finalJson.InvariantNewline().Split("\n");
                 var diff = DiffLib.Diff.CalculateSections(leftLines, rightLines);
 
                 var left = 0;
@@ -138,7 +139,7 @@ namespace DocumentRefLoader.Tests
                 var rl = kv.Value;
 
                 var jdp = new JsonDiffPatchDotNet.JsonDiffPatch();
-                var patch = jdp.Diff(JToken.Parse(rl.OriginalJson), JToken.Parse(rl.FinalJson));
+                var patch = jdp.Diff(JToken.Parse(rl._originalJson), JToken.Parse(rl._finalJson));
                 _output.WriteLine($"\n\n\n{kv.Key}\n\n");
                 _output.WriteLine(patch.ToString());
             }

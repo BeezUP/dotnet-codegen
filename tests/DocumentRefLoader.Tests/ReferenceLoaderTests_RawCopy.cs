@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace DocumentRefLoader.Tests
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S1199:Nested code blocks should not be used", Justification = "it's OK")]
     public class ReferenceLoaderTests_RawCopy
     {
         private readonly ITestOutputHelper _output;
@@ -18,32 +19,32 @@ namespace DocumentRefLoader.Tests
         }
 
         [Fact]
-        public void Should_resolve_nested_references()
+        public async Task Should_resolve_nested_references()
         {
             var sut = new ReferenceLoader("./_yamlSamples/petshop.yaml", ReferenceLoaderStrategy.CopyRefContent);
             {
-                var yaml = sut.GetRefResolvedYaml();
+                var yaml = await sut.GetRefResolvedYamlAsync();
                 _output.WriteLine(yaml);
                 yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
-                var json = sut.GetRefResolvedJson();
+                var json = await sut.GetRefResolvedJsonAsync();
                 _output.WriteLine(json);
                 json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
         }
 
         [Fact]
-        public void Should_resolve_external_references()
+        public async Task Should_resolve_external_references()
         {
             var sut = new ReferenceLoader("./_yamlSamples/petshop_with_external.yaml", ReferenceLoaderStrategy.CopyRefContent);
             {
-                var yaml = sut.GetRefResolvedYaml();
+                var yaml = await sut.GetRefResolvedYamlAsync();
                 _output.WriteLine(yaml);
                 yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
-                var json = sut.GetRefResolvedJson();
+                var json = await sut.GetRefResolvedJsonAsync();
                 _output.WriteLine(json);
                 json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
@@ -51,7 +52,7 @@ namespace DocumentRefLoader.Tests
 
         [Theory]
         [MemberData(nameof(ResolveNested_Data))]
-        public void ResolveNested(string document, string expectedYaml)
+        public async Task ResolveNested(string document, string expectedYaml)
         {
             var fileName = Path.GetTempFileName();
 
@@ -60,7 +61,7 @@ namespace DocumentRefLoader.Tests
                 File.WriteAllText(fileName, document);
 
                 var sut = new ReferenceLoader(fileName, ReferenceLoaderStrategy.CopyRefContent);
-                var yaml = sut.GetRefResolvedYaml();
+                var yaml = await sut.GetRefResolvedYamlAsync();
 
                 yaml.InvariantNewline().ShouldBe(expectedYaml.InvariantNewline());
             }
@@ -181,10 +182,10 @@ myref2:
         }
 
         [Fact]
-        public void VeryTrickyTest()
+        public async Task VeryTrickyTest()
         {
             var sut = new ReferenceLoader("./_yamlSamples/simple1.yaml", ReferenceLoaderStrategy.CopyRefContent);
-            var yaml = sut.GetRefResolvedYaml();
+            var yaml = await sut.GetRefResolvedYamlAsync();
 
             yaml.InvariantNewline().ShouldBe(
 @"test:

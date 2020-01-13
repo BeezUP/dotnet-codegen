@@ -3,14 +3,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.EventEmitters;
-using YamlDotNet.Serialization.NodeDeserializers;
 using YamlDotNet.Serialization.NodeTypeResolvers;
 
 namespace DocumentRefLoader.Settings

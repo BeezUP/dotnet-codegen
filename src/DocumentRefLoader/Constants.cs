@@ -1,7 +1,9 @@
 ﻿
-
-internal static class Constants
+namespace DocumentRefLoader
 {
-    public const string REF_KEYWORD = "$ref";
+    internal static class Constants
+    {
+        public const string REF_KEYWORD = "$ref";
+    }
 }
 

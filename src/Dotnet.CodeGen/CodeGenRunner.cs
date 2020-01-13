@@ -54,7 +54,7 @@ namespace Dotnet.CodeGen.CodeGen
 
         public static async Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, List<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
         {
-            var jsonObject = schemaLoader.LoadSchema(sourcePath);
+            var jsonObject = schemaLoader.LoadSchemaAsync(sourcePath);
 
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 

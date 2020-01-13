@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace DocumentRefLoader.Tests
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S1199:Nested code blocks should not be used", Justification = "it's OK")]
     public class ReferenceLoaderTests_RawCopy2
     {
         private readonly ITestOutputHelper _output;
@@ -17,32 +19,32 @@ namespace DocumentRefLoader.Tests
         }
 
         [Fact]
-        public void Should_resolve_nested_references()
+        public async Task Should_resolve_nested_references()
         {
             var sut = new OpenApiRefResolver("./_yamlSamples/petshop.yaml");
             {
-                var yaml = sut.GetRefResolvedYamlAsync().Result;
+                var yaml = await sut.GetRefResolvedYamlAsync();
                 _output.WriteLine(yaml);
                 yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
-                var json = sut.GetRefResolvedJsonAsync().Result;
+                var json = await sut.GetRefResolvedJsonAsync();
                 _output.WriteLine(json);
                 json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
         }
 
         [Fact]
-        public void Should_resolve_external_references()
+        public async Task Should_resolve_external_references()
         {
             var sut = new OpenApiRefResolver("./_yamlSamples/petshop_with_external.yaml");
             {
-                var yaml = sut.GetRefResolvedYamlAsync().Result;
+                var yaml = await sut.GetRefResolvedYamlAsync();
                 _output.WriteLine(yaml);
                 yaml.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }
             {
-                var json = sut.GetRefResolvedJsonAsync().Result;
+                var json = await sut.GetRefResolvedJsonAsync();
                 _output.WriteLine(json);
                 json.Contains(Constants.REF_KEYWORD).ShouldBeFalse();
             }

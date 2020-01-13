@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Dotnet.CodeGen.Schemas
 {
     public interface ISchemaLoader
     {
-        JToken LoadSchema(string documentUri);
+        Task<JToken> LoadSchemaAsync(string documentUri);
     }
 }

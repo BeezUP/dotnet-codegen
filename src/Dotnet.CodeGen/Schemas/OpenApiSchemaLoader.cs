@@ -10,8 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Dotnet.CodeGen.Schemas
 {
@@ -19,17 +18,17 @@ namespace Dotnet.CodeGen.Schemas
     {
         static readonly HttpClient httpClient = new HttpClient { };
 
-        public JToken LoadSchema(string documentUri)
+        public async Task<JToken> LoadSchemaAsync(string documentUri)
         {
             var settings = new OpenApiReaderSettings()
             {
                 //ReferenceResolution = ReferenceResolutionSetting.ResolveAllReferences,
             };
 
-            using (var stream = httpClient.GetStreamAsync(documentUri).Result)
+            using (var stream = await httpClient.GetStreamAsync(documentUri))
             {
                 var openApiDocument = new OpenApiStreamReader(settings).Read(stream, out var diagnostic);
-               
+
                 var resolver = new OpenApiReferenceResolver(openApiDocument);
                 var walker = new OpenApiWalker(resolver);
                 walker.Walk(openApiDocument);
@@ -49,42 +48,15 @@ namespace Dotnet.CodeGen.Schemas
             }
         }
 
-        //private void LoadReferences(OpenApiDocument openApiDocument)
-        //{
-        //    RecursiveLoadReferences(openApiDocument, openApiDocument);
-        //}
-
-        //private void RecursiveLoadReferences(OpenApiDocument openApiDocument, object current)
-        //{
-        //    if (current == null) return;
-        //    if (current is OpenApiReference apiRef)
-        //    {
-        //        openApiDocument.ResolveReference(apiRef);
-        //        return;
-        //    }
-
-        //    foreach (var prop in current.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
-        //    {
-        //        Console.WriteLine(prop.Name);
-
-        //        var getMethod = prop.GetMethod;
-        //        if (getMethod.GetParameters().Length != 0) continue;
-
-        //        var value = getMethod.Invoke(current, new object[0]);
-        //        RecursiveLoadReferences(openApiDocument, value);
-        //    }
-        //}
-
-
         /// <summary>
         /// This class is used to walk an OpenApiDocument and convert unresolved references to references to populated objects
         /// Taken from here : https://github.com/Microsoft/OpenAPI.NET/blob/master/src/Microsoft.OpenApi.Readers/Services/OpenApiReferenceResolver.cs
         /// </summary>
         internal class OpenApiReferenceResolver : OpenApiVisitorBase
         {
-            private OpenApiDocument _currentDocument;
-            private bool _resolveRemoteReferences;
-            private List<OpenApiError> _errors = new List<OpenApiError>();
+            private readonly OpenApiDocument _currentDocument;
+            private readonly bool _resolveRemoteReferences;
+            private readonly List<OpenApiError> _errors = new List<OpenApiError>();
 
             public OpenApiReferenceResolver(OpenApiDocument currentDocument, bool resolveRemoteReferences = true)
             {
@@ -160,9 +132,9 @@ namespace Dotnet.CodeGen.Schemas
             /// <summary>
             /// Resolve all references to responses
             /// </summary>
-            public override void Visit(OpenApiResponses responses)
+            public override void Visit(OpenApiResponses response)
             {
-                ResolveMap(responses);
+                ResolveMap(response);
             }
 
             /// <summary>
@@ -292,7 +264,7 @@ namespace Dotnet.CodeGen.Schemas
                         return null;
                     }
                 }
-                else if (_resolveRemoteReferences == true)
+                else if (_resolveRemoteReferences)
                 {
                     // TODO: Resolve Remote reference (Targeted for 1.1 release)
                     return new T()

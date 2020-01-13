@@ -10,7 +10,6 @@ namespace DocumentRefLoader.Settings
             {
                 case ReferenceLoaderStrategy.CopyRefContent: return new DefaultSettings();
                 case ReferenceLoaderStrategy.RefContentCopyNoRemote: return new RefContentCopyNoRemoteSettings();
-                //case ReferenceLoaderStrategy.OpenApiV2Merge: return new OpenApiV2MergeSettings();
                 default: throw new NotImplementedException($"{strategy} settings strategy not implemented");
             }
         }

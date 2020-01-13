@@ -24,6 +24,4 @@
 
         public string BasePath { get; set; }
     }
-
-
 }

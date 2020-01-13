@@ -20,7 +20,7 @@ namespace DocumentRefLoader.Tests
         [Fact]
         public void Should_resolve_nested_references()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/petshop.yaml", ReferenceLoaderStrategy.RefContentCopy);
+            var sut = new ReferenceLoader("./_yamlSamples/petshop.yaml", ReferenceLoaderStrategy.CopyRefContent);
             {
                 var yaml = sut.GetRefResolvedYaml();
                 _output.WriteLine(yaml);
@@ -36,7 +36,7 @@ namespace DocumentRefLoader.Tests
         [Fact]
         public void Should_resolve_external_references()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/petshop_with_external.yaml", ReferenceLoaderStrategy.RefContentCopy);
+            var sut = new ReferenceLoader("./_yamlSamples/petshop_with_external.yaml", ReferenceLoaderStrategy.CopyRefContent);
             {
                 var yaml = sut.GetRefResolvedYaml();
                 _output.WriteLine(yaml);
@@ -59,7 +59,7 @@ namespace DocumentRefLoader.Tests
             {
                 File.WriteAllText(fileName, document);
 
-                var sut = new ReferenceLoader(fileName, ReferenceLoaderStrategy.RefContentCopy);
+                var sut = new ReferenceLoader(fileName, ReferenceLoaderStrategy.CopyRefContent);
                 var yaml = sut.GetRefResolvedYaml();
 
                 yaml.InvariantNewline().ShouldBe(expectedYaml.InvariantNewline());
@@ -183,7 +183,7 @@ myref2:
         [Fact]
         public void VeryTrickyTest()
         {
-            var sut = new ReferenceLoader("./_yamlSamples/simple1.yaml", ReferenceLoaderStrategy.RefContentCopy);
+            var sut = new ReferenceLoader("./_yamlSamples/simple1.yaml", ReferenceLoaderStrategy.CopyRefContent);
             var yaml = sut.GetRefResolvedYaml();
 
             yaml.InvariantNewline().ShouldBe(

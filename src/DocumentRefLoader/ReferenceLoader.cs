@@ -17,8 +17,6 @@ namespace DocumentRefLoader
     public sealed class ReferenceLoader
     {
         internal readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
-        //private ResolveRefState CurrentLoaderState { get => _statesStack.Count == 1 ? _statesStack.Peek() : ResolveRefState.Default(); }
-        private readonly Stack<ResolveRefState> _statesStack;
 
         private readonly IReferenceLoaderSettings _settings;
         internal readonly Uri _documentUri;
@@ -27,20 +25,19 @@ namespace DocumentRefLoader
         private readonly JObject _rootJObj;
 
         public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
-            : this(fileUri.GetAbsoluteUri(), null, null, strategy)
+            : this(fileUri.GetAbsoluteUri(), null, strategy)
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, Stack<ResolveRefState> statesStack, ReferenceLoaderStrategy strategy)
-            : this(documentUri, otherLoaders, statesStack, strategy.GetSettings())
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, ReferenceLoaderStrategy strategy)
+            : this(documentUri, otherLoaders, strategy.GetSettings())
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, Stack<ResolveRefState> statesStack, IReferenceLoaderSettings settings)
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, IReferenceLoaderSettings settings)
         {
             _documentUri = documentUri.GetAbsolute();
             _documentFolder = documentUri.GetFolder();
 
             _otherLoaders = otherLoaders ?? new Dictionary<Uri, ReferenceLoader>() { { _documentUri, this } };
-            _statesStack = statesStack ?? new Stack<ResolveRefState>();
             _settings = settings;
 
             _originalDocument = _documentUri.DownloadDocumentAsync().Result;
@@ -70,10 +67,10 @@ namespace DocumentRefLoader
                 return;
 
             _isResolved = true;
-            ResolveRef(_rootJObj, ResolveRefState.Default());
+            ResolveRef(_rootJObj);
         }
 
-        private void ResolveRef(JToken token, ResolveRefState state)
+        private void ResolveRef(JToken token)
         {
             if (!(token is JContainer container))
                 return;
@@ -88,12 +85,12 @@ namespace DocumentRefLoader
                 var refPath = refProperty.Value.ToString();
                 var refInfo = RefInfo.GetRefInfo(_documentUri, refPath);
 
-                state.HandleRefInfo(refInfo);
+              
 
-                if (!_settings.ShouldResolveReference(refInfo, state)) continue;
+                if (!_settings.ShouldResolveReference(refInfo)) continue;
 
                 var replacement = GetRefJToken(refInfo);
-                ResolveRef(replacement, ResolveRefState.FromParent(state));
+                ResolveRef(replacement);
 
                 if (refProperty.Parent?.Parent == null)
                     // When a property has already been replaced by recursions, it has no more Parent
@@ -147,7 +144,7 @@ namespace DocumentRefLoader
             if (_otherLoaders.TryGetValue(refInfo.AbsoluteDocumentUri, out var loader))
                 return loader;
 
-            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _statesStack, _settings);
+            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _settings);
             _otherLoaders[refInfo.AbsoluteDocumentUri] = loader;
             return loader;
         }

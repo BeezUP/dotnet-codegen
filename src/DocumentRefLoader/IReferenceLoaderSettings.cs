@@ -12,7 +12,7 @@ namespace DocumentRefLoader
         string JsonSerialize(JObject jObject);
         string YamlSerialize(JObject jObject);
 
-        bool ShouldResolveReference(RefInfo refInfo, ResolveRefState state);
+        bool ShouldResolveReference(RefInfo refInfo);
 
         void ApplyRefReplacement(RefInfo refInfo, JObject rootJObj, JProperty refProperty, JToken replacement, Uri fromDocument);
     }

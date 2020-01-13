@@ -2,7 +2,7 @@
 {
     public enum ReferenceLoaderStrategy
     {
-        RefContentCopy,
+        CopyRefContent,
         RefContentCopyNoRemote,
         OpenApiV2Merge
     }

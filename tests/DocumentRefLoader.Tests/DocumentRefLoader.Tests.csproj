@@ -27,12 +27,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="_yamlSamples\BeezUP_backends_expected.yaml" />
-    <None Remove="_yamlSamples\Merge2A.yaml" />
-    <None Remove="_yamlSamples\Merge2B.yaml" />
-    <None Remove="_yamlSamples\Merge2C.yaml" />
-    <None Remove="_yamlSamples\Merge2_expected.yaml" />
-  </ItemGroup>
 </Project>

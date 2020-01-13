@@ -187,7 +187,6 @@ namespace Dotnet.CodeGen.Schemas
                 ResolveObject(schema.AdditionalProperties, r => schema.AdditionalProperties = r);
             }
 
-
             /// <summary>
             /// Replace references to tags with either tag objects declared in components, or inline tag object
             /// </summary>

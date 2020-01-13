@@ -250,6 +250,13 @@ namespace DocumentRefLoader
 
 
         }
+
+        public async Task<JObject> GetMergedJObjectAsync()
+        {
+            await EnsureAllDocsAreResolvedAsync();
+            await EnsureAllDocsAreMergedAsync();
+            return MergedRootJObject;
+        }
     }
 
 

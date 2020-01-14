@@ -55,7 +55,7 @@ namespace Dotnet.CodeGen.Tests
                 using (var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = COMMAND_NAME,
-                    Arguments = $"\"./_samples/test1/schema.json\" \"./_samples/test1/template\" \"{outputPath}\"",
+                    Arguments = $"\"./_samples/test1/schema.json\" \"{outputPath}\" \"./_samples/test1/template\"",
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,

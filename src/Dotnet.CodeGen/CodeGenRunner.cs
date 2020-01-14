@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Dotnet.CodeGen.CodeGen.Instructions;
+using Dotnet.CodeGen.CustomHandlebars;
+using Dotnet.CodeGen.Schemas;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Dotnet.CodeGen.CodeGen.Instructions;
-using Dotnet.CodeGen.CustomHandlebars;
-using Dotnet.CodeGen.Schemas;
 
 namespace Dotnet.CodeGen.CodeGen
 {
     public static class CodeGenRunner
     {
-        public static IEnumerable<TemplateInfos> GetTemplates(List<string> templatesPaths, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
+        public static IEnumerable<TemplateInfos> GetTemplates(IEnumerable<string> templatesPaths, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
         {
             var templates = templatesPaths
                 .SelectMany(templatePath => TemplateHelper.GetTemplates(templatePath, "*.hbs"))
@@ -50,11 +49,11 @@ namespace Dotnet.CodeGen.CodeGen
         }
 
         public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
-            => RunAsync(sourcePath, schemaLoader, new List<string>() { templatePath }, outputPath, templateDuplicationHandlingStrategy);
+            => RunAsync(sourcePath, schemaLoader, new[] { templatePath }, outputPath, templateDuplicationHandlingStrategy);
 
-        public static async Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, List<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+        public static async Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
         {
-            var jsonObject = schemaLoader.LoadSchemaAsync(sourcePath);
+            var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath);
 
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Dotnet.CodeGen.Schemas;
+﻿using Dotnet.CodeGen.Schemas;
+using System;
 
 namespace Dotnet.CodeGen.CodeGen
 {

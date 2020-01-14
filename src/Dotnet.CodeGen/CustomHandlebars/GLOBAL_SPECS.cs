@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Dotnet.CodeGen.CustomHandlebars
+﻿namespace Dotnet.CodeGen.CustomHandlebars
 {
 #if DEBUG
-    public static class GLOBAL_SPECS
+    public static class GlobalSpecs
     {
         public const string SWAGGER_SAMPLE = @"
 {

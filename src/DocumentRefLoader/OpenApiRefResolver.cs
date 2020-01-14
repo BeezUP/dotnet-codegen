@@ -13,7 +13,6 @@ namespace DocumentRefLoader
     public class OpenApiRefResolver
     {
         internal readonly Uri DocumentUri;
-        readonly Uri DocumentFolder;
         readonly string Authorization;
 
         bool IsDownloaded;
@@ -38,7 +37,7 @@ namespace DocumentRefLoader
         public OpenApiRefResolver(Uri documentUri, string authorization = null, Dictionary<Uri, OpenApiRefResolver> otherResolvers = null)
         {
             DocumentUri = documentUri.GetAbsolute();
-            DocumentFolder = new Uri(DocumentUri, ".");
+            //DocumentFolder = new Uri(DocumentUri, ".");
             Authorization = authorization;
             OtherResolvers = otherResolvers ?? new Dictionary<Uri, OpenApiRefResolver>();
         }
@@ -71,12 +70,7 @@ namespace DocumentRefLoader
 
             RootJObj = JObject.Parse(json);
 
-            GeneralInfo = new OpenApiGeneralInfo
-            {
-                Title = RootJObj["info"]["title"]?.ToString(),
-                BasePath = RootJObj["basePath"]?.ToString(),
-                Tags = RootJObj["tags"]?.Children()["name"]?.Values<string>()?.ToArray()
-            };
+            GeneralInfo = RootJObj.GetOpenApiGeneralInfo();
         }
 
         internal async Task EnsureIsResolvedAsync()

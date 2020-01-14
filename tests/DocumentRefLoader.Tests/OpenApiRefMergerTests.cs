@@ -20,8 +20,8 @@ namespace DocumentRefLoader.Tests
 
             var result = await merger.GetMergedJObjectAsync();
 
-            var paths = result["paths"].Children().ToArray();
-            var definitions = result["definitions"].Children().ToArray();
+            var paths = result[OpenApiConstants.PATHS_KEYWORD].Children().ToArray();
+            var definitions = result[OpenApiConstants.DEFINITIONS_KEYWORD].Children().ToArray();
             paths.Length.ShouldBe(2);
             definitions.Length.ShouldBe(2);
 
@@ -42,8 +42,8 @@ namespace DocumentRefLoader.Tests
 
             var result = await merger.GetMergedJObjectAsync();
 
-            var paths = result["paths"].Children().ToArray();
-            var definitions = result["definitions"].Children().ToArray();
+            var paths = result[OpenApiConstants.PATHS_KEYWORD].Children().ToArray();
+            var definitions = result[OpenApiConstants.DEFINITIONS_KEYWORD].Children().ToArray();
             paths.Length.ShouldBe(2);
             definitions.Length.ShouldBe(1);
 

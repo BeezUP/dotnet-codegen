@@ -13,27 +13,35 @@ namespace DocumentRefLoader
     /// </summary>
     public sealed class ReferenceLoader
     {
-        internal readonly Dictionary<Uri, ReferenceLoader> _otherLoaders;
+        internal readonly Dictionary<Uri, ReferenceLoader> _loaders;
 
         private readonly IReferenceLoaderSettings _settings;
+        private readonly string _authorization;
         internal readonly Uri _documentUri;
         internal readonly Uri _documentFolder;
 
-        public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy)
-            : this(fileUri.GetAbsoluteUri(), null, strategy)
+        public ReferenceLoader(string fileUri, ReferenceLoaderStrategy strategy, string authorization = null)
+            : this(fileUri.GetAbsoluteUri(), null, strategy, authorization)
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, ReferenceLoaderStrategy strategy, string authorization = null)
-            : this(documentUri, otherLoaders, strategy.GetSettings(), authorization)
+        internal ReferenceLoader(string fileUri, Dictionary<Uri, ReferenceLoader> loaders, ReferenceLoaderStrategy strategy, string authorization = null)
+            : this(fileUri.GetAbsoluteUri(), loaders, strategy.GetSettings(), authorization)
         { }
 
-        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> otherLoaders, IReferenceLoaderSettings settings, string authorization = null)
+        internal ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> loaders, ReferenceLoaderStrategy strategy, string authorization = null)
+            : this(documentUri, loaders, strategy.GetSettings(), authorization)
+        { }
+
+        private ReferenceLoader(Uri documentUri, Dictionary<Uri, ReferenceLoader> loaders, IReferenceLoaderSettings settings, string authorization = null)
         {
             _documentUri = documentUri.GetAbsolute();
             _documentFolder = documentUri.GetFolder();
 
-            _otherLoaders = otherLoaders ?? new Dictionary<Uri, ReferenceLoader>() { { _documentUri, this } };
+            _loaders = loaders ?? new Dictionary<Uri, ReferenceLoader>();
+            _loaders[_documentUri] = this;
+
             _settings = settings;
+            _authorization = authorization;
         }
 
         internal string _originalJson;
@@ -41,10 +49,9 @@ namespace DocumentRefLoader
         private async Task EnsureJsonLoadedAsync()
         {
             if (_rootJObj != null) return;
-            var originalDocument = await _documentUri.DownloadDocumentAsync();
+            var originalDocument = await _documentUri.DownloadDocumentAsync(_authorization);
             _rootJObj = _settings.Deserialise(originalDocument, _documentUri.ToString());
             _originalJson = _settings.JsonSerialize(_rootJObj);
-
         }
 
         bool _isResolved = false;
@@ -61,16 +68,15 @@ namespace DocumentRefLoader
             _finalJson = _settings.JsonSerialize(_rootJObj);
         }
 
-
-
-        public async Task<string> GetRefResolvedYamlAsync() => _settings.YamlSerialize(await GetRefResolvedJObjectAsync());
-        public async Task<string> GetRefResolvedJsonAsync() => _settings.JsonSerialize(await GetRefResolvedJObjectAsync());
-
         public async Task<JObject> GetRefResolvedJObjectAsync()
         {
             await EnsureRefResolvedAsync();
             return _rootJObj;
         }
+
+        public async Task<string> GetRefResolvedYamlAsync() => _settings.YamlSerialize(await GetRefResolvedJObjectAsync());
+        public async Task<string> GetRefResolvedJsonAsync() => _settings.JsonSerialize(await GetRefResolvedJObjectAsync());
+
 
         private async Task ResolveRefAsync(JToken token)
         {
@@ -140,11 +146,10 @@ namespace DocumentRefLoader
             if (refInfo.IsNestedInThisDocument)
                 return this;
 
-            if (_otherLoaders.TryGetValue(refInfo.AbsoluteDocumentUri, out var loader))
+            if (_loaders.TryGetValue(refInfo.AbsoluteDocumentUri, out var loader))
                 return loader;
 
-            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _otherLoaders, _settings);
-            _otherLoaders[refInfo.AbsoluteDocumentUri] = loader;
+            loader = new ReferenceLoader(refInfo.AbsoluteDocumentUri, _loaders, _settings);
             return loader;
         }
     }

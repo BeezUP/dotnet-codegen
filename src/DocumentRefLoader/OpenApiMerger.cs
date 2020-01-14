@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace DocumentRefLoader
 {
     public class OpenApiMerger
     {
         readonly Action<JObject, OpenApiGeneralInfo[]> CustomizeDocument;
         readonly Action<(string basePath, string title, string itemType, JToken item)> CustomizeItem;
-        OpenApiRefResolver[] Loaders { get; set; }
+        ReferenceLoader[] Loaders { get; set; }
         bool IsResolved;
         JObject MergedRootJObject;
 
@@ -133,20 +134,17 @@ namespace DocumentRefLoader
         {
             CustomizeDocument = customizeDocument ?? delegate { };
             CustomizeItem = customizeItem ?? delegate { };
-            Loaders = fileUris.Select(x => new OpenApiRefResolver(x, authorization)).ToArray();
+            var loadersCache = new Dictionary<Uri, ReferenceLoader>();
+            Loaders = fileUris.Select(x => new ReferenceLoader(x, loadersCache, ReferenceLoaderStrategy.CopyRefContent, authorization)).ToArray();
         }
 
-        async Task EnsureAllDocsAreResolvedAsync()
-        {
-            if (IsResolved) return;
-            await ResolveDocumentsAsync();
-            IsResolved = true;
-        }
 
-        async Task ResolveDocumentsAsync()
+        public async Task<string> GetMergedJsonAsync() => (await GetMergedJObjectAsync()).ToString();
+
+        public async Task<JObject> GetMergedJObjectAsync()
         {
-            foreach (var loader in Loaders)
-                await loader.EnsureIsResolvedAsync();
+            await EnsureAllDocsAreMergedAsync();
+            return MergedRootJObject;
         }
 
         async Task EnsureAllDocsAreMergedAsync()
@@ -157,23 +155,33 @@ namespace DocumentRefLoader
 
         async Task<JObject> MergeDocumentsAsync()
         {
-            if (Loaders.Length == 1) return await Loaders.First().GetRefResolvedJObjectAsync();
+            if (Loaders.Length == 1)
+                return await Loaders.First().GetRefResolvedJObjectAsync();
 
-            var src = Loaders.First();
+            var documents = new List<(ReferenceLoader refLoader, JObject jObj, OpenApiGeneralInfo openApiInfo)>();
+            foreach (var loader in Loaders)
+            {
+                var jObj = await loader.GetRefResolvedJObjectAsync();
+                var infos = jObj.GetOpenApiGeneralInfo();
+                documents.Add((loader, jObj, infos));
+            }
 
-            var allPaths = GetAllItemsFromLoaders(Loaders, "paths", true);
-            var allDefs = GetAllItemsFromLoaders(Loaders, "definitions");
-            var allParameters = GetAllItemsFromLoaders(Loaders, "parameters");
-            var allResponses = GetAllItemsFromLoaders(Loaders, "responses");
+            var docs = documents.ToArray();
+            var allPaths = GetAllItemsFromLoaders(docs, OpenApiConstants.PATHS_KEYWORD, true);
+            var allDefs = GetAllItemsFromLoaders(docs, OpenApiConstants.DEFINITIONS_KEYWORD);
+            var allParameters = GetAllItemsFromLoaders(docs, OpenApiConstants.PARAMETERS_KEYWORD);
+            var allResponses = GetAllItemsFromLoaders(docs, OpenApiConstants.RESPONSES_KEYWORD);
 
-            CopyItems(src.RootJObj, "paths", allPaths);
-            CopyItems(src.RootJObj, "definitions", allDefs);
-            CopyItems(src.RootJObj, "parameters", allParameters);
-            CopyItems(src.RootJObj, "responses", allResponses);
+            var newDocument = new JObject();
 
-            CustomizeDocument(src.RootJObj, Loaders.Select(x => x.GeneralInfo).ToArray());
+            CopyItems(newDocument, OpenApiConstants.PATHS_KEYWORD, allPaths);
+            CopyItems(newDocument, OpenApiConstants.DEFINITIONS_KEYWORD, allDefs);
+            CopyItems(newDocument, OpenApiConstants.PARAMETERS_KEYWORD, allParameters);
+            CopyItems(newDocument, OpenApiConstants.RESPONSES_KEYWORD, allResponses);
 
-            return src.RootJObj;
+            CustomizeDocument(newDocument, documents.Select(x => x.openApiInfo).ToArray());
+
+            return newDocument;
         }
 
         void CreateItem(JObject rootJObjDest, string nodeName, string itemName, JToken itemValue)
@@ -203,61 +211,45 @@ namespace DocumentRefLoader
         {
             if (rootJObjDest.ContainsKey(nodeName)) rootJObjDest.Remove(nodeName);
 
-            foreach (var (itemName, itemValue) in itemsToCopy)
+            foreach (var kv in itemsToCopy)
             {
-                CreateItem(rootJObjDest, nodeName, itemName, itemValue);
+                CreateItem(rootJObjDest, nodeName, kv.Key, kv.Value);
             }
         }
 
-        Dictionary<string, JToken> GetItemsFromLoader(OpenApiRefResolver loader, string itemType)
+        Dictionary<string, JToken> GetItemsFromLoader(JObject jObj, string itemType)
         {
-            var items = loader.RootJObj[itemType] as JContainer;
+            var items = jObj[itemType] as JContainer;
             return items?.OfType<JProperty>().ToDictionary(x => x.Name, y => y.Value) ?? new Dictionary<string, JToken>();
         }
 
-        Dictionary<string, JToken> GetAllItemsFromLoaders(OpenApiRefResolver[] loaders, string itemType, bool trackDocumentOrigin = false)
+        Dictionary<string, JToken> GetAllItemsFromLoaders((ReferenceLoader refLoader, JObject jObj, OpenApiGeneralInfo openApiInfo)[] loadersInfos, string itemType, bool trackDocumentOrigin = false)
         {
-            return loaders.SelectMany(loader =>
-            {
-                var items = GetAllItemsFromLoader(loader, itemType, trackDocumentOrigin).ToArray();
-                foreach (var item in items)
+            return loadersInfos
+                .SelectMany(infos =>
                 {
-                    CustomizeItem((loader.GeneralInfo.BasePath, loader.GeneralInfo.Title, itemType, item.Value));
-                }
-                return items;
-            }).GroupBy(x => x.Key)
-              .Select(x => x.First())
-              .ToDictionary(x => x.Key, y => y.Value);
+                    var items = GetAllItemsFromLoader(infos, itemType, trackDocumentOrigin).ToArray();
+                    foreach (var item in items)
+                    {
+                        CustomizeItem((infos.openApiInfo.BasePath, infos.openApiInfo.Title, itemType, item.Value));
+                    }
+                    return items;
+                })
+                .GroupBy(x => x.Key)
+                .Select(x => x.First())
+                .ToDictionary(x => x.Key, y => y.Value);
         }
 
-        IEnumerable<KeyValuePair<string, JToken>> GetAllItemsFromLoader(OpenApiRefResolver loader, string itemType, bool trackDocumentOrigin = false)
+        IEnumerable<KeyValuePair<string, JToken>> GetAllItemsFromLoader((ReferenceLoader refLoader, JObject jObj, OpenApiGeneralInfo openApiInfo) loaderInfos, string itemType, bool trackDocumentOrigin = false)
         {
-            IEnumerable<KeyValuePair<string, JToken>> currentItems = GetItemsFromLoader(loader, itemType)
+            var currentItems = GetItemsFromLoader(loaderInfos.jObj, itemType)
                 .Select(pair => new KeyValuePair<string, JToken>(
                     trackDocumentOrigin
-                        ? $"{loader.GeneralInfo.BasePath}{pair.Key}"
+                        ? $"{loaderInfos.openApiInfo.BasePath}{pair.Key}"
                         : pair.Key,
                     pair.Value));
 
             return currentItems;
         }
-
-        public async Task<string> GetMergedJsonAsync()
-        {
-            await EnsureAllDocsAreResolvedAsync();
-            await EnsureAllDocsAreMergedAsync();
-            return MergedRootJObject.ToString();
-
-
-        }
-
-        public async Task<JObject> GetMergedJObjectAsync()
-        {
-            await EnsureAllDocsAreResolvedAsync();
-            await EnsureAllDocsAreMergedAsync();
-            return MergedRootJObject;
-        }
     }
-
-
 }

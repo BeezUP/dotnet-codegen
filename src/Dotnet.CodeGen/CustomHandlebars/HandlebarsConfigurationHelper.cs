@@ -13,6 +13,8 @@ namespace Dotnet.CodeGen.CustomHandlebars
 
         static readonly IHelper[] _Helpers;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
+#pragma warning disable S3963 // "static" fields should be initialized inline
         static HandlebarsConfigurationHelper()
         {
             var helpers = new List<IHelper>();
@@ -32,19 +34,8 @@ namespace Dotnet.CodeGen.CustomHandlebars
 
             _Helpers = helpers.ToArray();
         }
-
-
-        public static IHandlebars GetHandlebars(string rootDirectory)
-        {
-            var handlebars = Handlebars.Create(GetHandlebarsConfiguration(rootDirectory));
-            return handlebars;
-        }
-
-        public static IHandlebars GetHandlebars(List<string> directories)
-        {
-            var handlebars = Handlebars.Create(GetHandlebarsConfiguration(directories));
-            return handlebars;
-        }
+#pragma warning restore S3963 // "static" fields should be initialized inline
+#pragma warning restore CA1810 // Initialize reference type static fields inline
 
         private static void RegisterHelpers(HandlebarsConfiguration handlebarsConfiguration)
         {
@@ -53,65 +44,56 @@ namespace Dotnet.CodeGen.CustomHandlebars
                 h.Setup(handlebarsConfiguration);
             }
         }
-        
+
+        public static IHandlebars GetHandlebars(string rootDirectory) => Handlebars.Create(GetHandlebarsConfiguration(rootDirectory));
+        public static IHandlebars GetHandlebars(IEnumerable<string> directories) => Handlebars.Create(GetHandlebarsConfiguration(directories));
+
         public static HandlebarsConfiguration GetHandlebarsConfiguration(string rootDirectory)
+            => GetHandleBarsConfiguration(new SameDirectoryPartialTemplateResolver(rootDirectory));
+        public static HandlebarsConfiguration GetHandlebarsConfiguration(IEnumerable<string> directories)
+            => GetHandleBarsConfiguration(new MultipleDirectoriesPartialTemplateResolver(directories));
+
+        private static HandlebarsConfiguration GetHandleBarsConfiguration(IPartialTemplateResolver templateResolver)
         {
             var configuration = new HandlebarsConfiguration();
-
             RegisterHelpers(configuration);
-
-            configuration.PartialTemplateResolver = new SameDirectoryPartialTemplateResolver(rootDirectory);
-
+            configuration.PartialTemplateResolver = templateResolver;
             return configuration;
         }
 
-        public static HandlebarsConfiguration GetHandlebarsConfiguration(List<string> directories)
-        {
-            var configuration = new HandlebarsConfiguration();
-
-            RegisterHelpers(configuration);
-
-            configuration.PartialTemplateResolver = new MultipleDirectoriesPartialTemplateResolver(directories);
-
-            return configuration;
-        }
-
-        private static bool TryRegisterPartial(string directory, IHandlebars env, string partialName)
+        private static bool TryRegisterPartialFile(string directory, IHandlebars env, string partialName)
         {
             var partialPath = Path.Combine(directory, $"_{partialName}.hbs");
             if (!File.Exists(partialPath))
             {
-                return false;
+                //return false;
                 throw new IOException($"Unable to find the partial template file {partialPath}");
             }
-
             env.RegisterTemplate(partialName, File.ReadAllText(partialPath));
             return true;
         }
 
-        public class MultipleDirectoriesPartialTemplateResolver : IPartialTemplateResolver
+        class MultipleDirectoriesPartialTemplateResolver : IPartialTemplateResolver
         {
-            private readonly List<string> _directories;
+            private readonly string[] _directories;
 
-            public MultipleDirectoriesPartialTemplateResolver(List<string> directories)
+            public MultipleDirectoriesPartialTemplateResolver(IEnumerable<string> directories)
             {
-                _directories = directories;
+                _directories = directories.ToArray();
             }
 
             public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
             {
                 var result = true;
-
                 foreach (var directory in _directories)
                 {
-                    result = result && HandlebarsConfigurationHelper.TryRegisterPartial(directory, env, partialName);
+                    result = result && TryRegisterPartialFile(directory, env, partialName);
                 }
-
                 return result;
             }
         }
 
-        public class SameDirectoryPartialTemplateResolver : IPartialTemplateResolver
+        class SameDirectoryPartialTemplateResolver : IPartialTemplateResolver
         {
             private readonly string _rootDirectory;
 
@@ -122,7 +104,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
 
             public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
             {
-                return HandlebarsConfigurationHelper.TryRegisterPartial(_rootDirectory, env, partialName);
+                return TryRegisterPartialFile(_rootDirectory, env, partialName);
             }
         }
     }

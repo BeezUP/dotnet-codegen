@@ -12,7 +12,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("[]", "{{#each_with_sort_inv . .}}{{/each_with_sort_inv}}", "")]
     [HandlebarsHelperSpecification("{ a : {}, b : {} }", "{{#each_with_sort_inv .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort_inv}}", "ba")]
     [HandlebarsHelperSpecification("{ b : {}, a : {} }", "{{#each_with_sort_inv .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort_inv}}", "ba")]
-    [HandlebarsHelperSpecification(GLOBAL_SPECS.SWAGGER_SAMPLE, "{{#each_with_sort_inv parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort_inv}}", "publicationIdParameter,marketplaceBusinessCodeParameter,feedTypeParameter,credentialParameter,accountIdParameter,")]
+    [HandlebarsHelperSpecification(GlobalSpecs.SWAGGER_SAMPLE, "{{#each_with_sort_inv parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort_inv}}", "publicationIdParameter,marketplaceBusinessCodeParameter,feedTypeParameter,credentialParameter,accountIdParameter,")]
 #endif
     public class EachWithSortInv : SimpleBlockHelperBase
     {

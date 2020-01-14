@@ -17,7 +17,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("[]", "{{#each_with_sort . .}}{{/each_with_sort}}", "")]
     [HandlebarsHelperSpecification("{ a : {}, b : {} }", "{{#each_with_sort .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort}}", "ab")]
     [HandlebarsHelperSpecification("{ b : {}, a : {} }", "{{#each_with_sort .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort}}", "ab")]
-    [HandlebarsHelperSpecification(GLOBAL_SPECS.SWAGGER_SAMPLE, "{{#each_with_sort parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort}}", "accountIdParameter,credentialParameter,feedTypeParameter,marketplaceBusinessCodeParameter,publicationIdParameter,")]
+    [HandlebarsHelperSpecification(GlobalSpecs.SWAGGER_SAMPLE, "{{#each_with_sort parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort}}", "accountIdParameter,credentialParameter,feedTypeParameter,marketplaceBusinessCodeParameter,publicationIdParameter,")]
 #endif
     public class EachWithSort : SimpleBlockHelperBase
     {

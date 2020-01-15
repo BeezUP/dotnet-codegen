@@ -19,6 +19,8 @@ namespace Dotnet.CodeGen.CodeGen
         public const string TEMPLATE_DUPLICATES_HANDLING_STRATEGY_OPTION = "-d|--duplicates";
         public const string SCHEMA_LOADER_TYPE_OPTION = "-l|--loader";
 
+        public const string AUTHORIZATION_OPTION = "-a|--auth";
+
         private const string HelpOptions = "-?|-h|--help";
 
         public static async Task Main(string[] args)
@@ -31,6 +33,7 @@ namespace Dotnet.CodeGen.CodeGen
             var duplicatesTemplateHandlingStrategyName = app.Option(TEMPLATE_DUPLICATES_HANDLING_STRATEGY_OPTION, $"Enter a template duplication handling strategy between those values [{string.Join(" | ", Enum.GetNames(typeof(TemplateDuplicationHandlingStrategy)))}]", CommandOptionType.SingleValue);
 
             var sourceFiles = app.Option(SOURCE_FILE_OPTION, "Enter a path (relative or absolute) to an source document.", CommandOptionType.MultipleValue);
+            var authorization = app.Option(AUTHORIZATION_OPTION, "Enter an authorization token to access source documents", CommandOptionType.SingleValue);
             var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue);
             var templatesPaths = app.Option(TEMPLATES_PATH_OPTION, "Enter a path (relative or absolute / file or folder) to a template.", CommandOptionType.MultipleValue);
 
@@ -70,8 +73,10 @@ namespace Dotnet.CodeGen.CodeGen
                     return 1;
                 }
 
+                var auth = authorization.HasValue() ? authorization.Value() : null;
+
                 var schemaLoader = schemaType.GetSchemaLoader();
-                await CodeGenRunner.RunAsync(sourceFiles.Values, schemaLoader, templatesPaths.Values, outputPath.Values.First(), duplicatesTemplateHandlingStrategy); ;
+                await CodeGenRunner.RunAsync(sourceFiles.Values, schemaLoader, templatesPaths.Values, outputPath.Value(), duplicatesTemplateHandlingStrategy, authorization: auth) ;
 
                 return 0;
             });

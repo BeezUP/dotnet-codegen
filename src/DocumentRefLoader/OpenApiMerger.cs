@@ -172,7 +172,8 @@ namespace DocumentRefLoader
             var allParameters = GetAllItemsFromLoaders(docs, OpenApiConstants.PARAMETERS_KEYWORD);
             var allResponses = GetAllItemsFromLoaders(docs, OpenApiConstants.RESPONSES_KEYWORD);
 
-            var newDocument = new JObject();
+
+            var newDocument = new JObject(documents.First().jObj);
 
             CopyItems(newDocument, OpenApiConstants.PATHS_KEYWORD, allPaths);
             CopyItems(newDocument, OpenApiConstants.DEFINITIONS_KEYWORD, allDefs);

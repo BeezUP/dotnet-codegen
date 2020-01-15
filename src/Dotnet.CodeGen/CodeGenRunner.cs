@@ -11,12 +11,12 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public static class CodeGenRunner
     {
-        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string authorization = null)
             => RunAsync(new[] { sourcePath }, schemaLoader, new[] { templatePath }, outputPath, templateDuplicationHandlingStrategy);
 
-        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string authorization = null)
         {
-            var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath);
+            var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath, authorization);
 
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 

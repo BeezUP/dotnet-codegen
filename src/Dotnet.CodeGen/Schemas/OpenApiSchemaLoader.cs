@@ -18,7 +18,7 @@ namespace Dotnet.CodeGen.Schemas
     {
         static readonly HttpClient httpClient = new HttpClient { };
 
-        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris)
+        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string authorization)
         {
             var docs = documentUris.ToArray();
             if (docs.Length != 1)

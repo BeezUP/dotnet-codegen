@@ -41,14 +41,18 @@ namespace Dotnet.CodeGen.Tests
         {
             var expectedMd5Output = Directory.GetFiles(expectedDirectory).Select(file => ComputeMD5(file)).ToList();
 
-            var templateDuplicationHandlingStrategyOption = $" {templateDuplicationHandlingStrategy}";
-            var sourceSchemaTypeOption = $" {sourceSchemaType}";
-
             var outputDirectory = GetTemporaryDirectory();
 
             try
             {
-                var args = new[] { "-s", sourceSchemaTypeOption, "-d", templateDuplicationHandlingStrategyOption, source, outputDirectory }.Concat(templates).ToArray();
+                var args = new[] {
+                    "-l", sourceSchemaType.ToString(),
+                    "-d", templateDuplicationHandlingStrategy.ToString(),
+                    "-s", source,
+                    "-o", outputDirectory
+                    }
+                    .Concat(templates.SelectMany(t => new[] { "-t", t }))
+                    .ToArray();
 
                 await Program.Main(args);
 

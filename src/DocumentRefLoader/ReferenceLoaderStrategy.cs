@@ -4,6 +4,6 @@
     {
         CopyRefContent,
         RefContentCopyNoRemote,
-        OpenApiV2Merge
+        //OpenApiV2Merge
     }
 }

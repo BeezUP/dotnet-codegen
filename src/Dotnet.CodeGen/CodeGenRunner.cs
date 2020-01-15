@@ -11,7 +11,36 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public static class CodeGenRunner
     {
-        public static IEnumerable<TemplateInfos> GetTemplates(IEnumerable<string> templatesPaths, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
+        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+            => RunAsync(new[] { sourcePath }, schemaLoader, new[] { templatePath }, outputPath, templateDuplicationHandlingStrategy);
+
+        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+        {
+            var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath);
+
+            var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
+
+            var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatesPaths);
+
+            foreach (var template in templates)
+            {
+                var compiled = handlebars.Compile(File.ReadAllText(template.FilePath));
+
+                var result = compiled(jsonObject);
+
+                var context = new ProcessorContext { InputFile = result, OutputDirectory = outputPath, };
+
+                using var processor = new FilesProcessor(context,
+                    new WriteLineToFileInstruction("FILE"),
+                    new WriteLineToConsoleInstruction("CONSOLE"),
+                    new SuppressLineInstruction()
+                    );
+
+                await processor.RunAsync();
+            }
+        }
+
+        internal static IEnumerable<TemplateInfos> GetTemplates(IEnumerable<string> templatesPaths, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy)
         {
             var templates = templatesPaths
                 .SelectMany(templatePath => TemplateHelper.GetTemplates(templatePath, "*.hbs"))
@@ -46,35 +75,6 @@ namespace Dotnet.CodeGen.CodeGen
                         throw new NotImplementedException();
                 }
             });
-        }
-
-        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
-            => RunAsync(sourcePath, schemaLoader, new[] { templatePath }, outputPath, templateDuplicationHandlingStrategy);
-
-        public static async Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
-        {
-            var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath);
-
-            var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
-
-            var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatesPaths);
-
-            foreach (var template in templates)
-            {
-                var compiled = handlebars.Compile(File.ReadAllText(template.FilePath));
-
-                var result = compiled(jsonObject);
-
-                var context = new ProcessorContext { InputFile = result, OutputDirectory = outputPath, };
-
-                using var processor = new FilesProcessor(context,
-                    new WriteLineToFileInstruction("FILE"),
-                    new WriteLineToConsoleInstruction("CONSOLE"),
-                    new SuppressLineInstruction()
-                    );
-
-                await processor.RunAsync();
-            }
         }
     }
 }

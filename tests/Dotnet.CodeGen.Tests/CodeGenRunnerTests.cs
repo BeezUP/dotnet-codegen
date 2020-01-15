@@ -29,7 +29,7 @@ namespace Dotnet.CodeGen.Tests
             {
                 var loader = schemaType.GetSchemaLoader();
 
-                await CodeGenRunner.RunAsync(schemaPath, loader, templatesPaths.ToList(), tmpFolder);
+                await CodeGenRunner.RunAsync(new[] { schemaPath }, loader, templatesPaths.ToList(), tmpFolder);
 
                 var expectedFiles = Directory.GetFiles(expectedResultPath, "*.*", SearchOption.AllDirectories).ToArray();
                 var resultFiles = Directory.GetFiles(tmpFolder, "*.*", SearchOption.AllDirectories).ToArray();

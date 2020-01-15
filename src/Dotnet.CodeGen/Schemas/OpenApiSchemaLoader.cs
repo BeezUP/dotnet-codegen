@@ -18,8 +18,13 @@ namespace Dotnet.CodeGen.Schemas
     {
         static readonly HttpClient httpClient = new HttpClient { };
 
-        public async Task<JToken> LoadSchemaAsync(string documentUri)
+        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris)
         {
+            var docs = documentUris.ToArray();
+            if (docs.Length != 1)
+                throw new ArgumentException($"Cannot load multiple OpenApiSchema using this loader [{nameof(OpenApiSchemaLoader)}]", nameof(documentUris));
+            var documentUri = docs[0];
+
             var settings = new OpenApiReaderSettings()
             {
                 //ReferenceResolution = ReferenceResolutionSetting.ResolveAllReferences,

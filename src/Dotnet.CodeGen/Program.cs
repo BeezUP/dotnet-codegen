@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.CommandLineUtils;
 using Console = Colorful.Console;
@@ -12,13 +12,14 @@ namespace Dotnet.CodeGen.CodeGen
     {
         public static readonly Color ERROR_COLOR = Color.OrangeRed;
 
-        public const string SOURCE_FILE_ARGUMENT = "source";
-        public const string OUTPUT_PATH_ARGUMENT = "out";
-        public const string TEMPLATES_PATH_ARGUMENT = "templates";
-        
+        public const string SOURCE_FILE_OPTION = "-s|--source";
+        public const string OUTPUT_PATH_OPTION = "-o|--output";
+
+        public const string TEMPLATES_PATH_OPTION = "-t|--template";
         public const string TEMPLATE_DUPLICATES_HANDLING_STRATEGY_OPTION = "-d|--duplicates";
-        public const string SCHEMA_TYPE_OPTION = "-s|--type";
-        private const string HelpOptions = "-? |-h|--help";
+        public const string SCHEMA_LOADER_TYPE_OPTION = "-l|--loader";
+
+        private const string HelpOptions = "-?|-h|--help";
 
         public static async Task Main(string[] args)
         {
@@ -26,22 +27,22 @@ namespace Dotnet.CodeGen.CodeGen
             var app = new CommandLineApplication();
             app.HelpOption(HelpOptions);
 
-            var schemaTypeName = app.Option(SCHEMA_TYPE_OPTION, $"Enter a schema type between those values [{string.Join(" | ", Enum.GetNames(typeof(SourceSchemaType)))}]", CommandOptionType.SingleValue);
+            var schemaTypeName = app.Option(SCHEMA_LOADER_TYPE_OPTION, $"Enter a schema loader type between those values [{string.Join(" | ", Enum.GetNames(typeof(SourceSchemaType)))}]", CommandOptionType.SingleValue);
             var duplicatesTemplateHandlingStrategyName = app.Option(TEMPLATE_DUPLICATES_HANDLING_STRATEGY_OPTION, $"Enter a template duplication handling strategy between those values [{string.Join(" | ", Enum.GetNames(typeof(TemplateDuplicationHandlingStrategy)))}]", CommandOptionType.SingleValue);
 
-            var sourceFile = app.Argument(SOURCE_FILE_ARGUMENT, "Enter the path (relative or absolute) to an source document.");
-            var outputPath = app.Argument(OUTPUT_PATH_ARGUMENT, "Enter the path (relative or absolute) to the output path (content will be overritten)");
-            var templatesPaths = app.Argument(TEMPLATES_PATH_ARGUMENT, "Enter the path(s) (relative or absolute / multiple files or folders) to the template(s).", multipleValues: true);
+            var sourceFiles = app.Option(SOURCE_FILE_OPTION, "Enter a path (relative or absolute) to an source document.", CommandOptionType.MultipleValue);
+            var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue);
+            var templatesPaths = app.Option(TEMPLATES_PATH_OPTION, "Enter a path (relative or absolute / file or folder) to a template.", CommandOptionType.MultipleValue);
 
             app.OnExecute(async () =>
             {
                 var errors = new List<string>();
-                if (sourceFile.Value == null)
-                    errors.Add($"{SOURCE_FILE_ARGUMENT} parameter is required");
+                if (sourceFiles.Values == null || sourceFiles.Values.Count == 0)
+                    errors.Add($"At least one source file ({SOURCE_FILE_OPTION}) option is required.");
                 if (templatesPaths.Values == null || templatesPaths.Values.Count == 0)
-                    errors.Add($"{TEMPLATES_PATH_ARGUMENT} parameter is required");
-                if (outputPath.Value == null)
-                    errors.Add($"{OUTPUT_PATH_ARGUMENT} parameter is required");
+                    errors.Add($"At least one tempalte ({TEMPLATES_PATH_OPTION}) option is required.");
+                if (outputPath.Values == null || outputPath.Values.Count != 1)
+                    errors.Add($"Exactly one output path ({OUTPUT_PATH_OPTION}) option is required.");
 
                 var schemaType = SchemaTypeExtensions.DEFAULT_SHEMA_TYPE;
                 if (schemaTypeName.HasValue())
@@ -70,7 +71,7 @@ namespace Dotnet.CodeGen.CodeGen
                 }
 
                 var schemaLoader = schemaType.GetSchemaLoader();
-                await CodeGenRunner.RunAsync(sourceFile.Value, schemaLoader, templatesPaths.Values, outputPath.Value, duplicatesTemplateHandlingStrategy);
+                await CodeGenRunner.RunAsync(sourceFiles.Values, schemaLoader, templatesPaths.Values, outputPath.Values.First(), duplicatesTemplateHandlingStrategy); ;
 
                 return 0;
             });

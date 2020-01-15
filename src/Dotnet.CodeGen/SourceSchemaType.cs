@@ -41,7 +41,7 @@ namespace Dotnet.CodeGen.CodeGen
                 case SourceSchemaType.RawJson:
                     return new RawJsonSchemaLoader();
                 case SourceSchemaType.Swagger:
-                    return new SwaggerSchemaLoader();
+                    return new RefLoaderSchemaLoader();
                 case SourceSchemaType.OpenApi:
                     return new OpenApiSchemaLoader();
                 default:

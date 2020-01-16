@@ -55,7 +55,7 @@ namespace Dotnet.CodeGen.Tests
                 using (var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = COMMAND_NAME,
-                    Arguments = $"\"./_samples/test1/schema.json\" \"{outputPath}\" \"./_samples/test1/template\"",
+                    Arguments = $"-s \"./_samples/test1/schema.json\" -o \"{outputPath}\" -t \"./_samples/test1/template\"",
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -129,7 +129,6 @@ namespace Dotnet.CodeGen.Tests
             }))
             {
                 process.WaitForExit();
-                OutputIfError(output, process);
             }
         }
 

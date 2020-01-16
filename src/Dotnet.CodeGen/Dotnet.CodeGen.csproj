@@ -1,43 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <LangVersion>latest</LangVersion>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <AssemblyName>dotnet-codegen</AssemblyName>
-    <ToolCommandName>dotnet-codegen</ToolCommandName>
-    <PackAsTool>true</PackAsTool>
-    <Title>Dotnet.CodeGen</Title>
-    <PackageId>Dotnet.CodeGen</PackageId>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<AssemblyName>dotnet-codegen</AssemblyName>
+		<ToolCommandName>dotnet-codegen</ToolCommandName>
+		<PackAsTool>true</PackAsTool>
+		<Title>Dotnet.CodeGen</Title>
+		<PackageId>Dotnet.CodeGen</PackageId>
 
-    <Version>0.0.0.6</Version>
-    <Description>Code generator </Description>
-    <PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
-    <Copyright>Copyright 2019 © BeezUP</Copyright>
-    <Authors>BeezUP awesome team</Authors>
+		<Version>0.0.0.7</Version>
+		<Description>Code generator </Description>
+		<PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
+		<Copyright>Copyright 2019 © BeezUP</Copyright>
+		<Authors>BeezUP awesome team</Authors>
 
-    <PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
-  </PropertyGroup>
+		<PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Colorful.Console" Version="1.2.10" />
-    <PackageReference Include="Handlebars.Net" Version="1.10.1" />
-    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.1.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="YamlDotNet" Version="8.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Colorful.Console" Version="1.2.10" />
+		<PackageReference Include="Handlebars.Net" Version="1.10.1" />
+		<PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+		<PackageReference Include="Microsoft.OpenApi.Readers" Version="1.1.4" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="YamlDotNet" Version="8.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DocumentRefLoader\DocumentRefLoader.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DocumentRefLoader\DocumentRefLoader.csproj" />
+	</ItemGroup>
 
 </Project>

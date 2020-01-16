@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    
-    <Version>0.0.0.6</Version>
-    <Description>$ref yaml/json document loader</Description>
-    <PackageTags>codegen generator generation swagger openapi handlebars mustache yaml ref</PackageTags>
-    <Copyright>Copyright 2019 © BeezUP</Copyright>
-    <Authors>BeezUP awesome team</Authors>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
 
-    <PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
-  </PropertyGroup>
+		<Version>0.0.0.7</Version>
+		<Description>$ref yaml/json document loader</Description>
+		<PackageTags>codegen generator generation swagger openapi handlebars mustache yaml ref</PackageTags>
+		<Copyright>Copyright 2019 © BeezUP</Copyright>
+		<Authors>BeezUP awesome team</Authors>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="YamlDotNet" Version="8.0.0" />
-  </ItemGroup>
-  
+		<PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="YamlDotNet" Version="8.0.0" />
+	</ItemGroup>
+
 </Project>

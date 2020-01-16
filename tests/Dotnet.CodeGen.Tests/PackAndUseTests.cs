@@ -90,6 +90,7 @@ namespace Dotnet.CodeGen.Tests
             }))
             {
                 process.WaitForExit();
+                Output(output, process);
                 if (process.ExitCode != 0)
                     throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
             }
@@ -107,6 +108,7 @@ namespace Dotnet.CodeGen.Tests
             }))
             {
                 process.WaitForExit();
+                OutputIfError(output, process);
                 if (process.ExitCode != 0)
                     throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
 
@@ -127,7 +129,7 @@ namespace Dotnet.CodeGen.Tests
             }))
             {
                 process.WaitForExit();
-                // Errors are ignored
+                OutputIfError(output, process);
             }
         }
 
@@ -144,12 +146,22 @@ namespace Dotnet.CodeGen.Tests
             }))
             {
                 process.WaitForExit();
-                if (process.ExitCode != 0)
-                {
-                    output.WriteLine($"{process.StandardOutput.ReadToEnd()}");
-                    throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
-                }
+                OutputIfError(output, process);
             }
+        }
+
+        private static void OutputIfError(ITestOutputHelper output, Process process)
+        {
+            if (process.ExitCode != 0)
+            {
+                Output(output, process);
+                throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
+            }
+        }
+
+        private static void Output(ITestOutputHelper output, Process process)
+        {
+            output.WriteLine($"{process.StandardOutput.ReadToEnd()}");
         }
     }
 }

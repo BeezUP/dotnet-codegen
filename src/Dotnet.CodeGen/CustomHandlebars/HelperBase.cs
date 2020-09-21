@@ -1,7 +1,9 @@
 ﻿using HandlebarsDotNet;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars
@@ -45,10 +47,11 @@ namespace Dotnet.CodeGen.CustomHandlebars
                 ?? throw new CodeGenHelperException($"Context must be a valid json container for helper {Name} to work.");
         }
 
-        protected JArray GetArgumentAsArray(object[] arguments, int argumentIndex)
+        protected object[] GetArgumentAsArray(object[] arguments, int argumentIndex)
         {
-            return arguments[argumentIndex] as JArray
-                ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be an array but is of type '{arguments[argumentIndex]?.GetType().Name}'.");
+            object arg = arguments[argumentIndex];
+            return (arg as IEnumerable)?.Cast<object>().ToArray()
+                ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
         }
 
         protected string GetArgumentStringValue(object[] arguments, int argumentIndex)
@@ -58,7 +61,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
 
         protected char GetArgumentCharValue(object[] arguments, int argumentIndex)
         {
-            if (argumentIndex >= arguments.Length ||  arguments[argumentIndex] == null) throw new CodeGenHelperException($"{Name} needs an argument at position {argumentIndex}.");
+            if (argumentIndex >= arguments.Length || arguments[argumentIndex] == null) throw new CodeGenHelperException($"{Name} needs an argument at position {argumentIndex}.");
 
             if (!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
 
@@ -74,7 +77,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
                 return defaultValue;
             }
 
-            if(!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
+            if (!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
 
             return @char;
         }

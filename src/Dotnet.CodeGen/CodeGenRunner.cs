@@ -20,7 +20,7 @@ namespace Dotnet.CodeGen.CodeGen
         {
             var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath, authorization);
 
-            var obj = JsonConvert.DeserializeObject<ExpandoObject>(jsonObject.ToString());
+            var obj = JsonHelper.GetDynamicObjectFromJson(jsonObject);
 
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 

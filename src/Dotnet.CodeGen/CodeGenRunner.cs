@@ -1,8 +1,10 @@
 ﻿using Dotnet.CodeGen.CodeGen.Instructions;
 using Dotnet.CodeGen.CustomHandlebars;
 using Dotnet.CodeGen.Schemas;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +20,8 @@ namespace Dotnet.CodeGen.CodeGen
         {
             var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath, authorization);
 
+            var obj = JsonConvert.DeserializeObject<ExpandoObject>(jsonObject.ToString());
+
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 
             var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatesPaths);
@@ -26,7 +30,7 @@ namespace Dotnet.CodeGen.CodeGen
             {
                 var compiled = handlebars.Compile(File.ReadAllText(template.FilePath));
 
-                var result = compiled(jsonObject);
+                var result = compiled(obj);
 
                 var context = new ProcessorContext { InputFile = result, OutputDirectory = outputPath, };
 

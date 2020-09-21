@@ -30,6 +30,7 @@ namespace Dotnet.CodeGen.Tests
         //[Fact(Skip = "Just to get the tooling installed on my computer without having to deploy on nuget.")]
         public void ManualInstall()
         {
+            PackAndUseTests.UninstallTool(_output, _solutionFolder, _tmpOutput);
             PackAndUseTests.PackTool(_output, _solutionFolder, _tmpOutput);
             PackAndUseTests.InstallTool(_output, _solutionFolder, _tmpOutput);
         }

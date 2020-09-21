@@ -4,8 +4,7 @@ using System.IO;
 namespace Dotnet.CodeGen.CustomHandlebars.Helpers
 {
     /// <summary>
-    /// Performs a string comparison between 2 arguments
-    /// (all arguments are converted to string and case insensitive compared)
+    /// Execute template only if argument is not empty
     /// </summary>
 #if DEBUG
     [HandlebarsHelperSpecification("{}", "{{#if_not_empty ''}}{{else}}OK{{/if_not_empty}}", "OK")]

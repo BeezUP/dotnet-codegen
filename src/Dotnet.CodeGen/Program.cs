@@ -75,8 +75,16 @@ namespace Dotnet.CodeGen.CodeGen
 
                 var auth = authorization.HasValue() ? authorization.Value() : null;
 
-                var schemaLoader = schemaType.GetSchemaLoader();
-                await CodeGenRunner.RunAsync(sourceFiles.Values, schemaLoader, templatesPaths.Values, outputPath.Value(), duplicatesTemplateHandlingStrategy, authorization: auth) ;
+                try
+                {
+                    var schemaLoader = schemaType.GetSchemaLoader();
+                    await CodeGenRunner.RunAsync(sourceFiles.Values, schemaLoader, templatesPaths.Values, outputPath.Value(), duplicatesTemplateHandlingStrategy, authorization: auth);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.GetBaseException().Message);
+                    throw;
+                }
 
                 return 0;
             });

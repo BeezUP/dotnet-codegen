@@ -32,7 +32,7 @@ namespace Dotnet.CodeGen.Tests
         }
 
         [Fact]
-        public void Should_pack_install_unistall()
+        public void Should_pack_install()
         {
             ListTools(_output, _solutionFolder, _tmpOutput);
             UninstallTool(_output, _solutionFolder, _tmpOutput);

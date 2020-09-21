@@ -104,6 +104,11 @@ namespace DocumentRefLoader
 
                 // clone to avoid destroying the original documents
                 replacement = replacement.DeepClone();
+                if (replacement is JObject jobject)
+                {
+                    jobject[Constants.FROM_REF_PROPERTY_NAME] = refPath;
+                    jobject[Constants.REF_NAME_PROPERTY_NAME] = refInfo.RefFriendlyName;
+                }
 
                 _settings.ApplyRefReplacement(refInfo, _rootJObj, refProperty, replacement, refInfo.AbsoluteDocumentUri);
             }

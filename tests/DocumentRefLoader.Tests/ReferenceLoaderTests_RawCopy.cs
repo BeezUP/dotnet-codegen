@@ -83,6 +83,8 @@ myref:
 ",
 @"test:
   data: ""test""
+  x-fromRef: ""#/myref""
+  x-refName: ""myref""
 myref:
   data: ""test""
 "
@@ -100,8 +102,12 @@ myref:
 @"test:
   data1:
     data: ""test""
+    x-fromRef: ""#/myref""
+    x-refName: ""myref""
   data2:
     data: ""test""
+    x-fromRef: ""#/myref""
+    x-refName: ""myref""
 myref:
   data: ""test""
 "
@@ -125,14 +131,24 @@ myref2:
     data:
       content:
         data: ""test""
+      x-fromRef: ""#/myref2""
+      x-refName: ""myref2""
+    x-fromRef: ""#/myref""
+    x-refName: ""myref""
   data2:
     data:
       content:
         data: ""test""
+      x-fromRef: ""#/myref2""
+      x-refName: ""myref2""
+    x-fromRef: ""#/myref""
+    x-refName: ""myref""
 myref:
   data:
     content:
       data: ""test""
+    x-fromRef: ""#/myref2""
+    x-refName: ""myref2""
 myref2:
   content:
     data: ""test""
@@ -166,14 +182,24 @@ myref2:
     data:
       content:
         data: ""test""
+      x-fromRef: ""#/myref2""
+      x-refName: ""myref2""
+    x-fromRef: ""#/myref""
+    x-refName: ""myref""
   data2:
     data:
       content:
         data: ""test""
+      x-fromRef: ""#/myref2""
+      x-refName: ""myref2""
+    x-fromRef: ""#/myref""
+    x-refName: ""myref""
 myref:
   data:
     content:
       data: ""test""
+    x-fromRef: ""#/myref2""
+    x-refName: ""myref2""
 myref2:
   content:
     data: ""test""
@@ -195,6 +221,10 @@ finalvalue:
 value:
   subvalue:
     value: ""this is the real final value""
+    x-fromRef: ""simple3.yaml#/subSubValue/value""
+    x-refName: ""value""
+  x-fromRef: ""simple2.json""
+  x-refName: """"
 ".InvariantNewline());
         }
     }

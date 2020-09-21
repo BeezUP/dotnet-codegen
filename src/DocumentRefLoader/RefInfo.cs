@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace DocumentRefLoader
 {
@@ -33,23 +34,26 @@ namespace DocumentRefLoader
                 refParts = (false, parts[0], parts[1], false);
             }
 
+            var friendlyName = refParts.path.Split(Constants.PATH_SEPARATOR).LastOrDefault() ?? "";
+
             if (refParts.embeded)
-                return new RefInfo(true, documentUri.IsFile, documentUri, refParts.path, refParts.falseAbsoluteRef);
+                return new RefInfo(true, documentUri.IsFile, documentUri, refParts.path, refParts.falseAbsoluteRef, friendlyName);
 
             var uri = new Uri(refParts.doc, UriKind.RelativeOrAbsolute);
             if (!uri.IsAbsoluteUri)
                 uri = new Uri(documentFolder, uri);
 
-            return new RefInfo(false, uri.IsFile, uri, refParts.path, refParts.falseAbsoluteRef);
+            return new RefInfo(false, uri.IsFile, uri, refParts.path, refParts.falseAbsoluteRef, friendlyName);
         }
 
-        internal RefInfo(bool isNested, bool isLocal, Uri absoluteUri, string path, bool isFalseAbsoluteRef)
+        internal RefInfo(bool isNested, bool isLocal, Uri absoluteUri, string path, bool isFalseAbsoluteRef, string refFriendlyName)
         {
             IsNestedInThisDocument = isNested;
             IsLocal = isLocal;
             AbsoluteDocumentUri = absoluteUri;
             InDocumentPath = path;
             IsFalseAbsoluteRef = isFalseAbsoluteRef;
+            RefFriendlyName = refFriendlyName;
         }
 
         public bool IsNestedInThisDocument { get; }
@@ -57,5 +61,6 @@ namespace DocumentRefLoader
         public Uri AbsoluteDocumentUri { get; }
         public string InDocumentPath { get; }
         public bool IsFalseAbsoluteRef { get; }
+        public string RefFriendlyName { get; }
     }
 }

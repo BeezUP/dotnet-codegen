@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.CommandLineUtils;
@@ -21,6 +22,8 @@ namespace Dotnet.CodeGen.CodeGen
 
         public const string AUTHORIZATION_OPTION = "-a|--auth";
 
+        public const string INTERMEDIATE_OPTION = "-i|--intermediate";
+
         private const string HelpOptions = "-?|-h|--help";
 
         public static async Task Main(string[] args)
@@ -36,6 +39,7 @@ namespace Dotnet.CodeGen.CodeGen
             var authorization = app.Option(AUTHORIZATION_OPTION, "Enter an authorization token to access source documents", CommandOptionType.SingleValue);
             var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue);
             var templatesPaths = app.Option(TEMPLATES_PATH_OPTION, "Enter a path (relative or absolute / file or folder) to a template.", CommandOptionType.MultipleValue);
+            var intermediate = app.Option(INTERMEDIATE_OPTION, "Enter a path (relative or absolute) to a file for intermediate 'all refs merged' output of the json document", CommandOptionType.SingleValue);
 
             app.OnExecute(async () =>
             {
@@ -78,7 +82,14 @@ namespace Dotnet.CodeGen.CodeGen
                 try
                 {
                     var schemaLoader = schemaType.GetSchemaLoader();
-                    await CodeGenRunner.RunAsync(sourceFiles.Values, schemaLoader, templatesPaths.Values, outputPath.Value(), duplicatesTemplateHandlingStrategy, authorization: auth);
+                    var jsonObject = await schemaLoader.LoadSchemaAsync(sourceFiles.Values, auth);
+
+                    if (intermediate.HasValue())
+                    {
+                        File.WriteAllText(intermediate.Value(), jsonObject.ToString());
+                    }
+
+                    await CodeGenRunner.RunAsync(jsonObject, templatesPaths.Values, outputPath.Value(), duplicatesTemplateHandlingStrategy);
                 }
                 catch (Exception ex)
                 {

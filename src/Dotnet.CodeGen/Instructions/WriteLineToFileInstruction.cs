@@ -6,7 +6,7 @@ namespace Dotnet.CodeGen.CodeGen.Instructions
 {
     public class WriteLineToFileInstruction : BaseInstruction
     {
-        private StreamWriter _stream;
+        private StreamWriter? _stream;
 
         public WriteLineToFileInstruction(string command) : base(command) { }
 

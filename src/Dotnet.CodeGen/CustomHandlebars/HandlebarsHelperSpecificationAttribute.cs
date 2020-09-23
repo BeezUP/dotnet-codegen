@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Dotnet.CodeGen.CustomHandlebars
 {
-#if DEBUG
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class HandlebarsHelperSpecificationAttribute : Attribute
     {
@@ -19,5 +18,4 @@ namespace Dotnet.CodeGen.CustomHandlebars
         public string Template { get; }
         public string ExpectedOutput { get; }
     }
-#endif
 }

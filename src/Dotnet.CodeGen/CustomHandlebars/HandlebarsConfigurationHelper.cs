@@ -9,7 +9,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
 {
     public static class HandlebarsConfigurationHelper
     {
-        static public IEnumerable<IHelper> Helpers { get { foreach (var h in _Helpers) yield return h; } }
+        static public IEnumerable<IHelper> DefaultHelpers { get { foreach (var h in _Helpers) yield return h; } }
 
         static readonly IHelper[] _Helpers;
 
@@ -17,27 +17,32 @@ namespace Dotnet.CodeGen.CustomHandlebars
 #pragma warning disable S3963 // "static" fields should be initialized inline
         static HandlebarsConfigurationHelper()
         {
-            var helpers = new List<IHelper>();
+            var thisAssembly = typeof(HandlebarsConfigurationHelper).Assembly;
+            List<IHelper> helpers = GetHelpersFromAssembly(thisAssembly);
 
-            foreach (var type in typeof(HandlebarsConfigurationHelper).Assembly
-                .GetTypes()
-                .Where(t => !t.IsAbstract && !t.IsInterface)
+            _Helpers = helpers.ToArray();
+        }
+
+        public static List<IHelper> GetHelpersFromAssembly(Assembly thisAssembly)
+        {
+            var helpers = new List<IHelper>();
+            foreach (var type in thisAssembly.GetTypes().Where(t => !t.IsAbstract && !t.IsInterface)
                 )
             {
                 if (typeof(IHelper).IsAssignableFrom(type))
                 {
-                    var ctor = type.GetConstructor(new Type[0]);
+                    var ctor = type.GetConstructor(new Type[0]) ?? throw new InvalidProgramException("Helpers implementations should have a public, parameterless ctor");
                     var instance = ctor.Invoke(new object[0]);
                     helpers.Add((IHelper)instance);
                 }
             }
 
-            _Helpers = helpers.ToArray();
+            return helpers;
         }
 #pragma warning restore S3963 // "static" fields should be initialized inline
 #pragma warning restore CA1810 // Initialize reference type static fields inline
 
-        private static void RegisterHelpers(HandlebarsConfiguration handlebarsConfiguration)
+        private static void RegisterDefaultHelpers(HandlebarsConfiguration handlebarsConfiguration)
         {
             foreach (var h in _Helpers)
             {
@@ -56,7 +61,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
         private static HandlebarsConfiguration GetHandleBarsConfiguration(IPartialTemplateResolver templateResolver)
         {
             var configuration = new HandlebarsConfiguration();
-            RegisterHelpers(configuration);
+            RegisterDefaultHelpers(configuration);
             configuration.PartialTemplateResolver = templateResolver;
             return configuration;
         }

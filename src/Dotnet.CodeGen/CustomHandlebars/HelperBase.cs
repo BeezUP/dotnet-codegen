@@ -54,7 +54,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
                 ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
         }
 
-        protected string GetArgumentStringValue(object[] arguments, int argumentIndex)
+        protected string? GetArgumentStringValue(object[] arguments, int argumentIndex)
         {
             return arguments[argumentIndex]?.ToString();
         }
@@ -82,7 +82,7 @@ namespace Dotnet.CodeGen.CustomHandlebars
             return @char;
         }
 
-        protected string GetStringValue(object obj)
+        protected string? GetStringValue(object obj)
         {
             if (obj is string s) return s;
 

@@ -19,42 +19,14 @@ namespace Dotnet.CodeGen.Tests
         [Theory]
         [MemberData(nameof(HelpersTests_Data))]
         public void HelpersTests_Json(IHelper helper, string json, string template, string expectedOutput)
-        {
-            if (helper.ToString() != "each_with_sort") return;
-            
-            var configuration = new HandlebarsConfiguration();
-            helper.Setup(configuration);
-            var handleBar = Handlebars.Create(configuration);
-
-            var hb = handleBar.Compile(template);
-            var output = hb.Invoke(JToken.Parse(json));
-            output.ShouldBe(expectedOutput);
-        }
+            => HelpersTesterHelper.GetHelperResultFromJToken(helper, json, template).ShouldBe(expectedOutput);
 
         [Theory]
         [MemberData(nameof(HelpersTests_Data))]
-        public void HelpersTests_DynamicExpando(IHelper helper, string json, string template, string expectedOutput)
-        {
-            if (helper.ToString() != "each_with_sort") return;
+        public void HelpersTests_Expando(IHelper helper, string json, string template, string expectedOutput)
+            => HelpersTesterHelper.GetHelperResultFromExpando(helper, json, template).ShouldBe(expectedOutput);
 
-            var configuration = new HandlebarsConfiguration();
-            helper.Setup(configuration);
-            var handleBar = Handlebars.Create(configuration);
-
-            var hb = handleBar.Compile(template);
-            var obj = JsonHelper.GetDynamicObjectFromJson(JToken.Parse(json));
-            var output = hb.Invoke(obj);
-            output.ShouldBe(expectedOutput);
-        }
-
-        public static IEnumerable<object[]> HelpersTests_Data()
-        {
-            foreach (var helper in HandlebarsConfigurationHelper.Helpers)
-                foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
-                {
-                    yield return new object[] { helper, att.Json, att.Template, att.ExpectedOutput };
-                }
-        }
+        public static IEnumerable<object[]> HelpersTests_Data() => HelpersTesterHelper.GetHelpersTestsData(HandlebarsConfigurationHelper.DefaultHelpers);
     }
 }
 

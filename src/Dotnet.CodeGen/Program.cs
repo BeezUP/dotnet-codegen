@@ -35,11 +35,11 @@ namespace Dotnet.CodeGen.CodeGen
             var schemaTypeName = app.Option(SCHEMA_LOADER_TYPE_OPTION, $"Enter a schema loader type between those values [{string.Join(" | ", Enum.GetNames(typeof(SourceSchemaType)))}]", CommandOptionType.SingleValue);
             var duplicatesTemplateHandlingStrategyName = app.Option(TEMPLATE_DUPLICATES_HANDLING_STRATEGY_OPTION, $"Enter a template duplication handling strategy between those values [{string.Join(" | ", Enum.GetNames(typeof(TemplateDuplicationHandlingStrategy)))}]", CommandOptionType.SingleValue);
 
-            var sourceFiles = app.Option(SOURCE_FILE_OPTION, "Enter a path (relative or absolute) to an source document.", CommandOptionType.MultipleValue);
-            var authorization = app.Option(AUTHORIZATION_OPTION, "Enter an authorization token to access source documents", CommandOptionType.SingleValue);
-            var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue);
-            var templatesPaths = app.Option(TEMPLATES_PATH_OPTION, "Enter a path (relative or absolute / file or folder) to a template.", CommandOptionType.MultipleValue);
-            var intermediate = app.Option(INTERMEDIATE_OPTION, "Enter a path (relative or absolute) to a file for intermediate 'all refs merged' output of the json document", CommandOptionType.SingleValue);
+            var sourceFiles = app.Option(SOURCE_FILE_OPTION, "Enter a path (relative or absolute) to an source document.", CommandOptionType.MultipleValue) ?? throw new InvalidOperationException();
+            var authorization = app.Option(AUTHORIZATION_OPTION, "Enter an authorization token to access source documents", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
+            var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
+            var templatesPaths = app.Option(TEMPLATES_PATH_OPTION, "Enter a path (relative or absolute / file or folder) to a template.", CommandOptionType.MultipleValue) ?? throw new InvalidOperationException();
+            var intermediate = app.Option(INTERMEDIATE_OPTION, "Enter a path (relative or absolute) to a file for intermediate 'all refs merged' output of the json document", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
 
             app.OnExecute(async () =>
             {
@@ -82,14 +82,22 @@ namespace Dotnet.CodeGen.CodeGen
                 try
                 {
                     var schemaLoader = schemaType.GetSchemaLoader();
-                    var jsonObject = await schemaLoader.LoadSchemaAsync(sourceFiles.Values, auth);
+                    var jsonObject = await schemaLoader.LoadSchemaAsync(
+                        sourceFiles.Values ?? throw new InvalidOperationException(),
+                        auth
+                        );
 
                     if (intermediate.HasValue())
                     {
                         File.WriteAllText(intermediate.Value(), jsonObject.ToString());
                     }
 
-                    await CodeGenRunner.RunAsync(jsonObject, templatesPaths.Values, outputPath.Value(), duplicatesTemplateHandlingStrategy);
+                    await CodeGenRunner.RunAsync(
+                        jsonObject,
+                        templatesPaths.Values ?? throw new InvalidOperationException(),
+                        outputPath.Value(),
+                        duplicatesTemplateHandlingStrategy
+                        );
                 }
                 catch (Exception ex)
                 {

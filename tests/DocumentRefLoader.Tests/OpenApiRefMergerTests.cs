@@ -20,8 +20,8 @@ namespace DocumentRefLoader.Tests
 
             var result = await merger.GetMergedJObjectAsync();
 
-            var paths = result[OpenApiConstants.PATHS_KEYWORD].Children().ToArray();
-            var definitions = result[OpenApiConstants.DEFINITIONS_KEYWORD].Children().ToArray();
+            var paths = result[OpenApiConstants.PATHS_KEYWORD]?.Children().ToArray() ?? throw new NullReferenceException();
+            var definitions = result[OpenApiConstants.DEFINITIONS_KEYWORD]?.Children().ToArray() ?? throw new NullReferenceException();
             paths.Length.ShouldBe(2);
             definitions.Length.ShouldBe(2);
 
@@ -42,8 +42,8 @@ namespace DocumentRefLoader.Tests
 
             var result = await merger.GetMergedJObjectAsync();
 
-            var paths = result[OpenApiConstants.PATHS_KEYWORD].Children().ToArray();
-            var definitions = result[OpenApiConstants.DEFINITIONS_KEYWORD].Children().ToArray();
+            var paths = result[OpenApiConstants.PATHS_KEYWORD]?.Children().ToArray() ?? throw new NullReferenceException();
+            var definitions = result[OpenApiConstants.DEFINITIONS_KEYWORD]?.Children().ToArray() ?? throw new NullReferenceException();
             paths.Length.ShouldBe(2);
             definitions.Length.ShouldBe(1);
 

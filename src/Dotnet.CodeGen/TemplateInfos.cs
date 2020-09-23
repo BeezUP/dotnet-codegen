@@ -33,12 +33,10 @@ namespace Dotnet.CodeGen
             return FilePath.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (!(obj is TemplateInfos)) return false;
-
             return obj.GetHashCode() == GetHashCode();
         }
     }
-
 }

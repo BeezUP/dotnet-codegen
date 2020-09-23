@@ -8,7 +8,7 @@ namespace Dotnet.CodeGen.Schemas
 {
     public class RefLoaderSchemaLoader : ISchemaLoader
     {
-        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string authorization)
+        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string? authorization)
         {
             var docs = documentUris.ToArray();
 

@@ -32,6 +32,8 @@ namespace Dotnet.CodeGen.CodeGen
                 while (!stream.EndOfStream)
                 {
                     var line = await stream.ReadLineAsync();
+                    if (line == null) continue;
+
                     var commandCheck = lineWithCommand.Match(line);
 
                     if (commandCheck.Success)
@@ -56,7 +58,7 @@ namespace Dotnet.CodeGen.CodeGen
                         {
                             var value = (groupEnumerator.Current as Group)?.Value;
                             if (!string.IsNullOrWhiteSpace(value))
-                                parameters.Add(value);
+                                parameters.Add(value ?? throw new InvalidOperationException());
                         }
 
                         if (!_activeInstructions.ContainsKey(instruction.Command))

@@ -9,7 +9,7 @@ namespace Dotnet.CodeGen.Schemas
 {
     public class RawJsonSchemaLoader : ISchemaLoader
     {
-        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string authorization)
+        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string? authorization)
         {
             var docs = documentUris.ToArray();
             if (docs.Length != 1)

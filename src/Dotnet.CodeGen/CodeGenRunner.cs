@@ -14,10 +14,10 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public static class CodeGenRunner
     {
-        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string authorization = null)
+        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string? authorization = null)
             => RunAsync(new[] { sourcePath }, schemaLoader, new[] { templatePath }, outputPath, templateDuplicationHandlingStrategy, authorization);
 
-        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string authorization = null)
+        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string? authorization = null)
         {
             var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath, authorization);
             await RunAsync(jsonObject, templatesPaths, outputPath, templateDuplicationHandlingStrategy);
@@ -37,7 +37,7 @@ namespace Dotnet.CodeGen.CodeGen
 
                 var result = compiled(obj);
 
-                var context = new ProcessorContext { InputFile = result, OutputDirectory = outputPath, };
+                var context = new ProcessorContext(result, outputPath);
 
                 using var processor = new FilesProcessor(context,
                     new WriteLineToFileInstruction("FILE"),

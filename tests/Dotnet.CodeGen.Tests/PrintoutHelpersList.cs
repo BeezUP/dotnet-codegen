@@ -30,7 +30,7 @@ namespace Dotnet.CodeGen.Tests
                 return str.Replace("\r", "\\r").Replace("\n", "\\n");
             };
 
-            foreach (var helper in HandlebarsConfigurationHelper.Helpers.OrderBy(h => h.ToString()))
+            foreach (var helper in HandlebarsConfigurationHelper.DefaultHelpers.OrderBy(h => h.ToString()))
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
                     const int jsonLimit = 100;

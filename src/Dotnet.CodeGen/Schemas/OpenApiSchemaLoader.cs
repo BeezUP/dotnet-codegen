@@ -18,7 +18,7 @@ namespace Dotnet.CodeGen.Schemas
     {
         static readonly HttpClient httpClient = new HttpClient { };
 
-        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string authorization)
+        public async Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string? authorization)
         {
             var docs = documentUris.ToArray();
             if (docs.Length != 1)
@@ -220,9 +220,13 @@ namespace Dotnet.CodeGen.Schemas
             {
                 if (entity == null) return;
 
-                if (IsUnresolvedReference(entity))
+                if (IsUnresolvedReference(entity) && entity.Reference != null)
                 {
-                    assign(ResolveReference<T>(entity.Reference));
+                    var resolved = ResolveReference<T>(entity.Reference);
+                    if (resolved != null)
+                    {
+                        assign(resolved);
+                    }
                 }
             }
 
@@ -235,7 +239,10 @@ namespace Dotnet.CodeGen.Schemas
                     var entity = list[i];
                     if (IsUnresolvedReference(entity))
                     {
-                        list[i] = ResolveReference<T>(entity.Reference);
+                        if (entity.Reference == null) continue;
+                        var resolved = ResolveReference<T>(entity.Reference);
+                        if (resolved == null) continue;
+                        list[i] = resolved;
                     }
                 }
             }
@@ -249,12 +256,15 @@ namespace Dotnet.CodeGen.Schemas
                     var entity = map[key];
                     if (IsUnresolvedReference(entity))
                     {
-                        map[key] = ResolveReference<T>(entity.Reference);
+                        if (entity.Reference == null) continue;
+                        var resolved = ResolveReference<T>(entity.Reference);
+                        if (resolved == null) continue;
+                        map[key] = resolved;
                     }
                 }
             }
 
-            private T ResolveReference<T>(OpenApiReference reference) where T : class, IOpenApiReferenceable, new()
+            private T? ResolveReference<T>(OpenApiReference reference) where T : class, IOpenApiReferenceable, new()
             {
                 if (string.IsNullOrEmpty(reference.ExternalResource))
                 {

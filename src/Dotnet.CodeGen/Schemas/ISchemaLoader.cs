@@ -6,6 +6,6 @@ namespace Dotnet.CodeGen.Schemas
 {
     public interface ISchemaLoader
     {
-        Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string authorization);
+        Task<JToken> LoadSchemaAsync(IEnumerable<string> documentUris, string? authorization);
     }
 }

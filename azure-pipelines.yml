@@ -34,6 +34,9 @@ steps:
 - script: dotnet pack ./src/DocumentRefLoader/DocumentRefLoader.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
   displayName: 'dotnet pack'
 
+- task: NuGetToolInstaller@1
+  inputs:
+    checkLatest: true 
 - task: NuGetCommand@2
   inputs:
     command: push

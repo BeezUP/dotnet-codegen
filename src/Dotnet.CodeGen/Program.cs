@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dotnet.CodeGen.CustomHandlebars;
 using Microsoft.Extensions.CommandLineUtils;
 using Console = Colorful.Console;
 
@@ -23,6 +24,10 @@ namespace Dotnet.CodeGen.CodeGen
         public const string AUTHORIZATION_OPTION = "-a|--auth";
 
         public const string INTERMEDIATE_OPTION = "-i|--intermediate";
+        public const string CUSTOM_HELPERS = "-c|--customhelpers";
+        public const string CUSTOM_HELPERS_ARTIFACTS_DIRECTORY = "--artifacts";
+        public const string CUSTOM_HELPERS_ARTIFACTS_DIRECTORY_DEFAULT = "./temp";
+
 
         private const string HelpOptions = "-?|-h|--help";
 
@@ -40,6 +45,8 @@ namespace Dotnet.CodeGen.CodeGen
             var outputPath = app.Option(OUTPUT_PATH_OPTION, "Enter the path (relative or absolute) to the output path (content will be overritten)", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
             var templatesPaths = app.Option(TEMPLATES_PATH_OPTION, "Enter a path (relative or absolute / file or folder) to a template.", CommandOptionType.MultipleValue) ?? throw new InvalidOperationException();
             var intermediate = app.Option(INTERMEDIATE_OPTION, "Enter a path (relative or absolute) to a file for intermediate 'all refs merged' output of the json document", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
+            var customHelpers = app.Option(CUSTOM_HELPERS, "Enter a path (relative or absolute) to a folder with a custom helpers project (.csproj)", CommandOptionType.MultipleValue) ?? throw new InvalidOperationException();
+            var artifacts = app.Option(CUSTOM_HELPERS_ARTIFACTS_DIRECTORY, $"Enter a path (relative or absolute) where the custom helpers builds process can output artifacts (default {CUSTOM_HELPERS_ARTIFACTS_DIRECTORY_DEFAULT})", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
 
             app.OnExecute(async () =>
             {
@@ -92,10 +99,19 @@ namespace Dotnet.CodeGen.CodeGen
                         File.WriteAllText(intermediate.Value(), jsonObject.ToString());
                     }
 
+                    var helpers = new List<IHelper>();
+                    var artifactDirectory = artifacts.HasValue() ? artifacts.Value() : CUSTOM_HELPERS_ARTIFACTS_DIRECTORY_DEFAULT;
+                    foreach (var helperPath in customHelpers.Values)
+                    {
+                        var helps = HandlebarsConfigurationHelper.GetHelpersFromFolder(helperPath, artifactDirectory);
+                        helpers.AddRange(helps);
+                    }
+
                     await CodeGenRunner.RunAsync(
                         jsonObject,
                         templatesPaths.Values ?? throw new InvalidOperationException(),
                         outputPath.Value(),
+                        helpers,
                         duplicatesTemplateHandlingStrategy
                         );
                 }

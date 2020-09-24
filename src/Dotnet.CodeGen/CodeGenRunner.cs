@@ -14,18 +14,20 @@ namespace Dotnet.CodeGen.CodeGen
 {
     public static class CodeGenRunner
     {
-        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string? authorization = null)
-            => RunAsync(new[] { sourcePath }, schemaLoader, new[] { templatePath }, outputPath, templateDuplicationHandlingStrategy, authorization);
+        public static Task RunAsync(string sourcePath, ISchemaLoader schemaLoader, string templatePath, string outputPath, IEnumerable<IHelper>? customHelpers = null, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string? authorization = null)
+            => RunAsync(new[] { sourcePath }, schemaLoader, new[] { templatePath }, outputPath, customHelpers, templateDuplicationHandlingStrategy, authorization);
 
-        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string? authorization = null)
+        public static async Task RunAsync(IEnumerable<string> sourcePath, ISchemaLoader schemaLoader, IEnumerable<string> templatesPaths, string outputPath, IEnumerable<IHelper>? customHelpers, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw, string? authorization = null)
         {
             var jsonObject = await schemaLoader.LoadSchemaAsync(sourcePath, authorization);
-            await RunAsync(jsonObject, templatesPaths, outputPath, templateDuplicationHandlingStrategy);
+            await RunAsync(jsonObject, templatesPaths, outputPath, customHelpers, templateDuplicationHandlingStrategy);
         }
 
-        public static async Task RunAsync(JToken jsonObject, IEnumerable<string> templatesPaths, string outputPath, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+        public static async Task RunAsync(JToken json, IEnumerable<string> templatesPaths, string outputPath, IEnumerable<IHelper>? customHelpers, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
         {
-            var obj = JsonHelper.GetDynamicObjectFromJson(jsonObject);
+            customHelpers ??= new IHelper[0];
+
+            var obj = JsonHelper.GetDynamicObjectFromJson(json);
 
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 

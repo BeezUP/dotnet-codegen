@@ -1,9 +1,13 @@
 ﻿using HandlebarsDotNet;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 namespace Dotnet.CodeGen.CustomHandlebars
 {
@@ -18,27 +22,67 @@ namespace Dotnet.CodeGen.CustomHandlebars
         static HandlebarsConfigurationHelper()
         {
             var thisAssembly = typeof(HandlebarsConfigurationHelper).Assembly;
-            List<IHelper> helpers = GetHelpersFromAssembly(thisAssembly);
+            _Helpers = GetHelpersFromAssembly(thisAssembly).ToArray();
+        }
 
-            _Helpers = helpers.ToArray();
+        public static IHelper[] GetHelpersFromFolder(string projectFolderPath, string artifactDirectory)
+        {
+            var csproj = Directory.GetFiles(projectFolderPath, "*.csproj").FirstOrDefault() ?? throw new InvalidDataException($"No .csproj file found in the directory {projectFolderPath}");
+            var projName = Path.GetFileNameWithoutExtension(csproj);
+            string outputFolder = Path.Combine(artifactDirectory, projName);
+
+            // Build the project
+            var dotnetCommand = $"build {csproj} -o \"{outputFolder}\" -c Release";
+            var start = new ProcessStartInfo("dotnet", dotnetCommand)
+            {
+                CreateNoWindow = true
+            };
+            var process = new Process
+            {
+                StartInfo = start
+            };
+            process.Start();
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                throw new InvalidOperationException($"Something bad happened when building the project '{csproj}'");
+            }
+
+            // Dynamic load of the assemblies, starting with the one with some helper
+            var helpers = new List<IHelper>();
+            var assemblyName = $"{projName}.dll";
+            var assemblyFilePath = Directory.GetFiles(outputFolder, assemblyName).FirstOrDefault() ?? throw new InvalidDataException($"No .csproj file found in the directory {projectFolderPath}"); ;
+            var loadedAssembly = Assembly.LoadFrom(assemblyFilePath);
+            var helps = GetHelpersFromAssembly(loadedAssembly);
+            helpers.AddRange(helps);
+
+            return helpers.ToArray();
         }
 
         public static List<IHelper> GetHelpersFromAssembly(Assembly thisAssembly)
         {
             var helpers = new List<IHelper>();
-            foreach (var type in thisAssembly.GetTypes().Where(t => !t.IsAbstract && !t.IsInterface)
-                )
+            foreach (var type in GetHelperTypesFromAssembly(thisAssembly))
             {
-                if (typeof(IHelper).IsAssignableFrom(type))
-                {
-                    var ctor = type.GetConstructor(new Type[0]) ?? throw new InvalidProgramException("Helpers implementations should have a public, parameterless ctor");
-                    var instance = ctor.Invoke(new object[0]);
-                    helpers.Add((IHelper)instance);
-                }
+                var ctor = type.GetConstructor(new Type[0]) ?? throw new InvalidProgramException("Helpers implementations should have a public, parameterless ctor");
+                var instance = ctor.Invoke(new object[0]);
+                helpers.Add((IHelper)instance);
             }
-
             return helpers;
         }
+
+        public static IEnumerable<Type> GetHelperTypesFromAssembly(Assembly thisAssembly)
+        {
+            var iHelperType = typeof(IHelper);
+            foreach (var type in thisAssembly.GetTypes().Where(t => !t.IsAbstract && !t.IsInterface))
+            {
+                if (iHelperType.IsAssignableFrom(type))
+                {
+                    yield return type;
+                }
+            }
+        }
+
 #pragma warning restore S3963 // "static" fields should be initialized inline
 #pragma warning restore CA1810 // Initialize reference type static fields inline
 

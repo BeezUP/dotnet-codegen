@@ -1,14 +1,14 @@
-## dotnet-codegen
+# dotnet-codegen
 
 A global tool to execute handlebars templates in order to generate code (think about swagger/openapi/graphql ...)
 
-### Installation
+## Installation
 
 Installation is very easy. Just run this command and the tool will be installed. 
 
 `dotnet tool install --global Dotnet.CodeGen`
 
-### Usage
+## Usage
 
 `dotnet-codegen -s <Open_Api_File_Uri1> -o <Output_Folder> -t <Template_Folder1> [-s <Open_Api_File_Uri2>] [-t Template_Folder2] [-t Template_Folder3] [...]`
 
@@ -16,7 +16,7 @@ example :
 
 `dotnet-codegen -s "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" -o "output/folder" -t "my_template_folder"`
 
-# Custom handlebars helper
+## Handlebars helper
 
 You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/Dotnet.CodeGen/CustomHandlebars/Helpers
 Use cases are documented (and tested) thought `HandlebarsHelperSpecification` attributes 
@@ -158,10 +158,14 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 | `{ value: '42' }` | `{{#with_matching value '42' . }}{{value}}{{else}}NOT FOUND{{/with_matching}}` | `42` |
 
 
+## Custom Handlebars Helpers
 
+To create custom local dotnet handlebars helpers, copy the [CustomHelpers](https://github.com/BeezUP/dotnet-codegen/tree/master/src/Dotnet.Codegen.CustomHelpers) project in any folder you'd like.
 
+Then use the `-c` command line option to enable the dynamic compiling & loading of the helpers you created.
+The project is, in itself, a unit test project with what you need to simply create unit test case by attributes placed on your custom helpers.
 
-### Update
+## Update
 
 `dotnet tool update -g Dotnet.CodeGen`
 

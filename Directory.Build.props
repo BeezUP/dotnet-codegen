@@ -11,7 +11,7 @@
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
 
-	  <LangVersion>latest</LangVersion>
+	  	<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>

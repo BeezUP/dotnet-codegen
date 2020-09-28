@@ -105,6 +105,7 @@ namespace Dotnet.CodeGen.CodeGen
                     {
                         var helps = HandlebarsConfigurationHelper.GetHelpersFromFolder(helperPath, artifactDirectory);
                         helpers.AddRange(helps);
+                        Console.WriteLine($"Adding helpers : {string.Join(',', (IEnumerable<IHelper>)helps)}");
                     }
 
                     await CodeGenRunner.RunAsync(
@@ -117,7 +118,7 @@ namespace Dotnet.CodeGen.CodeGen
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.GetBaseException().Message);
+                    Console.WriteLine(ex.GetBaseException().Message, ERROR_COLOR);
                     throw;
                 }
 

@@ -1,13 +1,10 @@
 ﻿using HandlebarsDotNet;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
 
 namespace Dotnet.CodeGen.CustomHandlebars
 {
@@ -31,20 +28,26 @@ namespace Dotnet.CodeGen.CustomHandlebars
             var projName = Path.GetFileNameWithoutExtension(csproj);
             string outputFolder = Path.Combine(artifactDirectory, projName);
 
+            using (var consoleOut = Console.OpenStandardOutput()) ;
+
             // Build the project
             var dotnetCommand = $"build {csproj} -o \"{outputFolder}\" -c Release";
             var start = new ProcessStartInfo("dotnet", dotnetCommand)
             {
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
             };
             var process = new Process
             {
-                StartInfo = start
+                StartInfo = start,
             };
             process.Start();
+            var output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
+                Console.WriteLine(output);
                 throw new InvalidOperationException($"Something bad happened when building the project '{csproj}'");
             }
 

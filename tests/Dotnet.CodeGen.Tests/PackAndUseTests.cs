@@ -84,15 +84,14 @@ namespace Dotnet.CodeGen.Tests
                 FileName = "dotnet",
                 Arguments = $"tool install -g {PACKAGE_NAME} --add-source {folder}",
                 RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
+                //RedirectStandardOutput = true,
+                //UseShellExecute = false,
                 WorkingDirectory = solutionFolder
             }))
             {
                 process.WaitForExit();
-                Output(output, process);
-                if (process.ExitCode != 0)
-                    throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
+                //Output(output, process);
+                OutputIfError(output, process);
             }
         }
 
@@ -109,9 +108,6 @@ namespace Dotnet.CodeGen.Tests
             {
                 process.WaitForExit();
                 OutputIfError(output, process);
-                if (process.ExitCode != 0)
-                    throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
-
                 output.WriteLine($"Tools list : '\n{process.StandardOutput.ReadToEnd()}\n'");
             }
         }
@@ -123,8 +119,8 @@ namespace Dotnet.CodeGen.Tests
                 FileName = "dotnet",
                 Arguments = $"tool uninstall -g {PACKAGE_NAME}",
                 RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
+                //RedirectStandardOutput = true,
+                //UseShellExecute = false,
                 WorkingDirectory = solutionFolder
             }))
             {
@@ -139,8 +135,8 @@ namespace Dotnet.CodeGen.Tests
                 FileName = "dotnet",
                 Arguments = $"pack ./src/{PACKAGE_NAME}/{PACKAGE_NAME}.csproj --configuration Release --output {folder}",
                 RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
+                //RedirectStandardOutput = true,
+                //UseShellExecute = false,
                 WorkingDirectory = solutionFolder
             }))
             {
@@ -153,14 +149,14 @@ namespace Dotnet.CodeGen.Tests
         {
             if (process.ExitCode != 0)
             {
-                Output(output, process);
+                //Output(output, process);
                 throw new Exception($"Failed : '{process.StandardError.ReadToEnd()}'");
             }
         }
 
-        private static void Output(ITestOutputHelper output, Process process)
-        {
-            output.WriteLine($"{process.StandardOutput.ReadToEnd()}");
-        }
+        //private static void Output(ITestOutputHelper output, Process process)
+        //{
+        //    output.WriteLine($"{process.StandardOutput.ReadToEnd()}");
+        //}
     }
 }

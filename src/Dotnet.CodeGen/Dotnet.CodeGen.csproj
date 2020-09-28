@@ -13,7 +13,7 @@
 		<Title>Dotnet.CodeGen</Title>
 		<PackageId>Dotnet.CodeGen</PackageId>
 
-		<Version>0.0.0.7</Version>
+		<Version>0.0.0.8</Version>
 		<Description>Code generator </Description>
 		<PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
 		<Copyright>Copyright 2019 © BeezUP</Copyright>
@@ -31,16 +31,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Colorful.Console" Version="1.2.11" />
-		<PackageReference Include="Handlebars.Net" Version="1.10.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.7.0" />
 		<PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-		<PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="YamlDotNet" Version="8.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DocumentRefLoader\DocumentRefLoader.csproj" />
+		<ProjectReference Include="..\Dotnet.CodeGen.Engine\Dotnet.CodeGen.Engine.csproj" />
 	</ItemGroup>
 
 </Project>

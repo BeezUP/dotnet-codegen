@@ -9,7 +9,7 @@
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		-->
 
-		<Version>0.0.0.7</Version>
+		<Version>0.0.0.8</Version>
 		<Description>$ref yaml/json document loader</Description>
 		<PackageTags>codegen generator generation swagger openapi handlebars mustache yaml ref</PackageTags>
 		<Copyright>Copyright 2019 © BeezUP</Copyright>

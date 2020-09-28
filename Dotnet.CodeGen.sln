@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentRefLoader.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dotnet.Codegen.CustomHelpers", "src\Dotnet.Codegen.CustomHelpers\Dotnet.Codegen.CustomHelpers.csproj", "{D5A36153-E516-4EAF-ADE0-A5A518B66981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.CodeGen.Engine", "src\Dotnet.CodeGen.Engine\Dotnet.CodeGen.Engine.csproj", "{C470BB44-9A8B-4395-86BD-997E2C7BBC53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D5A36153-E516-4EAF-ADE0-A5A518B66981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5A36153-E516-4EAF-ADE0-A5A518B66981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5A36153-E516-4EAF-ADE0-A5A518B66981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

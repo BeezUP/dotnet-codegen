@@ -23,7 +23,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
                     var argument = arguments[0].ToString();
                     var splitter = arguments[1].ToString();
 
-                    output.Write(argument?.Split(splitter, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "");
+                    output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "");
                 };
     }
 
@@ -45,7 +45,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
                 var argument = arguments[0].ToString();
                 var splitter = arguments[1].ToString();
 
-                output.Write(argument?.Split(splitter, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "");
+                output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "");
             };
     }
 }

@@ -20,17 +20,20 @@ namespace Dotnet.CodeGen.Tests
         /// This test is just a way to generate a documentation for existing custom helpers
         /// </summary>
         [Fact]
-        public void Test()
+        public void PrintDocs()
         {
-            _output.WriteLine("| Helper | Input document | Handlebars template | Result |");
-            _output.WriteLine("|--------|----------------|---------------------|--------|");
-
             string escapeStr(string str)
             {
                 return str.Replace("\r", "\\r").Replace("\n", "\\n");
             };
 
             foreach (var helper in HandlebarsConfigurationHelper.DefaultHelpers.OrderBy(h => h.ToString()))
+            {
+                _output.WriteLine($"### {helper}");
+
+                _output.WriteLine("| Input document | Handlebars template | Result |");
+                _output.WriteLine("|----------------|---------------------|--------|");
+
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
                     const int jsonLimit = 100;
@@ -39,8 +42,9 @@ namespace Dotnet.CodeGen.Tests
                         : att.Json
                         ;
 
-                    _output.WriteLine($"| {helper} | `\"{escapeStr(json)}\"` | `\"{escapeStr(att.Template)}\"` | `\"{escapeStr(att.ExpectedOutput)}\"` |");
+                    _output.WriteLine($"| `{escapeStr(json)}` | `{escapeStr(att.Template)}` | `{escapeStr(att.ExpectedOutput)}` |");
                 }
+            }
         }
     }
 }

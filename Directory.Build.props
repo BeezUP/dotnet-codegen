@@ -6,7 +6,7 @@
 		<Copyright>Copyright 2020 © BeezUP</Copyright>
 		<Authors>BeezUP awesome team</Authors>
 
-		<PackageIcon>https://avatars2.githubusercontent.com/u/25665430</PackageIcon>
+		<PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>

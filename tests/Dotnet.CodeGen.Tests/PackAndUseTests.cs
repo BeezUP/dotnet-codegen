@@ -31,7 +31,7 @@ namespace Dotnet.CodeGen.Tests
             UninstallTool(_output, _solutionFolder, _tmpOutput);
         }
 
-        [Fact]
+        [IgnoreOnLinuxFact]
         public void Should_pack_install()
         {
             ListTools(_output, _solutionFolder, _tmpOutput);

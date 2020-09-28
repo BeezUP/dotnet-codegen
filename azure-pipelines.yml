@@ -28,12 +28,12 @@ steps:
     testResultsFormat: 'VSTest'
     testResultsFiles: '$(Build.ArtifactStagingDirectory)/testsResults.trx'
 
-- script: dotnet pack ./src/DocumentRefLoader/DocumentRefLoader.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
-  displayName: 'dotnet pack'
+# - script: dotnet pack ./src/DocumentRefLoader/DocumentRefLoader.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
+#   displayName: 'dotnet pack'
 - script: dotnet pack ./src/Dotnet.CodeGen.Engine/Dotnet.CodeGen.Engine.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
   displayName: 'dotnet pack'
-- script: dotnet pack ./src/Dotnet.CodeGen/Dotnet.CodeGen.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
-  displayName: 'dotnet pack'
+# - script: dotnet pack ./src/Dotnet.CodeGen/Dotnet.CodeGen.csproj --no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)
+#   displayName: 'dotnet pack'
 
 - task: NuGetToolInstaller@1
   inputs:

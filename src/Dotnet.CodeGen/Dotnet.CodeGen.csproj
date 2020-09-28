@@ -3,26 +3,12 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFrameworks>netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
-		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<AssemblyName>dotnet-codegen</AssemblyName>
 		<ToolCommandName>dotnet-codegen</ToolCommandName>
 		<PackAsTool>true</PackAsTool>
 		<Title>Dotnet.CodeGen</Title>
 		<PackageId>Dotnet.CodeGen</PackageId>
-
-		<Version>0.0.0.8</Version>
-		<Description>Code generator </Description>
-		<PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
-		<Copyright>Copyright 2019 © BeezUP</Copyright>
-		<Authors>BeezUP awesome team</Authors>
-
-		<PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
-		<PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

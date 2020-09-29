@@ -1,10 +1,13 @@
 ﻿using Dotnet.CodeGen.CustomHandlebars;
 using HandlebarsDotNet;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using YamlDotNet.Serialization;
 
 namespace Dotnet.CodeGen
 {
@@ -15,7 +18,7 @@ namespace Dotnet.CodeGen
             foreach (var helper in helpers)
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
-                    yield return new object[] { helper, att.Json, att.Template, att.ExpectedOutput };
+                    yield return new object[] { helper, att.GetJsonDocument(), att.Template, att.ExpectedOutput };
                 }
         }
 

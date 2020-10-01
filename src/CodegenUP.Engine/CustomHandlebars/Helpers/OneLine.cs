@@ -33,33 +33,32 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public OneLine() : base("one_line") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCountMax(arguments, 1);
+
+            var indent = 0;
+            if (arguments.Length != 0)
             {
-                EnsureArgumentsCountMax(arguments, 1);
+                if (int.TryParse(arguments[0]?.ToString(), out var i))
+                    indent = i;
+            }
 
-                var indent = 0;
-                if (arguments.Length != 0)
+            using (var stream = new MemoryStream())
+            {
+                using (var tw = new StreamWriter(stream, Encoding.Default, 500, true))
                 {
-                    if (int.TryParse(arguments[0]?.ToString(), out var i))
-                        indent = i;
+                    options.Template(tw, context);
                 }
-
-                using (var stream = new MemoryStream())
+                stream.Seek(0, SeekOrigin.Begin);
+                using (var tr = new StreamReader(stream))
                 {
-                    using (var tw = new StreamWriter(stream, Encoding.Default, 500, true))
-                    {
-                        options.Template(tw, context);
-                    }
-                    stream.Seek(0, SeekOrigin.Begin);
-                    using (var tr = new StreamReader(stream))
-                    {
-                        var result = tr.ReadToEnd();
-                        result = regex.Replace(result, " ");
-                        result = new string(' ', indent) + result.Trim();
-                        output.WriteSafeString(result);
-                    }
+                    var result = tr.ReadToEnd();
+                    result = regex.Replace(result, " ");
+                    result = new string(' ', indent) + result.Trim();
+                    output.WriteSafeString(result);
                 }
-            };
+            }
+        }
     }
 }

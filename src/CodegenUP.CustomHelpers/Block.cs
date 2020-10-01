@@ -14,19 +14,18 @@ public class Block : SimpleBlockHelperBase
 {
     public Block() : base("is_ok") { }
 
-    public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCountMax(arguments, 1);
+    public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+    {
+        EnsureArgumentsCountMax(arguments, 1);
 
-                var condition = arguments[0]?.ToString() == "ok";
-                if (condition)
-                {
-                    options.Template(output, context);
-                }
-                else
-                {
-                    options.Inverse(output, context);
-                }
-            };
+        var condition = arguments[0]?.ToString() == "ok";
+        if (condition)
+        {
+            options.Template(output, context);
+        }
+        else
+        {
+            options.Inverse(output, context);
+        }
+    }
 }

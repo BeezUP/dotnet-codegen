@@ -16,35 +16,34 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public RefResolve() : base("ref_resolve") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 0);
+
+            var jObj = context as JObject ?? throw new CodeGenHelperException($"{Name} helper needs a {nameof(JObject)} as context.");
+
+            var refProp = jObj.SelectToken(REF, false) as JValue;
+            if (refProp == null)
             {
-                EnsureArgumentsCount(arguments, 0);
+                options.Template(output, context);
+                return;
+            }
 
-                var jObj = context as JObject ?? throw new CodeGenHelperException($"{Name} helper needs a {nameof(JObject)} as context.");
+            var refPath = refProp?.ToString();
+            if (string.IsNullOrWhiteSpace(refPath))
+                throw new CodeGenHelperException($"{Name} helper: {REF} property was found but without value.");
 
-                var refProp = jObj.SelectToken(REF, false) as JValue;
-                if (refProp == null)
-                {
-                    options.Template(output, context);
-                    return;
-                }
+            if (refPath == null || string.IsNullOrWhiteSpace(refPath))
+            {
+                throw new CodeGenHelperException($"{REF} value was empty or null.");
+            }
 
-                var refPath = refProp?.ToString();
-                if (string.IsNullOrWhiteSpace(refPath))
-                    throw new CodeGenHelperException($"{Name} helper: {REF} property was found but without value.");
+            var jsonPath = RefPathToJsonPath(refPath);
+            var resolved = jObj.Root.SelectToken(jsonPath) as JObject
+                ?? throw new CodeGenHelperException($"{Name} helper: unable to resolve {refPath} as an object ({nameof(JObject)}).");
 
-                if (refPath == null || string.IsNullOrWhiteSpace(refPath))
-                {
-                    throw new CodeGenHelperException($"{REF} value was empty or null.");
-                }
-
-                var jsonPath = RefPathToJsonPath(refPath);
-                var resolved = jObj.Root.SelectToken(jsonPath) as JObject
-                    ?? throw new CodeGenHelperException($"{Name} helper: unable to resolve {refPath} as an object ({nameof(JObject)}).");
-
-                options.Template(output, resolved);
-            };
+            options.Template(output, resolved);
+        }
 
         static string RefPathToJsonPath(string @ref) => @ref.Replace("/", ".").Trim('#');
     }

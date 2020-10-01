@@ -19,14 +19,13 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public Trim() : base("trim") { }
 
-        public override HandlebarsHelper Helper =>
-            (TextWriter output, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCountMin(arguments, 1);
-                EnsureArgumentsCountMax(arguments, 2);
+        public override void Helper(TextWriter output, object context, object[] arguments)
+        {
+            EnsureArgumentsCountMin(arguments, 1);
+            EnsureArgumentsCountMax(arguments, 2);
 
-                TrimHelper.Trim(output, arguments, (a, c) => a.Trim(c));
-            };
+            TrimHelper.Trim(output, arguments, (a, c) => a.Trim(c));
+        }
     }
 
     /// <summary>
@@ -43,14 +42,13 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public TrimStart() : base("trim_start") { }
 
-        public override HandlebarsHelper Helper =>
-            (TextWriter output, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCountMin(arguments, 1);
-                EnsureArgumentsCountMax(arguments, 2);
+        public override void Helper(TextWriter output, object context, object[] arguments)
+        {
+            EnsureArgumentsCountMin(arguments, 1);
+            EnsureArgumentsCountMax(arguments, 2);
 
-                TrimHelper.Trim(output, arguments, (a, c) => a.TrimStart(c));
-            };
+            TrimHelper.Trim(output, arguments, (a, c) => a.TrimStart(c));
+        }
     }
 
     /// <summary>
@@ -67,14 +65,13 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public TrimEnd() : base("trim_end") { }
 
-        public override HandlebarsHelper Helper =>
-            (TextWriter output, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCountMin(arguments, 1);
-                EnsureArgumentsCountMax(arguments, 2);
+        public override void Helper(TextWriter output, object context, object[] arguments)
+        {
+            EnsureArgumentsCountMin(arguments, 1);
+            EnsureArgumentsCountMax(arguments, 2);
 
-                TrimHelper.Trim(output, arguments, (a, c) => a.TrimEnd(c));
-            };
+            TrimHelper.Trim(output, arguments, (a, c) => a.TrimEnd(c));
+        }
     }
 
 

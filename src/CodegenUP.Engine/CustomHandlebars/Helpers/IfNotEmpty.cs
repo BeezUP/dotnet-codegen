@@ -14,21 +14,20 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public IfNotEmpty() : base("if_not_empty") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 1);
+
+            var arg = GetArgumentAs<string>(arguments, 0) ?? "";
+
+            if (string.IsNullOrWhiteSpace(arg))
             {
-                EnsureArgumentsCount(arguments, 1);
-
-                var arg = GetArgumentStringValue(arguments, 0) ?? "";
-
-                if (string.IsNullOrWhiteSpace(arg))
-                {
-                    options.Inverse(output, context);
-                }
-                else
-                {
-                    options.Template(output, context);
-                }
-            };
+                options.Inverse(output, context);
+            }
+            else
+            {
+                options.Template(output, context);
+            }
+        }
     }
 }

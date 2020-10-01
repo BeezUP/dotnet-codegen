@@ -37,26 +37,25 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public IfArrayContains() : base("if_array_contains") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
-                {
-                    EnsureArgumentsCount(arguments, 2);
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 2);
 
-                    var array = GetArgumentAsArray(arguments, 0);
+            var array = GetArgumentAsArray(arguments, 0);
 
-                    var search = GetArgumentStringValue(arguments, 1);
+            var search = GetArgumentAs<string>(arguments, 1);
 
-                    if (array
-                        .Select(token => GetStringValue(token))
-                        .Any(s => string.Compare(s, search, StringComparison.InvariantCultureIgnoreCase) == 0)
-                        )
-                    {
-                        options.Template(output, context);
-                    }
-                    else
-                    {
-                        options.Inverse(output, context);
-                    }
-                };
+            if (array
+                .Select(token => ObjectTo<string>(token).result)
+                .Any(s => string.Compare(s, search, StringComparison.InvariantCultureIgnoreCase) == 0)
+                )
+            {
+                options.Template(output, context);
+            }
+            else
+            {
+                options.Inverse(output, context);
+            }
+        }
     }
 }

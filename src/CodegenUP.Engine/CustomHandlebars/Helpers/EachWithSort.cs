@@ -23,13 +23,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public EachWithSort() : base("each_with_sort") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCountMin(arguments, 1);
-                EnsureArgumentsCountMax(arguments, 2);
-                Sort(output, options, context, arguments, SortDirection.Ascending, Name);
-            };
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCountMin(arguments, 1);
+            EnsureArgumentsCountMax(arguments, 2);
+            Sort(output, options, context, arguments, SortDirection.Ascending, Name);
+        }
 
         internal enum SortDirection
         {

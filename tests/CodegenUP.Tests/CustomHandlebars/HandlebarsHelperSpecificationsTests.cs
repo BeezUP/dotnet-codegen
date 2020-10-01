@@ -12,7 +12,7 @@ using Xunit;
 
 #if DEBUG
 
-namespace CodegenUP.Tests
+namespace CodegenUP.Tests.CustomHandlebars
 {
     public class HandlebarsHelperSpecificationsTests
     {

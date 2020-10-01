@@ -18,13 +18,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public UppercaseFirstLetter() : base("uppercase_first_letter") { }
 
-        public override HandlebarsHelper Helper =>
-            (TextWriter output, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCount(arguments, 1);
-                var argument = arguments[0].ToString();
-                output.Write(StringUppercaseFirstLetter(argument));
-            };
+        public override void Helper(TextWriter output, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 1);
+            var argument = arguments[0].ToString();
+            output.Write(StringUppercaseFirstLetter(argument));
+        }
 
         public static string StringUppercaseFirstLetter(string argument)
             => string.IsNullOrEmpty(argument)

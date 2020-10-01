@@ -18,12 +18,11 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public EachWithSortInv() : base("each_with_sort_inv") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCountMin(arguments, 1);
-                EnsureArgumentsCountMax(arguments, 2);
-                EachWithSort.Sort(output, options, context, arguments, EachWithSort.SortDirection.Descending, Name);
-            };
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCountMin(arguments, 1);
+            EnsureArgumentsCountMax(arguments, 2);
+            EachWithSort.Sort(output, options, context, arguments, EachWithSort.SortDirection.Descending, Name);
+        }
     }
 }

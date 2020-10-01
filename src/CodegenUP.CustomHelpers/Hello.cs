@@ -13,13 +13,12 @@ public class Hello : SimpleStandardHelperBase
 {
     public Hello() : base("hello") { }
 
-    public override HandlebarsHelper Helper =>
-        (TextWriter output, object context, object[] arguments) =>
-        {
-            EnsureArgumentsCount(arguments, 1);
+    public override void Helper(TextWriter output, object context, object[] arguments)
+    {
+        EnsureArgumentsCount(arguments, 1);
 
-            var argument = arguments[0].ToString();
+        var argument = arguments[0].ToString();
 
-            output.Write($"hello {argument}!");
-        };
+        output.Write($"hello {argument}!");
+    }
 }

@@ -17,22 +17,21 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public IfEquals() : base("if_equals") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 2);
+
+            var arg1 = GetArgumentAs<string>(arguments, 0) ?? "";
+            var arg2 = GetArgumentAs<string>(arguments, 1) ?? "";
+
+            if (string.Compare(arg1, arg2, StringComparison.InvariantCultureIgnoreCase) == 0)
             {
-                EnsureArgumentsCount(arguments, 2);
-
-                var arg1 = GetArgumentStringValue(arguments, 0) ?? "";
-                var arg2 = GetArgumentStringValue(arguments, 1) ?? "";
-
-                if (string.Compare(arg1, arg2, StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    options.Template(output, context);
-                }
-                else
-                {
-                    options.Inverse(output, context);
-                }
-            };
+                options.Template(output, context);
+            }
+            else
+            {
+                options.Inverse(output, context);
+            }
+        }
     }
 }

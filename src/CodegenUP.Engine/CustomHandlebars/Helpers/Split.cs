@@ -15,16 +15,15 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public SplitGetLast() : base("split_get_last") { }
 
-        public override HandlebarsHelper Helper =>
-            (TextWriter output, object context, object[] arguments) =>
-                {
-                    EnsureArgumentsCount(arguments, 2);
+        public override void Helper(TextWriter output, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 2);
 
-                    var argument = arguments[0].ToString();
-                    var splitter = arguments[1].ToString();
+            var argument = arguments[0].ToString();
+            var splitter = arguments[1].ToString();
 
-                    output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "");
-                };
+            output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "");
+        }
     }
 
     /// <summary>
@@ -37,15 +36,14 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public SplitGetFirst() : base("split_get_first") { }
 
-        public override HandlebarsHelper Helper =>
-            (TextWriter output, object context, object[] arguments) =>
-            {
-                EnsureArgumentsCount(arguments, 2);
+        public override void Helper(TextWriter output, object context, object[] arguments)
+        {
+            EnsureArgumentsCount(arguments, 2);
 
-                var argument = arguments[0].ToString();
-                var splitter = arguments[1].ToString();
+            var argument = arguments[0].ToString();
+            var splitter = arguments[1].ToString();
 
-                output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "");
-            };
+            output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "");
+        }
     }
 }

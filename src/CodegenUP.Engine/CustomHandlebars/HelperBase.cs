@@ -20,31 +20,103 @@ namespace CodegenUP.CustomHandlebars
 
         public abstract void Setup(HandlebarsConfiguration configuration);
 
-
+        /// <summary>
+        /// Ensure the arguments count is exactly `count`
+        /// </summary>
         protected void EnsureArgumentsCount(object[] arguments, int count)
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentsCount != count)
-                throw new CodeGenHelperException($"{Name} needs exactly {count} arguments.");
+                throw new CodeGenHelperException($"{Name}: needs exactly {count} arguments.");
         }
-
+        /// <summary>
+        /// Ensure the arguments count is a maximum of `count`
+        /// </summary>
         protected void EnsureArgumentsCountMax(object[] arguments, int count)
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentsCount > count)
-                throw new CodeGenHelperException($"{Name} needs {count} arguments maximum.");
+                throw new CodeGenHelperException($"{Name}: needs {count} arguments maximum.");
         }
+        /// <summary>
+        /// Ensure the arguments count is a minimum of `count`
+        /// </summary>
         protected void EnsureArgumentsCountMin(object[] arguments, int count)
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentsCount < count)
-                throw new CodeGenHelperException($"{Name} needs {count} arguments minimum.");
+                throw new CodeGenHelperException($"{Name}: needs {count} arguments minimum.");
+        }
+        protected void EnsureArgumentIndexExists(object[] arguments, int argumentIndex)
+        {
+            var argumentsCount = arguments?.Length ?? 0;
+            if (argumentIndex >= argumentsCount)
+                throw new CodeGenHelperException($"{Name}: the argument at index {argumentIndex} is needed.");
         }
 
-        protected JContainer GetJContainerContext(object context)
+        /// <summary>
+        /// Returns the argument at `argumentIndex` or throw an exception if the argument does not exits
+        /// </summary>
+        protected object GetArgumentOrThrow(object[] arguments, int argumentIndex)
         {
-            return context as JContainer
-                ?? throw new CodeGenHelperException($"Context must be a valid json container for helper {Name} to work.");
+            EnsureArgumentIndexExists(arguments, argumentIndex);
+            return arguments[argumentIndex];
+        }
+
+
+        protected T GetArgumentAs<T>(object[] arguments, int argumentIndex)
+        {
+            object arg = GetArgumentOrThrow(arguments, argumentIndex);
+            var (ok, result) = ObjectTo<T>(arg);
+            if (!ok)
+                throw new CodeGenHelperException($"{Name}: Couldn't convert argument at index {argumentIndex} as {typeof(T).Name}");
+            return result;
+        }
+
+        protected bool TryGetArgumentAs<T>(object[] arguments, int argumentIndex, out T? result)
+            where T : class
+        {
+            if (argumentIndex >= arguments.Length)
+            {
+                result = default;
+                return false;
+            }
+
+            object arg = arguments[argumentIndex];
+            var (ok, res) = ObjectTo<T>(arg);
+            if (!ok)
+            {
+                result = default;
+                return false;
+            }
+            else
+            {
+                result = res;
+                return true;
+            }
+        }
+
+        protected bool TryGetArgumentAs<T>(object[] arguments, int argumentIndex, out T? result)
+            where T : struct
+        {
+            if (argumentIndex >= arguments.Length)
+            {
+                result = default;
+                return false;
+            }
+
+            object arg = arguments[argumentIndex];
+            var (ok, res) = ObjectTo<T>(arg);
+            if (!ok)
+            {
+                result = default;
+                return false;
+            }
+            else
+            {
+                result = res;
+                return true;
+            }
         }
 
         protected object[] GetArgumentAsArray(object[] arguments, int argumentIndex)
@@ -52,34 +124,6 @@ namespace CodegenUP.CustomHandlebars
             object arg = arguments[argumentIndex];
             return (arg as IEnumerable)?.Cast<object>().ToArray()
                 ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
-        }
-
-        protected string? GetArgumentStringValue(object[] arguments, int argumentIndex)
-        {
-            return arguments[argumentIndex]?.ToString();
-        }
-
-        protected char GetArgumentCharValue(object[] arguments, int argumentIndex)
-        {
-            if (argumentIndex >= arguments.Length || arguments[argumentIndex] == null) throw new CodeGenHelperException($"{Name} needs an argument at position {argumentIndex}.");
-
-            if (!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
-
-            return @char;
-        }
-
-        protected char GetArgumentCharValueOrDefault(object[] arguments, int argumentIndex, char defaultValue = default)
-        {
-            if (argumentIndex >= arguments.Length || arguments[argumentIndex] == null)
-            {
-                if (defaultValue == default) throw new CodeGenHelperException($"{Name} needs an argument at position {argumentIndex}.");
-
-                return defaultValue;
-            }
-
-            if (!char.TryParse(arguments[argumentIndex].ToString(), out var @char)) throw new CodeGenHelperException($"Argument {arguments[argumentIndex]} should be a char.");
-
-            return @char;
         }
 
         protected string? GetStringValue(object obj)
@@ -93,6 +137,20 @@ namespace CodegenUP.CustomHandlebars
             }
 
             throw new CodeGenHelperException($"No string value could be extracted from type {obj?.GetType().Name}");
+        }
+
+        protected (bool ok, T result) ObjectTo<T>(object o)
+        {
+            if (o is T t) return (true, t);
+
+            if (typeof(T) == typeof(string)) return (true, (T)(object)o.ToString());
+
+            if (o is JToken jToken)
+            {
+                return (true, jToken.ToObject<T>());
+            }
+
+            return (false, default);
         }
     }
 }

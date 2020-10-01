@@ -9,8 +9,7 @@ namespace CodegenUP.CustomHandlebars
     public abstract class SimpleStandardHelperBase : HelperBase
     {
         public SimpleStandardHelperBase(string name) : base(name) { }
-        public abstract HandlebarsHelper Helper { get; }
-
+        public abstract void Helper(TextWriter output, object context, object[] arguments);
         public override void Setup(HandlebarsConfiguration configuration)
         {
             configuration.Helpers.Add(Name, Helper);

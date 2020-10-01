@@ -17,30 +17,27 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public WithMatching() : base("with_matching") { }
 
-        public override HandlebarsBlockHelper Helper =>
-            (TextWriter output, HelperOptions options, object context, object[] arguments) =>
+        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        {
+            if (arguments.Length % 2 != 1)
+                throw new CodeGenHelperException($"Arguments number for the {Name} helper must be an odd number");
+
+            var value = GetArgumentAs<string>(arguments, 0) ?? "";
+
+            var pair_position = 1;
+            while (pair_position < arguments.Length)
             {
-                if (arguments.Length % 2 != 1)
-                    throw new CodeGenHelperException($"Arguments number for the {Name} helper must be an odd number");
-
-                var value = GetArgumentStringValue(arguments, 0) ?? "";
-
-                var pair_position = 1;
-                while (pair_position < arguments.Length)
+                var match_key = GetArgumentAs<string>(arguments, pair_position) ?? "";
+                if (string.Compare(value, match_key, StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
-                    var match_key = GetArgumentStringValue(arguments, pair_position) ?? "";
-                    if (string.Compare(value, match_key, StringComparison.InvariantCultureIgnoreCase) == 0)
-                    {
-                        options.Template(output, arguments[pair_position + 1]);
-                        return;
-                    }
-
-                    pair_position += 2;
+                    options.Template(output, arguments[pair_position + 1]);
+                    return;
                 }
 
+                pair_position += 2;
+            }
 
-
-                options.Inverse(output, context);
-            };
+            options.Inverse(output, context);
+        }
     }
 }

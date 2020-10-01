@@ -27,8 +27,6 @@ namespace CodegenUP.CodeGen
         {
             customHelpers ??= new IHelper[0];
 
-            var obj = JsonHelper.GetDynamicObjectFromJson(json);
-
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 
             var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatesPaths);
@@ -37,7 +35,7 @@ namespace CodegenUP.CodeGen
             {
                 var compiled = handlebars.Compile(File.ReadAllText(template.FilePath));
 
-                var result = compiled(obj);
+                var result = compiled(json);
 
                 var context = new ProcessorContext(result, outputPath);
 

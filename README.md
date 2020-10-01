@@ -6,7 +6,7 @@ A global tool to execute handlebars templates in order to generate code (think a
 
 Installation is very easy. Just run this command and the tool will be installed. 
 
-`dotnet tool install --global Dotnet.CodeGen`
+`dotnet tool install --global CodegenUP`
 
 ## Usage
 
@@ -18,7 +18,7 @@ example :
 
 ## Handlebars helper
 
-You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/Dotnet.CodeGen/CustomHandlebars/Helpers
+You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/CodegenUP.Engine/CustomHandlebars/Helpers
 Use cases are documented (and tested) thought `HandlebarsHelperSpecification` attributes 
 
 ### get/set
@@ -160,15 +160,15 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 
 ## Custom Handlebars Helpers
 
-To create custom local dotnet handlebars helpers, copy the [CustomHelpers](https://github.com/BeezUP/dotnet-codegen/tree/master/src/Dotnet.Codegen.CustomHelpers) project in any folder you'd like.
+To create custom local dotnet handlebars helpers, copy the [CustomHelpers](https://github.com/BeezUP/dotnet-codegen/tree/master/src/CodegenUP.CustomHelpers) project in any folder you'd like.
 
 Then use the `-c` command line option to enable the dynamic compiling & loading of the helpers you created.
 The project is, in itself, a unit test project with what you need to simply create unit test case by attributes placed on your custom helpers.
 
 ## Update
 
-`dotnet tool update -g Dotnet.CodeGen`
+`dotnet tool update -g CodegenUP`
 
 ### Uninstall
 
-`dotnet tool uninstall -g Dotnet.CodeGen`
+`dotnet tool uninstall -g CodegenUP`

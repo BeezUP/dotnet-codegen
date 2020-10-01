@@ -12,7 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Dotnet.CodeGen.Schemas
+namespace CodegenUP.Schemas
 {
     public class OpenApiSchemaLoader : ISchemaLoader
     {

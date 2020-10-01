@@ -1,4 +1,4 @@
-﻿namespace Dotnet.CodeGen
+﻿namespace CodegenUP
 {
     public enum TemplateDuplicationHandlingStrategy
     {

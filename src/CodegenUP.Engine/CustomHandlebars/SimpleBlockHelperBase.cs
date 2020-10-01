@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Dotnet.CodeGen.CustomHandlebars
+namespace CodegenUP.CustomHandlebars
 {
     public abstract class SimpleBlockHelperBase : HelperBase
     {

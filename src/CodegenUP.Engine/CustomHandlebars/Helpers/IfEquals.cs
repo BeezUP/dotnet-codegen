@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+namespace CodegenUP.CustomHandlebars.Helpers
 {
     /// <summary>
     /// Performs a string comparison between 2 arguments

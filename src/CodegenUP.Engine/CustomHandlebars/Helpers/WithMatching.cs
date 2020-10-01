@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+namespace CodegenUP.CustomHandlebars.Helpers
 {
     /// <summary>
     /// Execute the inner template with the matching parameter, when matching key is equal to the first parameter

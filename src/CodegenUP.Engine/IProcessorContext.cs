@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Dotnet.CodeGen.CodeGen
+namespace CodegenUP.CodeGen
 {
     public interface IProcessorContext
     {

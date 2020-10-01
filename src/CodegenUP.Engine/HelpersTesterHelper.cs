@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CustomHandlebars;
+﻿using CodegenUP.CustomHandlebars;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using YamlDotNet.Serialization;
 
-namespace Dotnet.CodeGen
+namespace CodegenUP
 {
     public static class HelpersTesterHelper
     {

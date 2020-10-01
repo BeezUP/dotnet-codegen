@@ -3,11 +3,11 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <AssemblyName>dotnet-codegen</AssemblyName>
-    <ToolCommandName>dotnet-codegen</ToolCommandName>
+    <AssemblyName>codegenup</AssemblyName>
+    <ToolCommandName>codegenup</ToolCommandName>
     <PackAsTool>true</PackAsTool>
-    <Title>Dotnet.CodeGen</Title>
-    <PackageId>Dotnet.CodeGen</PackageId>
+    <Title>CodegenUP</Title>
+    <PackageId>CodegenUP</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>

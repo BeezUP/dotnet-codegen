@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+namespace CodegenUP.CustomHandlebars.Helpers
 {
 
     /// <summary>

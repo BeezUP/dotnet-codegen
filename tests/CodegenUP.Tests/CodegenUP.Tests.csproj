@@ -19,7 +19,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\DocumentRefLoader.Tests\StringTestsHelperExtensions.cs" Link="StringTestsHelperExtensions.cs" />
+    <Compile Include="..\CodegenUP.DocumentRefLoader.Tests\StringTestsHelperExtensions.cs" Link="StringTestsHelperExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/CodegenUP/CodegenUP.csproj" />

@@ -1,7 +1,7 @@
-﻿using Dotnet.CodeGen.Schemas;
+﻿using CodegenUP.Schemas;
 using System;
 
-namespace Dotnet.CodeGen.CodeGen
+namespace CodegenUP.CodeGen
 {
     public enum SourceSchemaType
     {

@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using YamlDotNet.Serialization;
 
-namespace Dotnet.CodeGen.CustomHandlebars
+namespace CodegenUP.CustomHandlebars
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class HandlebarsHelperSpecificationAttribute : Attribute

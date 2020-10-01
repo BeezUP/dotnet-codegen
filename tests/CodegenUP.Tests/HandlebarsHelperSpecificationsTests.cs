@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CustomHandlebars;
+﻿using CodegenUP.CustomHandlebars;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,7 +12,7 @@ using Xunit;
 
 #if DEBUG
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class HandlebarsHelperSpecificationsTests
     {

@@ -6,7 +6,7 @@
 //using System.Linq;
 //using System.Text;
 
-//namespace Dotnet.CodeGen.CustomHandlebars.Block
+//namespace CodegenUP.CustomHandlebars.Block
 //{
 //    //[HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
 //    public class IsEnum : SimpleBlockHelperBase

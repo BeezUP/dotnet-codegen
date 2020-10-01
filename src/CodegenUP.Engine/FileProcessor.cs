@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Dotnet.CodeGen.CodeGen.Instructions;
-using Dotnet.CodeGen.Misc;
+using CodegenUP.CodeGen.Instructions;
+using CodegenUP.Misc;
 
-namespace Dotnet.CodeGen.CodeGen
+namespace CodegenUP.CodeGen
 {
     public class FilesProcessor : IDisposable
     {

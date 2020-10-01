@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CodeGen;
+﻿using CodegenUP.CodeGen;
 using System;
 using System.IO;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class ProgramTests
     {

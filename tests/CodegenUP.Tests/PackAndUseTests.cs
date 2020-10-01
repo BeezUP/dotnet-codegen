@@ -6,12 +6,12 @@ using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class PackAndUseTests : IDisposable
     {
-        const string PACKAGE_NAME = "Dotnet.CodeGen";
-        const string COMMAND_NAME = "dotnet-codegen";
+        const string PACKAGE_NAME = "CodegenUP";
+        const string COMMAND_NAME = "codegenup";
         private readonly ITestOutputHelper _output;
         private readonly string _tmpOutput;
         private readonly string _solutionFolder;

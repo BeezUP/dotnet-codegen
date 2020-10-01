@@ -1,7 +1,7 @@
 ﻿using HandlebarsDotNet;
 using System.IO;
 
-namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+namespace CodegenUP.CustomHandlebars.Helpers
 {
     /// <summary>
     /// Uppercase the first letter

@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+namespace CodegenUP.CustomHandlebars.Helpers
 {
     /// <summary>
     /// Trim Start & End

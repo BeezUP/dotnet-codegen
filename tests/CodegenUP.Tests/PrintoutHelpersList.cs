@@ -1,11 +1,11 @@
-﻿using Dotnet.CodeGen.CustomHandlebars;
+﻿using CodegenUP.CustomHandlebars;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 #if DEBUG
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class PrintoutHelpersList
     {

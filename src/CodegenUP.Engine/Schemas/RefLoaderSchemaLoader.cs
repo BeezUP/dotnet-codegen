@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Dotnet.CodeGen.Schemas
+namespace CodegenUP.Schemas
 {
     public class RefLoaderSchemaLoader : ISchemaLoader
     {

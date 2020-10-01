@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CodeGen;
+﻿using CodegenUP.CodeGen;
 using Shouldly;
 using System.IO;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class CodeGenRunnerTests
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dotnet.CodeGen.CustomHandlebars
+namespace CodegenUP.CustomHandlebars
 {
     public interface IHelper
     {

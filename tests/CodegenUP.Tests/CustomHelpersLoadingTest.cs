@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CustomHandlebars;
+﻿using CodegenUP.CustomHandlebars;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class CustomHelpersLoadingTest
     {
@@ -22,7 +22,7 @@ namespace Dotnet.CodeGen.Tests
         [Fact]
         public void LoadHelpersFromTheExampleProjectBeside()
         {
-            var customHelpersProjectPath = "../../../../../src/Dotnet.Codegen.CustomHelpers";
+            var customHelpersProjectPath = "../../../../../src/CodegenUP.CustomHelpers";
             var tmpFolder = Path.GetRandomFileName();
             try
             {

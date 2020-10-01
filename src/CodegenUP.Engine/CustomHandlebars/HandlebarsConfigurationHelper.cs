@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Dotnet.CodeGen.CustomHandlebars
+namespace CodegenUP.CustomHandlebars
 {
     public static class HandlebarsConfigurationHelper
     {

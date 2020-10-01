@@ -1,4 +1,4 @@
-﻿namespace Dotnet.CodeGen.CustomHandlebars
+﻿namespace CodegenUP.CustomHandlebars
 {
 #if DEBUG
     public static class GlobalSpecs

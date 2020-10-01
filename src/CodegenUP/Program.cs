@@ -4,11 +4,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Dotnet.CodeGen.CustomHandlebars;
+using CodegenUP.CustomHandlebars;
 using Microsoft.Extensions.CommandLineUtils;
 using Console = Colorful.Console;
 
-namespace Dotnet.CodeGen.CodeGen
+namespace CodegenUP.CodeGen
 {
     public class Program
     {

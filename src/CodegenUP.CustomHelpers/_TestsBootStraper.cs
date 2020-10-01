@@ -1,12 +1,12 @@
-using Dotnet.CodeGen;
-using Dotnet.CodeGen.CustomHandlebars;
+using CodegenUP;
+using CodegenUP.CustomHandlebars;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Dotnet.Codegen.CustomHelpers
+namespace CodegenUP.CustomHelpers
 {
     public class TestsBootStraper
     {

@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CodeGen;
+﻿using CodegenUP.CodeGen;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Dotnet.CodeGen.Tests
+namespace CodegenUP.Tests
 {
     public class TemplateHelperTests
     {

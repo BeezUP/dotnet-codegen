@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("DocumentRefLoader.Tests")]
+[assembly: InternalsVisibleTo("CodegenUP.DocumentRefLoader.Tests")]

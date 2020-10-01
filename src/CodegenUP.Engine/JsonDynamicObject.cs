@@ -1,11 +1,11 @@
-﻿//using Dotnet.CodeGen.CustomHandlebars.Helpers;
+﻿//using CodegenUP.CustomHandlebars.Helpers;
 //using Newtonsoft.Json.Linq;
 //using System;
 //using System.Collections.Generic;
 //using System.Dynamic;
 //using System.Linq;
 
-//namespace Dotnet.CodeGen
+//namespace CodegenUP
 //{
 //    public class JsonDynamicObject : DynamicObject
 //    {

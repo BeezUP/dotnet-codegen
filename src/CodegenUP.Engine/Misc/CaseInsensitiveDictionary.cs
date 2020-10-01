@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Dotnet.CodeGen.Misc
+namespace CodegenUP.Misc
 {
 
     [Serializable]

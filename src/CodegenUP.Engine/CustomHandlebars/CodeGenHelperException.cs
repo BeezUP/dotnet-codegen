@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dotnet.CodeGen.CustomHandlebars
+namespace CodegenUP.CustomHandlebars
 {
     [Serializable]
     public class CodeGenHelperException : ArgumentException

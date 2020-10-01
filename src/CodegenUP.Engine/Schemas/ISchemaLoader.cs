@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Dotnet.CodeGen.Schemas
+namespace CodegenUP.Schemas
 {
     public interface ISchemaLoader
     {

@@ -1,4 +1,4 @@
-﻿using Dotnet.CodeGen.CustomHandlebars;
+﻿using CodegenUP.CustomHandlebars;
 using HandlebarsDotNet;
 using System;
 using System.Collections.Generic;

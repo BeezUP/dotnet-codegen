@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using HandlebarsDotNet;
 
-namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+namespace CodegenUP.CustomHandlebars.Helpers
 {
     /// <summary>
     /// Trim start and end of a block output

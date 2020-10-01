@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Dotnet.CodeGen.Tests")]
+[assembly: InternalsVisibleTo("CodegenUP.Tests")]

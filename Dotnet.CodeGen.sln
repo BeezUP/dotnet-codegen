@@ -1,19 +1,22 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28809.33
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP", "src/CodegenUP/CodegenUP.csproj", "{C24FFC57-C24E-4263-93FF-1CDB253772EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP", "src\CodegenUP\CodegenUP.csproj", "{C24FFC57-C24E-4263-93FF-1CDB253772EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dotnet.CodeGen.Tests", "tests\Dotnet.CodeGen.Tests\Dotnet.CodeGen.Tests.csproj", "{E580D169-E3BE-4FD1-A5AF-D86CB9FD66F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.DocumentRefLoader", "src\CodegenUP.DocumentRefLoader\CodegenUP.DocumentRefLoader.csproj", "{F3A885CF-57BA-4A02-80D6-A4281FF14631}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.DocumentRefLoader", "src/CodegenUP.DocumentRefLoader/CodegenUP.DocumentRefLoader.csproj", "{F3A885CF-57BA-4A02-80D6-A4281FF14631}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.CustomHelpers", "src\CodegenUP.CustomHelpers\CodegenUP.CustomHelpers.csproj", "{D5A36153-E516-4EAF-ADE0-A5A518B66981}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentRefLoader.Tests", "tests\DocumentRefLoader.Tests\DocumentRefLoader.Tests.csproj", "{9886FE49-2DDD-4F3F-B990-8A4CE6B46EF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.Engine", "src\CodegenUP.Engine\CodegenUP.Engine.csproj", "{C470BB44-9A8B-4395-86BD-997E2C7BBC53}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.CustomHelpers", "src/CodegenUP.CustomHelpers/CodegenUP.CustomHelpers.csproj", "{D5A36153-E516-4EAF-ADE0-A5A518B66981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.Tests", "tests\CodegenUP.Tests\CodegenUP.Tests.csproj", "{6C2737F0-D424-4467-B055-9D125839BFDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodegenUP.Engine", "src/CodegenUP.Engine/CodegenUP.Engine.csproj", "{C470BB44-9A8B-4395-86BD-997E2C7BBC53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodegenUP.DocumentRefLoader.Tests", "tests\CodegenUP.DocumentRefLoader.Tests\CodegenUP.DocumentRefLoader.Tests.csproj", "{DC35EE58-7CD2-4D40-8580-91D0698E5402}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RefLoader", "RefLoader", "{B0D1EA5E-FEF1-46C3-A78A-9906BEA16128}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomExample", "CustomExample", "{ED4AF322-179B-4118-911F-EC3CCD12C9AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,18 +28,10 @@ Global
 		{C24FFC57-C24E-4263-93FF-1CDB253772EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C24FFC57-C24E-4263-93FF-1CDB253772EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C24FFC57-C24E-4263-93FF-1CDB253772EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E580D169-E3BE-4FD1-A5AF-D86CB9FD66F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E580D169-E3BE-4FD1-A5AF-D86CB9FD66F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E580D169-E3BE-4FD1-A5AF-D86CB9FD66F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E580D169-E3BE-4FD1-A5AF-D86CB9FD66F0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3A885CF-57BA-4A02-80D6-A4281FF14631}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3A885CF-57BA-4A02-80D6-A4281FF14631}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3A885CF-57BA-4A02-80D6-A4281FF14631}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3A885CF-57BA-4A02-80D6-A4281FF14631}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9886FE49-2DDD-4F3F-B990-8A4CE6B46EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9886FE49-2DDD-4F3F-B990-8A4CE6B46EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9886FE49-2DDD-4F3F-B990-8A4CE6B46EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9886FE49-2DDD-4F3F-B990-8A4CE6B46EF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5A36153-E516-4EAF-ADE0-A5A518B66981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5A36153-E516-4EAF-ADE0-A5A518B66981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5A36153-E516-4EAF-ADE0-A5A518B66981}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,9 +40,22 @@ Global
 		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C470BB44-9A8B-4395-86BD-997E2C7BBC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C2737F0-D424-4467-B055-9D125839BFDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C2737F0-D424-4467-B055-9D125839BFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C2737F0-D424-4467-B055-9D125839BFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C2737F0-D424-4467-B055-9D125839BFDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC35EE58-7CD2-4D40-8580-91D0698E5402}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC35EE58-7CD2-4D40-8580-91D0698E5402}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC35EE58-7CD2-4D40-8580-91D0698E5402}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC35EE58-7CD2-4D40-8580-91D0698E5402}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F3A885CF-57BA-4A02-80D6-A4281FF14631} = {B0D1EA5E-FEF1-46C3-A78A-9906BEA16128}
+		{D5A36153-E516-4EAF-ADE0-A5A518B66981} = {ED4AF322-179B-4118-911F-EC3CCD12C9AE}
+		{DC35EE58-7CD2-4D40-8580-91D0698E5402} = {B0D1EA5E-FEF1-46C3-A78A-9906BEA16128}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E253D5C8-DBDF-4105-829E-7BA8D458F510}

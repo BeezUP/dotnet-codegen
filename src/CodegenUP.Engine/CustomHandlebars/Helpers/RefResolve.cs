@@ -2,7 +2,7 @@
 //using Newtonsoft.Json.Linq;
 //using System.IO;
 
-//namespace Dotnet.CodeGen.CustomHandlebars.Helpers
+//namespace CodegenUP.CustomHandlebars.Helpers
 //{
 //    /// <summary>
 //    /// If a '$ref' property is found, it will be resolved and will replace the context object.

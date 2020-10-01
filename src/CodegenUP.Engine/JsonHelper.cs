@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 
-namespace Dotnet.CodeGen
+namespace CodegenUP
 {
     public static class JsonHelper
     {

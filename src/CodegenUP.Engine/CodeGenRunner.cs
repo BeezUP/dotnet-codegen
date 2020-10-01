@@ -1,6 +1,6 @@
-﻿using Dotnet.CodeGen.CodeGen.Instructions;
-using Dotnet.CodeGen.CustomHandlebars;
-using Dotnet.CodeGen.Schemas;
+﻿using CodegenUP.CodeGen.Instructions;
+using CodegenUP.CustomHandlebars;
+using CodegenUP.Schemas;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Dotnet.CodeGen.CodeGen
+namespace CodegenUP.CodeGen
 {
     public static class CodeGenRunner
     {

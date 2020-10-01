@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Dotnet.CodeGen.CodeGen.Instructions
+namespace CodegenUP.CodeGen.Instructions
 {
     public interface IInstruction : IDisposable
     {

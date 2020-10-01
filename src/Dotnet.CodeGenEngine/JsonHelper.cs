@@ -11,6 +11,8 @@ namespace Dotnet.CodeGen
     {
         public static object GetDynamicObjectFromJson(JToken json)
         {
+            //return new JsonDynamicObject(json);
+
             if (json.Type == JTokenType.Array)
             {
                 return JsonConvert.DeserializeObject<ExpandoObject[]>(json.ToString());

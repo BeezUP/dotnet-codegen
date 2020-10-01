@@ -22,11 +22,11 @@
 		<PackageReference Include="Shouldly" Version="3.0.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition="Exists('..\Dotnet.CodeGen.Engine\Dotnet.CodeGen.Engine.csproj')">
+	<ItemGroup Condition="Exists('..\Dotnet.CodeGenEngine\Dotnet.CodeGenEngine.csproj')">
 		<ProjectReference Include="..\Dotnet.CodeGen\Dotnet.CodeGen.csproj" />
 	</ItemGroup>
-	<ItemGroup Condition="!Exists('..\Dotnet.CodeGen.Engine\Dotnet.CodeGen.Engine.csproj')">
-		<PackageReference Include="Dotnet.CodeGen" Version="0.0.0.8" />
+	<ItemGroup Condition="!Exists('..\Dotnet.CodeGenEngine\Dotnet.CodeGenEngine.csproj')">
+		<PackageReference Include="Dotnet.CodeGen" Version="0.0.0.9" />
 	</ItemGroup>
 
 </Project>

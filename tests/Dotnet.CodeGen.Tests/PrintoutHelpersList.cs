@@ -37,9 +37,10 @@ namespace Dotnet.CodeGen.Tests
                 foreach (var att in helper.GetType().GetCustomAttributes(typeof(HandlebarsHelperSpecificationAttribute), false).Cast<HandlebarsHelperSpecificationAttribute>())
                 {
                     const int jsonLimit = 100;
-                    var json = att.Json.Length >= jsonLimit
-                        ? att.Json.Substring(0, jsonLimit) + "..."
-                        : att.Json
+                    var jsonDoc = att.GetJsonDocument();
+                    var json = jsonDoc.Length >= jsonLimit
+                        ? jsonDoc.Substring(0, jsonLimit) + "..."
+                        : jsonDoc
                         ;
 
                     _output.WriteLine($"| `{escapeStr(json)}` | `{escapeStr(att.Template)}` | `{escapeStr(att.ExpectedOutput)}` |");

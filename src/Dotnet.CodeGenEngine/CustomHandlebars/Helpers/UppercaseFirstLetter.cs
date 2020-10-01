@@ -7,7 +7,7 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
     /// Uppercase the first letter
     /// </summary>
 #if DEBUG
-    //[HandlebarsHelperSpecification("{}", "{{uppercase_first_letter .}}", "{}")] // unmeaningfull test working only with JObject
+    [HandlebarsHelperSpecification("{}", "{{uppercase_first_letter .}}", "{}")]
     [HandlebarsHelperSpecification("{ test: 42 }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: '42' }", "{{uppercase_first_letter test}}", "42")]
     [HandlebarsHelperSpecification("{ test: 'aa' }", "{{uppercase_first_letter test}}", "Aa")]
@@ -20,29 +20,17 @@ namespace Dotnet.CodeGen.CustomHandlebars.Helpers
 
         public override HandlebarsHelper Helper =>
             (TextWriter output, object context, object[] arguments) =>
-                {
-                    EnsureArgumentsCount(arguments, 1);
+            {
+                EnsureArgumentsCount(arguments, 1);
+                var argument = arguments[0].ToString();
+                output.Write(StringUppercaseFirstLetter(argument));
+            };
 
-                    var argument = arguments[0].ToString();
-
-                    if (string.IsNullOrEmpty(argument))
-                    {
-                        output.Write(string.Empty);
-                    }
-                    else
-                    {
-                        string res;
-                        if (argument.Length == 1)
-                        {
-                            res = argument.ToUpper();
-                        }
-                        else
-                        {
-                            res = argument.Substring(0, 1).ToUpper() + argument.Substring(1);
-                        }
-
-                        output.Write(res);
-                    }
-                };
+        public static string StringUppercaseFirstLetter(string argument)
+            => string.IsNullOrEmpty(argument)
+                ? string.Empty
+                : argument.Length == 1
+                    ? argument.ToUpper()
+                    : argument.Substring(0, 1).ToUpper() + argument.Substring(1);
     }
 }

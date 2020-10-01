@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Dotnet.CodeGen\Dotnet.CodeGen.csproj" />
-		<ProjectReference Include="..\..\src\Dotnet.CodeGen.Engine\Dotnet.CodeGen.Engine.csproj" />
+		<ProjectReference Include="..\..\src\Dotnet.CodeGenEngine\Dotnet.CodeGenEngine.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

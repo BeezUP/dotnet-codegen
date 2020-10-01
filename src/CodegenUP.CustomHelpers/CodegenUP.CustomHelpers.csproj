@@ -6,29 +6,23 @@
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
-    <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="1.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Shouldly" Version="3.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\DocumentRefLoader.Tests\StringTestsHelperExtensions.cs" Link="StringTestsHelperExtensions.cs" />
+  <ItemGroup Condition="Exists('../CodegenUP.Engine/CodegenUP.Engine.csproj')">
+    <ProjectReference Include="../CodegenUP.Engine/CodegenUP.Engine.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../src/CodegenUP/CodegenUP.csproj" />
-    <ProjectReference Include="../../src/CodegenUP.Engine/CodegenUP.Engine.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="_samples\**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Compile Remove="_samples\**\*.cs" />
+  <ItemGroup Condition="!Exists('../CodegenUP.Engine/CodegenUP.Engine.csproj')">
+    <PackageReference Include="CodegenUP.Engine" Version="0.0.0.9" />
   </ItemGroup>
 </Project>

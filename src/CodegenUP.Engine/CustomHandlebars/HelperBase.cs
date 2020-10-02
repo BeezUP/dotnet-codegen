@@ -126,31 +126,73 @@ namespace CodegenUP.CustomHandlebars
                 ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
         }
 
-        protected string? GetStringValue(object obj)
-        {
-            if (obj is string s) return s;
-
-            if (obj is JValue jToken)
-            {
-                if (jToken.Type == JTokenType.String) return jToken.Value as string;
-                else jToken.Value?.ToString();
-            }
-
-            throw new CodeGenHelperException($"No string value could be extracted from type {obj?.GetType().Name}");
-        }
-
         protected (bool ok, T result) ObjectTo<T>(object o)
         {
-            if (o is T t) return (true, t);
+            return TryObjectToType(o, typeof(T), out var result) && result != null
+                ? (true, (T)result)
+                : (false, default);
+        }
 
-            if (typeof(T) == typeof(string)) return (true, (T)(object)o.ToString());
+        public class NULL
+        {
+            public static readonly NULL Value = new NULL();
+            private NULL() { }
+            public override string ToString() => "Null";
+        }
+        //private static readonly Type JTOKEN_TYPE = typeof(JToken);
+        private static readonly Type STRING_TYPE = typeof(string);
+
+        private static bool TryObjectToType(object o, Type expectedType, out object result)
+        {
+            result = NULL.Value;
+
+            if (o == null) return false;
+
+            var oType = o.GetType();
+
+            if (expectedType.IsAssignableFrom(oType))
+            {
+                result = o;
+                return true;
+            }
+
+            if (expectedType == STRING_TYPE)
+            {
+                result = o.ToString();
+                return true;
+            }
+
+            if (expectedType.IsArray)
+            {
+                var objects = (o as IEnumerable)?.Cast<object>();
+                if (objects == null) return false;
+                var elementType = expectedType.GetElementType();
+                var results = objects.Select(o =>
+                {
+                    var ok = TryObjectToType(o, elementType, out var elementResult);
+                    return (ok, elementResult);
+                }).ToArray();
+                if (!results.All(r => r.ok)) return false;
+                result = results.Select(r => r.elementResult).ToArray();
+                return true;
+            }
 
             if (o is JToken jToken)
             {
-                return (true, jToken.ToObject<T>());
+                try
+                {
+                    var obj = jToken.ToObject(expectedType);
+                    if (obj == null) return false;
+                    result = obj;
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
 
-            return (false, default);
+            return false;
         }
     }
 }

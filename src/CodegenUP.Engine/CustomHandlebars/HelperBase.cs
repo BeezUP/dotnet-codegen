@@ -172,8 +172,15 @@ namespace CodegenUP.CustomHandlebars
                     var ok = TryObjectToType(o, elementType, out var elementResult);
                     return (ok, elementResult);
                 }).ToArray();
+
                 if (!results.All(r => r.ok)) return false;
-                result = results.Select(r => r.elementResult).ToArray();
+                var array = Array.CreateInstance(elementType, results.Length);
+                for (int i = 0; i < results.Length; i++)
+                {
+                    array.SetValue(results[i].elementResult, i);
+                }
+
+                result = array;
                 return true;
             }
 
@@ -182,7 +189,7 @@ namespace CodegenUP.CustomHandlebars
                 try
                 {
                     var obj = jToken.ToObject(expectedType);
-                    if (obj == null) return false;
+                    if (obj == null || obj.GetType() != expectedType) return false;
                     result = obj;
                     return true;
                 }

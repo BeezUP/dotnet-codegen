@@ -5,6 +5,8 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -30,6 +32,7 @@ namespace CodegenUP.Tests.CustomHandlebars
         {
             ObjectTo<object>("").result.ShouldBe((object)"");
             ObjectTo<object>(42).result.ShouldBe((object)42);
+            ObjectTo<int>(42).result.ShouldBe(42);
             ObjectTo<string>("").result.ShouldBe("");
             ObjectTo<string>(JToken.Parse("{}")).result.ShouldBe("{}");
             ObjectTo<int>(JToken.Parse("1")).result.ShouldBe(1);
@@ -45,11 +48,16 @@ namespace CodegenUP.Tests.CustomHandlebars
             ObjectTo<JObject>(JToken.Parse("{ value: 42 }")).result.Value<int>("value").ShouldBe(42);
             ObjectTo<JToken>(JToken.Parse("{ value: 42 }")).result.Value<int>("value").ShouldBe(42);
             ObjectTo<JValue>(JToken.Parse("{ value: 42 }")).ok.ShouldBeFalse();
+            ObjectTo<string>(JToken.Parse("\"test\"")).result.ShouldBe("test");
+            (ObjectTo<JValue>(JToken.Parse("\"test\"")).result.Value?.ToString() ?? throw new InvalidDataException()).ShouldBe("test");
             ObjectTo<MyClass>(JToken.Parse("{ i: 42, s:\"ok\" }")).result.S.ShouldBe("ok");
             ObjectTo<MyClass>(JToken.Parse("{ i: 42, s:\"ok\" }")).result.S.ShouldBe("ok");
             ObjectTo<MyClass>(JToken.Parse("{ i: 42 }")).result.S.ShouldBeNull();
+            ObjectTo<object[]>(JToken.Parse("[{ i: 42, s:\"ok\" }, { i: 42, s:\"ok\" }]")).ok.ShouldBeTrue();
+            ObjectTo<object[]>(JToken.Parse("[{ i: 42, s:\"ok\" }, { i: 42, s:\"ok\" }]")).result.Length.ShouldBe(2);
             ObjectTo<MyClass[]>(JToken.Parse("[{ i: 42, s:\"ok\" }, { i: 42, s:\"ok\" }]")).ok.ShouldBeTrue();
-            ObjectTo<MyClass[]>(JToken.Parse("[{ i: 42, s:\"ok\" }, { i: 42, s:\"ok\" }]")).result.Length.ShouldBe(2);
+            ObjectTo<MyClass[]>(JToken.Parse("[{ i: 45, s:\"ok\" }, { i: 42, s:\"ok\" }]")).result.First().I.ShouldBe(45);
+            ObjectTo<MyClass[]>(JToken.Parse("[{ i: 45, s:\"ok\" }, { i: 42, s:\"ko\" }]")).result.Last().S.ShouldBe("ko");
         }
 
         class MyClass

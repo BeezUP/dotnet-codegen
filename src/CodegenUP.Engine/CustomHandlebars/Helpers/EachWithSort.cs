@@ -59,7 +59,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
                 case JArray jArray:
                     {
                         if (jPath == null)
-                            throw new CodeGenHelperException($"First argument being an Array, the second argument cannot be empty in the {name} helper.");
+                            throw new CodeGenHelperException(name, $"First argument being an Array, the second argument cannot be empty in the {name} helper.");
 
                         JToken keySelector(JToken t) => t.SelectToken(jPath) ?? JValue.CreateNull();
                         newContext = direction == SortDirection.Ascending

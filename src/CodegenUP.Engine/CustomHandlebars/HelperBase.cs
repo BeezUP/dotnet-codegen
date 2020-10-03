@@ -27,7 +27,7 @@ namespace CodegenUP.CustomHandlebars
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentsCount != count)
-                throw new CodeGenHelperException($"{Name}: needs exactly {count} arguments.");
+                throw new CodeGenHelperException(Name, $"needs exactly {count} arguments.");
         }
         /// <summary>
         /// Ensure the arguments count is a maximum of `count`
@@ -36,7 +36,7 @@ namespace CodegenUP.CustomHandlebars
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentsCount > count)
-                throw new CodeGenHelperException($"{Name}: needs {count} arguments maximum.");
+                throw new CodeGenHelperException(Name, $"needs {count} arguments maximum.");
         }
         /// <summary>
         /// Ensure the arguments count is a minimum of `count`
@@ -45,13 +45,13 @@ namespace CodegenUP.CustomHandlebars
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentsCount < count)
-                throw new CodeGenHelperException($"{Name}: needs {count} arguments minimum.");
+                throw new CodeGenHelperException(Name, $"needs {count} arguments minimum.");
         }
         protected void EnsureArgumentIndexExists(object[] arguments, int argumentIndex)
         {
             var argumentsCount = arguments?.Length ?? 0;
             if (argumentIndex >= argumentsCount)
-                throw new CodeGenHelperException($"{Name}: the argument at index {argumentIndex} is needed.");
+                throw new CodeGenHelperException(Name, $"the argument at index {argumentIndex} is needed.");
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace CodegenUP.CustomHandlebars
             object arg = GetArgumentOrThrow(arguments, argumentIndex);
             var (ok, result) = ObjectTo<T>(arg);
             if (!ok)
-                throw new CodeGenHelperException($"{Name}: Couldn't convert argument at index {argumentIndex} as {typeof(T).Name}");
+                throw new CodeGenHelperException(Name, $"Couldn't convert argument at index {argumentIndex} as {typeof(T).Name}");
             return result;
         }
 
@@ -123,7 +123,7 @@ namespace CodegenUP.CustomHandlebars
         {
             object arg = arguments[argumentIndex];
             return (arg as IEnumerable)?.Cast<object>().ToArray()
-                ?? throw new CodeGenHelperException($"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
+                ?? throw new CodeGenHelperException(Name, $"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
         }
 
         protected (bool ok, T result) ObjectTo<T>(object o)

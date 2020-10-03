@@ -25,7 +25,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
             {
                 EnsureArgumentsCount(arguments, 2);
 
-                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException($"Cannot set a value with no key");
+                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException(Name, $"Cannot set a value with no key");
                 var value = arguments[1];
                 _values[key] = value;
             };
@@ -35,7 +35,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
             {
                 EnsureArgumentsCount(arguments, 2);
 
-                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException($"Cannot set a value with no key");
+                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException(Name, $"Cannot set a value with no key");
                 var value = arguments[1];
                 _values[key] = value;
 
@@ -49,7 +49,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
             {
                 EnsureArgumentsCount(arguments, 1);
 
-                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException($"Cannot set a value with no key");
+                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException(Name, $"Cannot set a value with no key");
                 if (_values.ContainsKey(key))
                 {
                     _values.Remove(key);
@@ -61,7 +61,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
             {
                 EnsureArgumentsCount(arguments, 1);
 
-                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException($"Cannot get a value with no key");
+                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException(Name, $"Cannot get a value with no key");
 
                 if (_values.TryGetValue(key, out var value))
                 {
@@ -74,7 +74,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
             {
                 EnsureArgumentsCount(arguments, 1);
 
-                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException($"Cannot get a value with no key");
+                var key = GetArgumentAs<string>(arguments, 0) ?? throw new CodeGenHelperException(Name, $"Cannot get a value with no key");
 
                 if (_values.TryGetValue(key, out var value))
                 {

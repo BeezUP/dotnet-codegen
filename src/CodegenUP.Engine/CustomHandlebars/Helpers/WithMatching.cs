@@ -20,7 +20,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
         {
             if (arguments.Length % 2 != 1)
-                throw new CodeGenHelperException($"Arguments number for the {Name} helper must be an odd number");
+                throw new CodeGenHelperException(Name, $"Arguments number for the {Name} helper must be an odd number");
 
             var value = GetArgumentAs<string>(arguments, 0) ?? "";
 

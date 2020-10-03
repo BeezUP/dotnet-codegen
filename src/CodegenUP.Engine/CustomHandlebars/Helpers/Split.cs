@@ -11,17 +11,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
 #if DEBUG
     [HandlebarsHelperSpecification("{ '$ref' : '#/parameters/myDataType'}", "{{split_get_last ./$ref '/' }}", "myDataType")]
 #endif
-    public class SplitGetLast : SimpleStandardHelperBase
+    public class SplitGetLast : SimpleStandardHelperBase<object, string, string>
     {
         public SplitGetLast() : base("split_get_last") { }
 
-        public override void Helper(TextWriter output, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, object context, string argument, string splitter, object[] arguments)
         {
-            EnsureArgumentsCount(arguments, 2);
-
-            var argument = arguments[0].ToString();
-            var splitter = arguments[1].ToString();
-
             output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "");
         }
     }
@@ -32,17 +27,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
 #if DEBUG
     [HandlebarsHelperSpecification("{ '$ref' : '/myDataType/parameters/'}", "{{split_get_first ./$ref '/' }}", "myDataType")]
 #endif
-    public class SplitGetFirst : SimpleStandardHelperBase
+    public class SplitGetFirst : SimpleStandardHelperBase<object, string, string>
     {
         public SplitGetFirst() : base("split_get_first") { }
 
-        public override void Helper(TextWriter output, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, object context, string argument, string splitter, object[] arguments)
         {
-            EnsureArgumentsCount(arguments, 2);
-
-            var argument = arguments[0].ToString();
-            var splitter = arguments[1].ToString();
-
             output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "");
         }
     }

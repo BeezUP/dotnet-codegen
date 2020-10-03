@@ -19,9 +19,9 @@ namespace CodegenUP.CustomHandlebars
 
             var (ok, ctx) = ObjectTo<TContext>(context);
             if (!ok) throw new CodeGenHelperException(Name, $"Unable to get the context as a {typeof(TContext).Name}");
-            var (ok1, argument1) = ObjectTo<TArgument1>(context);
+            var (ok1, argument1) = ObjectTo<TArgument1>(arguments[0]);
             if (!ok1) throw new CodeGenHelperException(Name, $"Unable to get the first argument as a {typeof(TArgument1).Name}");
-            var (ok2, argument2) = ObjectTo<TArgument2>(context);
+            var (ok2, argument2) = ObjectTo<TArgument2>(arguments[1]);
             if (!ok2) throw new CodeGenHelperException(Name, $"Unable to get the second argument as a {typeof(TArgument2).Name}");
 
             HelperFunction(output, options, ctx, argument1, argument2, arguments.Skip(2).ToArray());
@@ -36,11 +36,11 @@ namespace CodegenUP.CustomHandlebars
 
         public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
         {
-            EnsureArgumentsCountMin(arguments, 2);
+            EnsureArgumentsCountMin(arguments, 1);
 
             var (ok, ctx) = ObjectTo<TContext>(context);
             if (!ok) throw new CodeGenHelperException(Name, $"Unable to get the context as a {typeof(TContext).Name}");
-            var (ok1, argument1) = ObjectTo<TArgument1>(context);
+            var (ok1, argument1) = ObjectTo<TArgument1>(arguments[0]);
             if (!ok1) throw new CodeGenHelperException(Name, $"Unable to get the first argument as a {typeof(TArgument1).Name}");
 
             HelperFunction(output, options, ctx, argument1, arguments.Skip(1).ToArray());

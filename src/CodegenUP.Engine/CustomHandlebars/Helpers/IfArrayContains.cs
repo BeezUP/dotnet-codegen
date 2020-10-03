@@ -41,14 +41,10 @@ namespace CodegenUP.CustomHandlebars.Helpers
         {
             EnsureArgumentsCount(arguments, 2);
 
-            var array = GetArgumentAsArray(arguments, 0);
-
+            var array = GetArgumentAs<string[]>(arguments, 0);
             var search = GetArgumentAs<string>(arguments, 1);
 
-            if (array
-                .Select(token => ObjectTo<string>(token).result)
-                .Any(s => string.Compare(s, search, StringComparison.InvariantCultureIgnoreCase) == 0)
-                )
+            if (array.Any(s => string.Compare(s, search, StringComparison.InvariantCultureIgnoreCase) == 0))
             {
                 options.Template(output, context);
             }

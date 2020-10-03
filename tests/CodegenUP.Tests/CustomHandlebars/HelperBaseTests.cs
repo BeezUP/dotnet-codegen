@@ -30,6 +30,7 @@ namespace CodegenUP.Tests.CustomHandlebars
         [Fact]
         public void ObjectToTests()
         {
+            ObjectTo<int>("42").result.ShouldBe(42); 
             ObjectTo<object>("").result.ShouldBe((object)"");
             ObjectTo<object>(42).result.ShouldBe((object)42);
             ObjectTo<int>(42).result.ShouldBe(42);

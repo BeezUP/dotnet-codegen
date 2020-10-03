@@ -25,7 +25,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         char GetCharArgument(object[] arguments)
         {
             var trimChar = ' ';
-            if (TryGetArgumentAs<string>(arguments, 0, out var s) && s != null && s.Length != 0)
+            if (TryGetArgumentAsString(arguments, 0, out var s) && s != null && s.Length != 0)
             {
                 trimChar = s[0];
             }

@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -73,12 +74,12 @@ namespace CodegenUP.CustomHandlebars
             return result;
         }
 
-        protected bool TryGetArgumentAs<T>(object[] arguments, int argumentIndex, out T? result)
-            where T : class
+        protected bool TryGetArgumentAs<T>(object[] arguments, int argumentIndex, out T result)
+            where T : new()
         {
             if (argumentIndex >= arguments.Length)
             {
-                result = default;
+                result = new T();
                 return false;
             }
 
@@ -86,7 +87,7 @@ namespace CodegenUP.CustomHandlebars
             var (ok, res) = ObjectTo<T>(arg);
             if (!ok)
             {
-                result = default;
+                result = new T();
                 return false;
             }
             else
@@ -96,20 +97,19 @@ namespace CodegenUP.CustomHandlebars
             }
         }
 
-        protected bool TryGetArgumentAs<T>(object[] arguments, int argumentIndex, out T? result)
-            where T : struct
+        protected bool TryGetArgumentAsString(object[] arguments, int argumentIndex, out string result)
         {
             if (argumentIndex >= arguments.Length)
             {
-                result = default;
+                result = string.Empty;
                 return false;
             }
 
             object arg = arguments[argumentIndex];
-            var (ok, res) = ObjectTo<T>(arg);
+            var (ok, res) = ObjectTo<string>(arg);
             if (!ok)
             {
-                result = default;
+                result = string.Empty;
                 return false;
             }
             else
@@ -117,13 +117,6 @@ namespace CodegenUP.CustomHandlebars
                 result = res;
                 return true;
             }
-        }
-
-        protected object[] GetArgumentAsArray(object[] arguments, int argumentIndex)
-        {
-            object arg = arguments[argumentIndex];
-            return (arg as IEnumerable)?.Cast<object>().ToArray()
-                ?? throw new CodeGenHelperException(Name, $"Argument {argumentIndex} should be enumerable but is of type '{arg?.GetType().Name}'.");
         }
 
         protected (bool ok, T result) ObjectTo<T>(object o)
@@ -133,18 +126,19 @@ namespace CodegenUP.CustomHandlebars
                 : (false, default);
         }
 
-        public class NULL
+        class NotNullNull
         {
-            public static readonly NULL Value = new NULL();
-            private NULL() { }
-            public override string ToString() => "Null";
+            public static readonly NotNullNull Value = new NotNullNull();
+            private NotNullNull() { }
+            public override string ToString() => "null";
         }
+
         //private static readonly Type JTOKEN_TYPE = typeof(JToken);
         private static readonly Type STRING_TYPE = typeof(string);
 
         private static bool TryObjectToType(object o, Type expectedType, out object result)
         {
-            result = NULL.Value;
+            result = NotNullNull.Value;
 
             if (o == null) return false;
 
@@ -198,6 +192,13 @@ namespace CodegenUP.CustomHandlebars
                     return false;
                 }
             }
+
+            try // last resort
+            {
+                result = Convert.ChangeType(o, expectedType, CultureInfo.InvariantCulture);
+                return true;
+            }
+            catch (Exception) { }
 
             return false;
         }

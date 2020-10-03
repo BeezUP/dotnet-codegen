@@ -10,16 +10,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{}", "{{#if_not_empty ''}}{{else}}OK{{/if_not_empty}}", "OK")]
     [HandlebarsHelperSpecification("{}", "{{#if_not_empty 'test'}}NOK{{else}}OK{{/if_not_empty}}", "NOK")]
 #endif
-    public class IfNotEmpty : SimpleBlockHelperBase
+    public class IfNotEmpty : SimpleBlockHelperBase<object, string>
     {
         public IfNotEmpty() : base("if_not_empty") { }
 
-        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg, object[] arguments)
         {
-            EnsureArgumentsCount(arguments, 1);
-
-            var arg = GetArgumentAs<string>(arguments, 0) ?? "";
-
             if (string.IsNullOrWhiteSpace(arg))
             {
                 options.Inverse(output, context);

@@ -15,17 +15,26 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{trim test 'A'}}", "")]
     [HandlebarsHelperSpecification("{ test: ' test ' }", "{{trim test ' t'}}", "es")]
 #endif
-    public class Trim : SimpleStandardHelperBase
+    public class Trim : SimpleStandardHelperBase<object, string>
     {
         public Trim() : base("trim") { }
+        protected Trim(string name) : base(name) { }
 
-        public override void Helper(TextWriter output, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, object context, string toTrim, object[] otherArguments)
         {
-            EnsureArgumentsCountMin(arguments, 1);
-            EnsureArgumentsCountMax(arguments, 2);
+            EnsureArgumentsCountMax(otherArguments, 1); // todo :: this argument position is false because the `otherAguments` are skiped from already there args
 
-            TrimHelper.Trim(output, arguments, (a, c) => a.Trim(c));
+            if (!string.IsNullOrEmpty(toTrim))
+            {
+                var trimChars = TryGetArgumentAsString(otherArguments, 0, out var str)
+                    ? str.ToArray()
+                    : new[] { ' ' };
+
+                output.Write(TrimStr(toTrim, trimChars));
+            }
         }
+
+        protected virtual string TrimStr(string toTrim, char[] trimChars) => toTrim.Trim(trimChars);
     }
 
     /// <summary>
@@ -38,17 +47,10 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{trim_start test 'A'}}", "")]
     [HandlebarsHelperSpecification("{ test: ' test ' }", "{{trim_start test ' t'}}", "est ")]
 #endif
-    public class TrimStart : SimpleStandardHelperBase
+    public class TrimStart : Trim
     {
         public TrimStart() : base("trim_start") { }
-
-        public override void Helper(TextWriter output, object context, object[] arguments)
-        {
-            EnsureArgumentsCountMin(arguments, 1);
-            EnsureArgumentsCountMax(arguments, 2);
-
-            TrimHelper.Trim(output, arguments, (a, c) => a.TrimStart(c));
-        }
+        protected override string TrimStr(string toTrim, char[] trimChars) => toTrim.TrimStart(trimChars);
     }
 
     /// <summary>
@@ -61,35 +63,9 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{trim_end test 'A'}}", "")]
     [HandlebarsHelperSpecification("{ test: ' test ' }", "{{trim_end test ' t'}}", " tes")]
 #endif
-    public class TrimEnd : SimpleStandardHelperBase
+    public class TrimEnd : Trim
     {
         public TrimEnd() : base("trim_end") { }
-
-        public override void Helper(TextWriter output, object context, object[] arguments)
-        {
-            EnsureArgumentsCountMin(arguments, 1);
-            EnsureArgumentsCountMax(arguments, 2);
-
-            TrimHelper.Trim(output, arguments, (a, c) => a.TrimEnd(c));
-        }
-    }
-
-
-    internal static class TrimHelper
-    {
-        public static void Trim(TextWriter output, object[] arguments, Func<string, char[], string> trimFunc)
-        {
-            var argument = arguments[0].ToString();
-            var trimChars = arguments.Length == 2 ? arguments[1].ToString().ToArray() : new[] { ' ' };
-
-            if (string.IsNullOrEmpty(argument))
-            {
-                output.Write(string.Empty);
-            }
-            else
-            {
-                output.Write(trimFunc(argument, trimChars));
-            }
-        }
+        protected override string TrimStr(string toTrim, char[] trimChars) => toTrim.TrimEnd(trimChars);
     }
 }

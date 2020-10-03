@@ -15,17 +15,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{one: 'test-one', two: 'one-test'}", "{{#start_with 'test' one}}OK{{else}}{{/start_with}}", "OK")]
     [HandlebarsHelperSpecification("{one: 'test-one', two: 'one-test'}", "{{#start_with 'test' two}}OK{{else}}NOK{{/start_with}}", "NOK")]
 #endif
-    public class StartWith : SimpleBlockHelperBase
+    public class StartWith : SimpleBlockHelperBase<object, string, string>
     {
         public StartWith() : base("start_with") { }
 
-        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg1, string arg2, object[] arguments)
         {
-            EnsureArgumentsCount(arguments, 2);
-
-            var arg1 = GetArgumentAs<string>(arguments, 0) ?? "";
-            var arg2 = GetArgumentAs<string>(arguments, 1) ?? "";
-
             if (arg2.StartsWith(arg1))
             {
                 options.Template(output, context);

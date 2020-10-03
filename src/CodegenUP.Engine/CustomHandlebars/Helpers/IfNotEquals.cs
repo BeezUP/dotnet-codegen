@@ -13,17 +13,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{ a: '42', b: 42 }", "{{#if_not_equals a ./b }}{{else}}NOK{{/if_not_equals}}", "NOK")]
     [HandlebarsHelperSpecification("{}", "{{#if_not_equals 'test' 'NO'}}OK{{else}}NOK{{/if_not_equals}}", "OK")]
 #endif
-    public class IfNotEquals : SimpleBlockHelperBase
+    public class IfNotEquals : SimpleBlockHelperBase<object, string, string>
     {
         public IfNotEquals() : base("if_not_equals") { }
 
-        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg1, string arg2, object[] arguments)
         {
-            EnsureArgumentsCount(arguments, 2);
-
-            var arg1 = GetArgumentAs<string>(arguments, 0) ?? "";
-            var arg2 = GetArgumentAs<string>(arguments, 1) ?? "";
-
             if (string.Compare(arg1, arg2, StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 options.Inverse(output, context);

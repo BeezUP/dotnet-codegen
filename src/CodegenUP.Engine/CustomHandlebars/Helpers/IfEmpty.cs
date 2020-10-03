@@ -19,7 +19,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         {
             EnsureArgumentsCount(arguments, 1);
 
-            var arg = GetArgumentAs<string>(arguments, 0) ?? "";
+            var arg = GetArgumentAs<string>(arguments, 0);
 
             if (string.IsNullOrWhiteSpace(arg))
             {

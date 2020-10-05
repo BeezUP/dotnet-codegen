@@ -21,6 +21,24 @@ example :
 You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/CodegenUP.Engine/CustomHandlebars/Helpers
 Use cases are documented (and tested) thought `HandlebarsHelperSpecification` attributes 
 
+### each_with_sort
+| Input document | Handlebars template | Result |
+|----------------|---------------------|--------|
+| `[{t: 'c'}, {t: 'a'}, {t: 'b'}]` | `{{#each .}}{{t}}{{/each}}` | `cab` |
+| `[{t: 'c'}, {t: 'a'}, {t: 'b'}]` | `{{#each_with_sort . 't'}}{{#each .}}{{t}}{{/each}}{{/each_with_sort}}` | `abc` |
+| `[]` | `{{#each_with_sort . .}}{{/each_with_sort}}` | `` |
+| `{ a : {}, b : {} }` | `{{#each_with_sort .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort}}` | `ab` |
+| `{ b : {}, a : {} }` | `{{#each_with_sort .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort}}` | `ab` |
+| `\r\n{\r\n  "swagger": "2.0",\r\n    "info": {\r\n        "title": "Marketplace Gateway API - Feeds",\r\n      ...` | `{{#each_with_sort parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort}}` | `accountIdParameter,credentialParameter,feedTypeParameter,marketplaceBusinessCodeParameter,publicationIdParameter,` |
+### each_with_sort_inv
+| Input document | Handlebars template | Result |
+|----------------|---------------------|--------|
+| `[{t: 'c'}, {t: 'a'}, {t: 'b'}]` | `{{#each .}}{{t}}{{/each}}` | `cab` |
+| `[{t: 'c'}, {t: 'a'}, {t: 'b'}]` | `{{#each_with_sort_inv . 't'}}{{#each .}}{{t}}{{/each}}{{/each_with_sort_inv}}` | `cba` |
+| `[]` | `{{#each_with_sort_inv . .}}{{/each_with_sort_inv}}` | `` |
+| `{ a : {}, b : {} }` | `{{#each_with_sort_inv .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort_inv}}` | `ba` |
+| `{ b : {}, a : {} }` | `{{#each_with_sort_inv .}}{{#each .}}{{@key}}{{/each}}{{/each_with_sort_inv}}` | `ba` |
+| `\r\n{\r\n  "swagger": "2.0",\r\n    "info": {\r\n        "title": "Marketplace Gateway API - Feeds",\r\n      ...` | `{{#each_with_sort_inv parameters}}{{#each .}}{{@key}},{{/each}}{{/each_with_sort_inv}}` | `publicationIdParameter,marketplaceBusinessCodeParameter,feedTypeParameter,credentialParameter,accountIdParameter,` |
 ### get/set
 | Input document | Handlebars template | Result |
 |----------------|---------------------|--------|
@@ -60,22 +78,11 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 ### one_line
 | Input document | Handlebars template | Result |
 |----------------|---------------------|--------|
-| `{}` | `{{#one_line}} {{/one_line}}` | `` |
-| `{}` | `{{#one_line}} \n {{/one_line}}` | `` |
-| `{}` | `{{#one_line}}\n {{/one_line}}` | `` |
-| `{}` | `{{#one_line}}\n{{/one_line}}` | `` |
-| `{}` | `{{#one_line}} \r\n {{/one_line}}` | `` |
-| `{}` | `{{#one_line}}\r\n{{/one_line}}` | `` |
-| `{}` | `{{#one_line}} test{{/one_line}}` | `test` |
-| `{}` | `{{#one_line}} a \n z {{/one_line}}` | `a z` |
-| `{}` | `{{#one_line}}a\n z{{/one_line}}` | `a z` |
-| `{}` | `{{#one_line}}a\nz{{/one_line}}` | `a z` |
-| `{}` | `{{#one_line}}a \r\n z{{/one_line}}` | `a z` |
-| `{}` | `{{#one_line}}a \r\n \r\n \r\nz{{/one_line}}` | `a z` |
-| `{}` | `{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}` | `test test` |
-| `{}` | `{{#one_line}}{{/one_line}}` | `` |
-| `{}` | `{{#one_line}}   test {{/one_line}}` | `test` |
 | `{}` | `{{#one_line 5}}test{{/one_line}}` | `     test` |
+### ref_resolve
+| Input document | Handlebars template | Result |
+|----------------|---------------------|--------|
+| `\r\n{\r\n  "swagger": "2.0",\r\n    "info": {\r\n        "title": "Marketplace Gateway API - Feeds",\r\n      ...` | `{{#each paths}}{{#each this}}{{#each parameters}}{{#ref_resolve}}{{ name }},{{/ref_resolve}}{{/each}}{{/each}}{{/each}}` | `marketplaceBusinessCode,marketplaceBusinessCode,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,request,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,marketplaceBusinessCode,accountId,publicationId,x-BeezUP-Credential,` |
 ### split_get_first
 | Input document | Handlebars template | Result |
 |----------------|---------------------|--------|
@@ -145,6 +152,7 @@ Use cases are documented (and tested) thought `HandlebarsHelperSpecification` at
 ### uppercase_first_letter
 | Input document | Handlebars template | Result |
 |----------------|---------------------|--------|
+| `{}` | `{{uppercase_first_letter .}}` | `{}` |
 | `{ test: 42 }` | `{{uppercase_first_letter test}}` | `42` |
 | `{ test: '42' }` | `{{uppercase_first_letter test}}` | `42` |
 | `{ test: 'aa' }` | `{{uppercase_first_letter test}}` | `Aa` |

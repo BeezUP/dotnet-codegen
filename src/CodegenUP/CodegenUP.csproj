@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AssemblyName>codegenup</AssemblyName>
+    <ToolCommandName>codegenup</ToolCommandName>
+    <PackAsTool>true</PackAsTool>
+    <Title>CodegenUP</Title>
+    <PackageId>CodegenUP</PackageId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Colorful.Console" Version="1.2.11" />
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CodegenUP.Engine/CodegenUP.Engine.csproj" />
+  </ItemGroup>
+</Project>

@@ -26,7 +26,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
             if (!string.IsNullOrEmpty(toTrim))
             {
-                var trimChars = TryGetArgumentAsString(otherArguments, 0, out var str)
+                var trimChars = TryGetArgumentAs<string>(otherArguments, 0, out var str)
                     ? str.ToArray()
                     : new[] { ' ' };
 

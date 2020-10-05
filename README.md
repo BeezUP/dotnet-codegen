@@ -18,7 +18,7 @@ example :
 
 ## Handlebars helper
 
-You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/CodegenUP.Engine/CustomHandlebars/Helpers
+You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/src/CodegenUP.Engine/CustomHandlebars/Helpers
 Use cases are documented (and tested) thought `HandlebarsHelperSpecification` attributes 
 
 ### each_with_sort

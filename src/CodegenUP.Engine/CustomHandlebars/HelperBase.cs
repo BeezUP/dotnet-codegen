@@ -74,20 +74,22 @@ namespace CodegenUP.CustomHandlebars
             return result;
         }
 
+#nullable disable
         protected bool TryGetArgumentAs<T>(object[] arguments, int argumentIndex, out T result)
-            where T : new()
         {
-            if (argumentIndex >= arguments.Length)
+            result = default;
+            var noArgumentAtIndex = argumentIndex >= arguments.Length;
+
+            if (noArgumentAtIndex && !IsNullableType(typeof(T)))
             {
-                result = new T();
                 return false;
             }
 
-            object arg = arguments[argumentIndex];
+            object arg = noArgumentAtIndex ? null : arguments[argumentIndex];
             var (ok, res) = ObjectTo<T>(arg);
             if (!ok)
             {
-                result = new T();
+                result = default;
                 return false;
             }
             else
@@ -96,53 +98,75 @@ namespace CodegenUP.CustomHandlebars
                 return true;
             }
         }
+#nullable restore
 
-        protected bool TryGetArgumentAsString(object[] arguments, int argumentIndex, out string result)
+        //protected bool TryGetArgumentAsString(object[] arguments, int argumentIndex, out string result)
+        //{
+        //    if (argumentIndex >= arguments.Length)
+        //    {
+        //        result = string.Empty;
+        //        return false;
+        //    }
+
+        //    object arg = arguments[argumentIndex];
+        //    var (ok, res) = ObjectTo<string>(arg);
+        //    if (!ok)
+        //    {
+        //        result = string.Empty;
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        result = res;
+        //        return true;
+        //    }
+        //}
+
+        protected (bool ok, T result) ObjectTo<T>(object? o)
         {
-            if (argumentIndex >= arguments.Length)
-            {
-                result = string.Empty;
-                return false;
-            }
-
-            object arg = arguments[argumentIndex];
-            var (ok, res) = ObjectTo<string>(arg);
-            if (!ok)
-            {
-                result = string.Empty;
-                return false;
-            }
-            else
-            {
-                result = res;
-                return true;
-            }
-        }
-
-        protected (bool ok, T result) ObjectTo<T>(object o)
-        {
-            return TryObjectToType(o, typeof(T), out var result) && result != null
+            return TryObjectToType(o, typeof(T), out var result) //&& result != null
                 ? (true, (T)result)
                 : (false, default);
         }
 
-        class NotNullNull
-        {
-            public static readonly NotNullNull Value = new NotNullNull();
-            private NotNullNull() { }
-            public override string ToString() => "null";
-        }
-
         //private static readonly Type JTOKEN_TYPE = typeof(JToken);
         private static readonly Type STRING_TYPE = typeof(string);
+        private static readonly Type NULLABLE_TYPE = typeof(Nullable<>);
 
-        private static bool TryObjectToType(object o, Type expectedType, out object result)
+        private static bool TryObjectToType(object? o, Type expectedType, out object? result)
         {
-            result = NotNullNull.Value;
+            result = null;
 
-            if (o == null) return false;
+            var inputIsNull = o == null;
 
-            var oType = o.GetType();
+            bool nullable = IsNullableType(expectedType);
+            if (nullable)
+            {
+                static object? defaultGenericValue(Type expectedType) => null;
+
+                if (inputIsNull)
+                {
+                    result = defaultGenericValue(expectedType);
+                }
+                else
+                {
+                    var primitiveType = Nullable.GetUnderlyingType(expectedType);
+                    if (TryObjectToType(o, primitiveType, out var primitive))
+                    {
+                        result = expectedType.GetConstructor(new[] { primitiveType }).Invoke(new[] { primitive });
+                    }
+                    else
+                    {
+                        result = defaultGenericValue(expectedType);
+                    }
+                }
+
+                return true;
+            }
+
+            if (inputIsNull) return false;
+
+            var oType = o?.GetType();
 
             if (expectedType.IsAssignableFrom(oType))
             {
@@ -152,7 +176,7 @@ namespace CodegenUP.CustomHandlebars
 
             if (expectedType == STRING_TYPE)
             {
-                result = o.ToString();
+                result = o?.ToString() ?? string.Empty;
                 return true;
             }
 
@@ -201,6 +225,11 @@ namespace CodegenUP.CustomHandlebars
             catch (Exception) { }
 
             return false;
+        }
+
+        protected static bool IsNullableType(Type expectedType)
+        {
+            return expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == NULLABLE_TYPE;
         }
     }
 }

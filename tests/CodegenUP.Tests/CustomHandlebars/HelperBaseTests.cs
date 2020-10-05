@@ -30,7 +30,7 @@ namespace CodegenUP.Tests.CustomHandlebars
         [Fact]
         public void ObjectToTests()
         {
-            ObjectTo<int>("42").result.ShouldBe(42); 
+            ObjectTo<int>("42").result.ShouldBe(42);
             ObjectTo<object>("").result.ShouldBe((object)"");
             ObjectTo<object>(42).result.ShouldBe((object)42);
             ObjectTo<int>(42).result.ShouldBe(42);
@@ -59,6 +59,14 @@ namespace CodegenUP.Tests.CustomHandlebars
             ObjectTo<MyClass[]>(JToken.Parse("[{ i: 42, s:\"ok\" }, { i: 42, s:\"ok\" }]")).ok.ShouldBeTrue();
             ObjectTo<MyClass[]>(JToken.Parse("[{ i: 45, s:\"ok\" }, { i: 42, s:\"ok\" }]")).result.First().I.ShouldBe(45);
             ObjectTo<MyClass[]>(JToken.Parse("[{ i: 45, s:\"ok\" }, { i: 42, s:\"ko\" }]")).result.Last().S.ShouldBe("ko");
+
+            ObjectTo<int?>("42").ok.ShouldBeTrue();
+            ObjectTo<int?>("42").result.ShouldBe(42);
+            ObjectTo<int?>("null").ok.ShouldBeTrue();
+            ObjectTo<int?>("null").result.ShouldBe(default);
+            ObjectTo<int?>(null).ok.ShouldBeTrue();
+            ObjectTo<int?>(null).result.ShouldBe(default);
+            ObjectTo<string>(null).ok.ShouldBeFalse();
         }
 
         class MyClass

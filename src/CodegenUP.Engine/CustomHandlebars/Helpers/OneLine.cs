@@ -10,38 +10,32 @@ namespace CodegenUP.CustomHandlebars.Helpers
     /// Append a single line, taking out empty lines & meaningless whitespaces from the inner template
     /// </summary>
 #if DEBUG
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}} {{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}} \n {{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}\n {{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}\n{{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}} \r\n {{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}\r\n{{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}} test{{/one_line}}", "test")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}} a \n z {{/one_line}}", "a z")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}a\n z{{/one_line}}", "a z")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}a\nz{{/one_line}}", "a z")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n z{{/one_line}}", "a z")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n \r\n \r\nz{{/one_line}}", "a z")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}", "test test")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}{{/one_line}}", "")]
-    //[HandlebarsHelperSpecification("{}", "{{#one_line}}   test {{/one_line}}", "test")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} {{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} \n {{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}\n {{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}\n{{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} \r\n {{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}\r\n{{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} test{{/one_line}}", "test")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} a \n z {{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\n z{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\nz{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n z{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n \r\n \r\nz{{/one_line}}", "a z")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}", "test test")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}{{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}   test {{/one_line}}", "test")]
     [HandlebarsHelperSpecification("{}", "{{#one_line 5}}test{{/one_line}}", "     test")]
 #endif
-    public class OneLine : SimpleBlockHelperBase
+    public class OneLine : SimpleBlockHelperBase<object, int?>
     {
         static readonly Regex regex = new Regex(@"(?: *[\r\n?|\n] *)+", RegexOptions.Compiled);
 
         public OneLine() : base("one_line") { }
 
-        public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, int? indent, object[] arguments)
         {
             EnsureArgumentsCountMax(arguments, 1);
-
-            var indent = 0;
-            if (TryGetArgumentAs<int>(arguments, 0, out var i))
-            {
-                indent = i;
-            }
 
             using var stream = new MemoryStream();
             using (var tw = new StreamWriter(stream, Encoding.Default, 500, true))
@@ -53,7 +47,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
             using var tr = new StreamReader(stream);
             var result = tr.ReadToEnd();
             result = regex.Replace(result, " ");
-            result = new string(' ', indent) + result.Trim();
+            result = new string(' ', indent ?? 0) + result.Trim();
             output.WriteSafeString(result);
         }
     }

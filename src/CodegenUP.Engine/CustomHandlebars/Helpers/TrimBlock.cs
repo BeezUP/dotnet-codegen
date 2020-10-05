@@ -18,7 +18,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
         {
-            var trimChars = TryGetArgumentAsString(arguments, 0, out var str)
+            var trimChars = TryGetArgumentAs<string>(arguments, 0, out var str)
                    ? str.ToArray()
                    : new[] { ' ' };
 

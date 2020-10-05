@@ -56,7 +56,7 @@ namespace CodegenUP.CustomHandlebars
             HelperFunction(output, options, ctx, arguments);
         }
 
-        public abstract void HelperFunction(TextWriter output, HelperOptions options, TContext context, object[] arguments);
+        public abstract void HelperFunction(TextWriter output, HelperOptions options, TContext context, object[] otherArguments);
     }
 
     public abstract class SimpleBlockHelperBase : HelperBase

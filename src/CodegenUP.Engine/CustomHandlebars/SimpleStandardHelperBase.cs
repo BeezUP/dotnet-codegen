@@ -54,7 +54,7 @@ namespace CodegenUP.CustomHandlebars
             HelperFunction(output, ctx, arguments);
         }
 
-        public abstract void HelperFunction(TextWriter output, TContext context, object[] arguments);
+        public abstract void HelperFunction(TextWriter output, TContext context, object[] otherArguments);
     }
 
 

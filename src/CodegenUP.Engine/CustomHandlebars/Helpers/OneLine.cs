@@ -33,9 +33,9 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public OneLine() : base("one_line") { }
 
-        public override void HelperFunction(TextWriter output, HelperOptions options, object context, int? indent, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, int? indent, object[] otherArguments)
         {
-            EnsureArgumentsCountMax(arguments, 1);
+            EnsureArgumentsCountMax(otherArguments, 0);
 
             using var stream = new MemoryStream();
             using (var tw = new StreamWriter(stream, Encoding.Default, 500, true))

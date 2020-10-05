@@ -15,7 +15,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public SplitGetLast() : base("split_get_last") { }
 
-        public override void HelperFunction(TextWriter output, object context, string argument, string splitter, object[] arguments)
+        public override void HelperFunction(TextWriter output, object context, string argument, string splitter, object[] otherArguments)
         {
             output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "");
         }
@@ -31,7 +31,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public SplitGetFirst() : base("split_get_first") { }
 
-        public override void HelperFunction(TextWriter output, object context, string argument, string splitter, object[] arguments)
+        public override void HelperFunction(TextWriter output, object context, string argument, string splitter, object[] otherArguments)
         {
             output.Write(argument?.Split(new[] { splitter }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "");
         }

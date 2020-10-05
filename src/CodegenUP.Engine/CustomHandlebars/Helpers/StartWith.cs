@@ -19,7 +19,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public StartWith() : base("start_with") { }
 
-        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg1, string arg2, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg1, string arg2, object[] otherArguments)
         {
             if (arg2.StartsWith(arg1))
             {

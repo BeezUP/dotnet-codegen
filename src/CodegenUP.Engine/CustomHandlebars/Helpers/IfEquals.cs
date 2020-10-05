@@ -17,7 +17,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public IfEquals() : base("if_equals") { }
 
-        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg1, string arg2, object[] arguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg1, string arg2, object[] otherArguments)
         {
             if (string.Compare(arg1, arg2, StringComparison.InvariantCultureIgnoreCase) == 0)
             {

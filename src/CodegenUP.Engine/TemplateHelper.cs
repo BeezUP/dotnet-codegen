@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace CodegenUP.CodeGen
+namespace CodegenUP
 {
     public static class TemplateHelper
     {

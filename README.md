@@ -1,4 +1,4 @@
-# dotnet-codegen
+# CodegenUP
 
 A global tool to execute handlebars templates in order to generate code (think about swagger/openapi/graphql ...)
 
@@ -10,11 +10,11 @@ Installation is very easy. Just run this command and the tool will be installed.
 
 ## Usage
 
-`dotnet-codegen -s <Open_Api_File_Uri1> -o <Output_Folder> -t <Template_Folder1> [-s <Open_Api_File_Uri2>] [-t Template_Folder2] [-t Template_Folder3] [...]`
+`codegenup -s <Open_Api_File_Uri1> -o <Output_Folder> -t <Template_Folder1> [-s <Open_Api_File_Uri2>] [-t Template_Folder2] [-t Template_Folder3] [...]`
 
 example :
 
-`dotnet-codegen -s "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" -o "output/folder" -t "my_template_folder"`
+`codegenup -s "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" -o "output/folder" -t "my_template_folder"`
 
 ## Handlebars helper
 

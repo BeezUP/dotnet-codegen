@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace CodegenUP.CodeGen.Instructions
+namespace CodegenUP.Instructions
 {
     public class SuppressLineInstruction : BaseInstruction
     {

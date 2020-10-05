@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CodegenUP.CodeGen.Instructions
+namespace CodegenUP.Instructions
 {
     public class WriteLineToFileInstruction : BaseInstruction
     {

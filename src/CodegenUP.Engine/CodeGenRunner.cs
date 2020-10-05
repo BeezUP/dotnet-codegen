@@ -1,4 +1,4 @@
-﻿using CodegenUP.CodeGen.Instructions;
+﻿using CodegenUP.Instructions;
 using CodegenUP.CustomHandlebars;
 using CodegenUP.Schemas;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CodegenUP.CodeGen
+namespace CodegenUP
 {
     public static class CodeGenRunner
     {

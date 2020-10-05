@@ -1,4 +1,4 @@
-﻿using CodegenUP.CodeGen;
+﻿using CodegenUP;
 using Shouldly;
 using System;
 using System.Collections.Generic;

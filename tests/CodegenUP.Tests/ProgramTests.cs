@@ -1,4 +1,4 @@
-﻿using CodegenUP.CodeGen;
+﻿using CodegenUP;
 using System;
 using System.IO;
 using System.Linq;

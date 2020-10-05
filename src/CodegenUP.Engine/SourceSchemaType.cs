@@ -1,7 +1,7 @@
 ﻿using CodegenUP.Schemas;
 using System;
 
-namespace CodegenUP.CodeGen
+namespace CodegenUP
 {
     public enum SourceSchemaType
     {

@@ -8,7 +8,7 @@ using CodegenUP.CustomHandlebars;
 using Microsoft.Extensions.CommandLineUtils;
 using Console = Colorful.Console;
 
-namespace CodegenUP.CodeGen
+namespace CodegenUP
 {
     public class Program
     {

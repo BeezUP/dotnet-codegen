@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace CodegenUP.CodeGen.Instructions
+namespace CodegenUP.Instructions
 {
     public abstract class BaseInstruction : IInstruction
     {

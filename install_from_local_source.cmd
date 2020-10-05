@@ -1,1 +1,1 @@
-dotnet test --filter "FullyQualifiedName=Dotnet.CodeGen.Tests.PackAndUseTests.Should_pack_install" .\tests\Dotnet.CodeGen.Tests\
+dotnet test --filter "FullyQualifiedName=CodegenUP.Tests.ManualTests.ManualInstall" .\tests\CodegenUP.Tests\

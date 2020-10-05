@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using HandlebarsDotNet;
 
@@ -8,29 +9,20 @@ namespace CodegenUP.CustomHandlebars.Helpers
 {
     public abstract class TrimBlockBase : SimpleBlockHelperBase
     {
-        private readonly Func<string, char, string> _trimFunc;
+        private readonly Func<string, char[], string> _trimFunc;
 
-        public TrimBlockBase(string name, Func<string, char, string> trimFunc) : base(name)
+        public TrimBlockBase(string name, Func<string, char[], string> trimFunc) : base(name)
         {
             _trimFunc = trimFunc;
         }
 
         public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
         {
-            char trimChar = GetCharArgument(arguments);
+            var trimChars = TryGetArgumentAsString(arguments, 0, out var str)
+                   ? str.ToArray()
+                   : new[] { ' ' };
 
-            Trim(output, options, context, (str) => _trimFunc(str, trimChar));
-        }
-
-        char GetCharArgument(object[] arguments)
-        {
-            var trimChar = ' ';
-            if (TryGetArgumentAsString(arguments, 0, out var s) && s != null && s.Length != 0)
-            {
-                trimChar = s[0];
-            }
-
-            return trimChar;
+            Trim(output, options, context, (str) => _trimFunc(str, trimChars));
         }
 
         void Trim(TextWriter output, HelperOptions options, object context, Func<string, string> trimFunc)

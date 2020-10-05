@@ -14,14 +14,12 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{ test: 'AA' }", "{{uppercase_first_letter test}}", "AA")]
     [HandlebarsHelperSpecification("{ test: 'AA' }", "test{{uppercase_first_letter test}}", "testAA")]
 #endif
-    public class UppercaseFirstLetter : SimpleStandardHelperBase
+    public class UppercaseFirstLetter : SimpleStandardHelperBase<object, string>
     {
         public UppercaseFirstLetter() : base("uppercase_first_letter") { }
 
-        public override void Helper(TextWriter output, object context, object[] arguments)
+        public override void HelperFunction(TextWriter output, object context, string argument, object[] arguments)
         {
-            EnsureArgumentsCount(arguments, 1);
-            var argument = arguments[0].ToString();
             output.Write(StringUppercaseFirstLetter(argument));
         }
 

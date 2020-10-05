@@ -10,12 +10,34 @@ Installation is very easy. Just run this command and the tool will be installed.
 
 ## Usage
 
-`codegenup -s <Open_Api_File_Uri1> -o <Output_Folder> -t <Template_Folder1> [-s <Open_Api_File_Uri2>] [-t Template_Folder2] [-t Template_Folder3] [...]`
+```
+codegenup -h
+
+Usage:  [options]
+
+Options:
+  -?|-h|--help          Show help information
+  -l|--loader           Enter a schema loader type between those values [RawJson | Swagger | OpenApi | GraphQl | RawXml]
+  -d|--duplicates       Enter a template duplication handling strategy between those values [Throw | KeepLast | KeepFirst]
+  -s|--source           Enter a path (relative or absolute) to an source document.
+  -a|--auth             Enter an authorization token to access source documents
+  -o|--output           Enter the path (relative or absolute) to the output path (content will be overritten)
+  -t|--template         Enter a path (relative or absolute / file or folder) to a template.
+  -i|--intermediate     Enter a path (relative or absolute) to a file for intermediate 'all refs merged' output of the json document
+  -c|--customhelpers    Enter a path (relative or absolute) to a folder with a custom helpers project (.csproj)
+  --artifacts           Enter a path (relative or absolute) where the custom helpers builds process can output artifacts (default ./temp)
+  -g|--globalparameter  Enter a global parameter value on the form key=value, it'll be available throught the global_parameterhelper
+
+```
+```bash
+codegenup -s <Open_Api_File_Uri1> -o <Output_Folder> -t <Template_Folder1> [-s <Open_Api_File_Uri2>] [-t Template_Folder2] [-t Template_Folder3] [...]
+````
 
 example :
 
-`codegenup -s "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" -o "output/folder" -t "my_template_folder"`
-
+```bash
+codegenup -s "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-minimal.json" -o "output/folder" -t "my_template_folder"
+```
 ## Handlebars helper
 
 You can find additional custom helper in this folder : https://github.com/BeezUP/dotnet-codegen/tree/master/src/CodegenUP.Engine/CustomHandlebars/Helpers
@@ -172,6 +194,17 @@ To create custom local dotnet handlebars helpers, copy the [CustomHelpers](https
 
 Then use the `-c` command line option to enable the dynamic compiling & loading of the helpers you created.
 The project is, in itself, a unit test project with what you need to simply create unit test case by attributes placed on your custom helpers.
+
+## Add global parameters from the command line 
+
+Through a special helper named `global_parameter`, it's possible to pass global available parameters to your template. From the command line add a as many `-g key=value` global values and use them in your templates. 
+```
+{{global_parameter key}}
+```
+will output
+```
+value
+```
 
 ## Update
 

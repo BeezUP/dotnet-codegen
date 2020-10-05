@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CodegenUP.CustomHandlebars;
 using Microsoft.Extensions.CommandLineUtils;
@@ -13,6 +14,7 @@ namespace CodegenUP
     public class Program
     {
         public static readonly Color ERROR_COLOR = Color.OrangeRed;
+        public static readonly Color WARN_COLOR = Color.LightGoldenrodYellow;
 
         public const string SOURCE_FILE_OPTION = "-s|--source";
         public const string OUTPUT_PATH_OPTION = "-o|--output";
@@ -27,6 +29,7 @@ namespace CodegenUP
         public const string CUSTOM_HELPERS = "-c|--customhelpers";
         public const string CUSTOM_HELPERS_ARTIFACTS_DIRECTORY = "--artifacts";
         public const string CUSTOM_HELPERS_ARTIFACTS_DIRECTORY_DEFAULT = "./temp";
+        public const string GLOBAL_PARAMETER_OPTION = "-g|--globalparameter";
 
 
         private const string HelpOptions = "-?|-h|--help";
@@ -47,6 +50,7 @@ namespace CodegenUP
             var intermediate = app.Option(INTERMEDIATE_OPTION, "Enter a path (relative or absolute) to a file for intermediate 'all refs merged' output of the json document", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
             var customHelpers = app.Option(CUSTOM_HELPERS, "Enter a path (relative or absolute) to a folder with a custom helpers project (.csproj)", CommandOptionType.MultipleValue) ?? throw new InvalidOperationException();
             var artifacts = app.Option(CUSTOM_HELPERS_ARTIFACTS_DIRECTORY, $"Enter a path (relative or absolute) where the custom helpers builds process can output artifacts (default {CUSTOM_HELPERS_ARTIFACTS_DIRECTORY_DEFAULT})", CommandOptionType.SingleValue) ?? throw new InvalidOperationException();
+            var globalParamValues = app.Option(GLOBAL_PARAMETER_OPTION, $"Enter a global parameter value on the form key=value, it'll be available throught the " + GlobalParametersHelper.NAME + "helper", CommandOptionType.MultipleValue);
 
             app.OnExecute(async () =>
             {
@@ -99,7 +103,7 @@ namespace CodegenUP
                         File.WriteAllText(intermediate.Value(), jsonObject.ToString());
                     }
 
-                    var helpers = new List<IHelper>();
+                    var helpers = new List<IHelperBase>();
                     var artifactDirectory = artifacts.HasValue() ? artifacts.Value() : CUSTOM_HELPERS_ARTIFACTS_DIRECTORY_DEFAULT;
                     foreach (var helperPath in customHelpers.Values)
                     {
@@ -107,6 +111,35 @@ namespace CodegenUP
                         helpers.AddRange(helps);
                         Console.WriteLine($"Adding helpers : {string.Join(',', (IEnumerable<IHelper>)helps)}");
                     }
+
+                    var globalParametersValues = new Dictionary<string, string>();
+                    foreach (var kv in globalParamValues.Values.Select(v => v.Split('=', 2)))
+                    {
+                        string value = string.Empty;
+                        var len = kv.Length;
+                        var key = len != 0 ? kv[0].Trim() : string.Empty;
+
+                        switch (kv.Length)
+                        {
+                            case 0:
+                            case 1 when key == string.Empty:
+                                Console.WriteLine("A global parameter option is empty, skipping");
+                                continue;
+                            case 1:
+                                key = kv[0];
+                                Console.WriteLine($"Global parameter '{key}' will be an empty string");
+                                break;
+                            default:
+                                key = kv[0];
+                                value = kv[1];
+                                Console.WriteLine($"Global parameter '{key}' will have the value {value}");
+                                break;
+                        }
+
+                        globalParametersValues.Add(key, value);
+                    }
+                    var globalParamerersHelper = new GlobalParametersHelper(globalParametersValues);
+                    helpers.Add(globalParamerersHelper);
 
                     await CodeGenRunner.RunAsync(
                         jsonObject,

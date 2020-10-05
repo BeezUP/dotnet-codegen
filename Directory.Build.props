@@ -1,18 +1,18 @@
 ﻿<Project>
   <PropertyGroup>
-   	<Version>0.0.0.10</Version>
-		<Description>Code generator </Description>
-		<PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
-		<Copyright>Copyright 2020 © BeezUP</Copyright>
-		<Authors>BeezUP awesome team</Authors>
+	<Version>0.0.0.11</Version>
+	<Description>Code generator </Description>
+	<PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
+	<Copyright>Copyright 2020 © BeezUP</Copyright>
+	<Authors>BeezUP awesome team</Authors>
 
-		<PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
-		<PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
+	<PackageIconUrl>https://avatars2.githubusercontent.com/u/25665430</PackageIconUrl>
+	<PackageProjectUrl>https://github.com/BeezUP/dotnet-codegen</PackageProjectUrl>
+	<RepositoryType>git</RepositoryType>
+	<RepositoryUrl>https://github.com/BeezUP/dotnet-codegen.git</RepositoryUrl>
 
-	  	<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
-		<WarningsAsErrors>nullable</WarningsAsErrors>
+	<LangVersion>latest</LangVersion>
+	<Nullable>enable</Nullable>
+	<WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 </Project>

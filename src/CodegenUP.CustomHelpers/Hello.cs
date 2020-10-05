@@ -22,3 +22,18 @@ public class Hello : SimpleStandardHelperBase
         output.Write($"hello {argument}!");
     }
 }
+
+/// <summary>
+/// Hello world helper
+/// </summary>
+[HandlebarsHelperSpecification("{ prop: 'world'}", "{{hello2 prop }}", "hello world!")]
+public class SameHello : SimpleStandardHelperBase<object, string>
+{
+    public SameHello() : base("hello2") { }
+
+    public override void HelperFunction(TextWriter output, object context, string name, object[] arguments)
+    {
+        EnsureArgumentsCount(arguments, 0);
+        output.Write($"hello {name}!");
+    }
+}

@@ -29,3 +29,25 @@ public class Block : SimpleBlockHelperBase
         }
     }
 }
+
+[HandlebarsHelperSpecification("{ prop: 'ok'}", "{{#is_ok2 prop}}OK{{else}}NOK{{/is_ok2}}", "OK")]
+[HandlebarsHelperSpecification("{ prop: 'plop'}", "{{#is_ok2 prop}}OK{{else}}NOK{{/is_ok2}}", "NOK")]
+public class SameBlock : SimpleBlockHelperBase<object, string>
+{
+    public SameBlock() : base("is_ok2") { }
+
+    public override void HelperFunction(TextWriter output, HelperOptions options, object context, string argument, object[] otherArguments)
+    {
+        EnsureArgumentsCountMax(otherArguments, 0);
+
+        var condition = argument == "ok";
+        if (condition)
+        {
+            options.Template(output, context);
+        }
+        else
+        {
+            options.Inverse(output, context);
+        }
+    }
+}

@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-	<Version>0.0.0.11</Version>
+	<Version>0.0.0.12</Version>
 	<Description>Code generator </Description>
 	<PackageTags>codegen generator generation swagger openapi handlebars mustache</PackageTags>
 	<Copyright>Copyright 2020 © BeezUP</Copyright>

@@ -11,6 +11,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     /// </summary>
 #if DEBUG
     [HandlebarsHelperSpecification("{}", "{{#one_line}} {{/one_line}}", "")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} |do not < remove please >| {{/one_line}}", "|do not < remove please >|")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}} \n {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}\n {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}\n{{/one_line}}", "")]
@@ -29,7 +30,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 #endif
     public class OneLine : SimpleBlockHelperBase<object, int?>
     {
-        static readonly Regex regex = new Regex(@"(?: *[\r\n?|\n] *)+", RegexOptions.Compiled);
+        static readonly Regex regex = new Regex(@"(?: *[\r\n] *)+", RegexOptions.Compiled);
 
         public OneLine() : base("one_line") { }
 

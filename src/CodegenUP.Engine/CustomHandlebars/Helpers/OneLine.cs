@@ -18,19 +18,19 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{}", "{{#one_line}} \r\n {{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}\r\n{{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}} test{{/one_line}}", "test")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}} a \n z {{/one_line}}", "a z")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\n z{{/one_line}}", "a z")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\nz{{/one_line}}", "a z")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n z{{/one_line}}", "a z")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n \r\n \r\nz{{/one_line}}", "a z")]
-    [HandlebarsHelperSpecification("{}", "{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}", "test test")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}} a \n z {{/one_line}}", "az")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\n z{{/one_line}}", "az")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a\nz{{/one_line}}", "az")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n z{{/one_line}}", "az")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}a \r\n \r\n \r\nz{{/one_line}}", "az")]
+    [HandlebarsHelperSpecification("{}", "{{#one_line}}test\r\n\r\n\r\ntest{{/one_line}}", "testtest")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}{{/one_line}}", "")]
     [HandlebarsHelperSpecification("{}", "{{#one_line}}   test {{/one_line}}", "test")]
     [HandlebarsHelperSpecification("{}", "{{#one_line 5}}test{{/one_line}}", "     test")]
 #endif
     public class OneLine : SimpleBlockHelperBase<object, int?>
     {
-        static readonly Regex regex = new Regex(@"(?: *[\r\n] *)+", RegexOptions.Compiled);
+        static readonly Regex regex = new Regex(@" *[\r\n]+ *", RegexOptions.Compiled);
 
         public OneLine() : base("one_line") { }
 
@@ -47,7 +47,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
             using var tr = new StreamReader(stream);
             var result = tr.ReadToEnd();
-            result = regex.Replace(result, " ");
+            result = regex.Replace(result, "");
             result = new string(' ', indent ?? 0) + result.Trim();
             output.WriteSafeString(result);
         }

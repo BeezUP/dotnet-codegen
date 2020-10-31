@@ -28,8 +28,8 @@ namespace CodegenUP.CustomHandlebars.Helpers
         void Output(TextWriter output, object obj)
         {
             if (obj == null) return;
-            output.Write($"{obj.GetType().Name}: {obj}");
-            output.Write("\n");
+            output.WriteSafeString($"{obj.GetType().Name}: {obj}");
+            output.WriteSafeString("\n");
         }
     }
 }

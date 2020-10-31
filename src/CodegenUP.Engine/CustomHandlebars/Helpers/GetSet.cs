@@ -65,7 +65,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
                 if (_values.TryGetValue(key, out var value))
                 {
-                    output.Write(value);
+                    output.WriteSafeString(value);
                 }
             };
 

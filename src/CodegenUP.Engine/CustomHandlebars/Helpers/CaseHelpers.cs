@@ -12,12 +12,13 @@ namespace CodegenUP.CustomHandlebars.Helpers
     /// </summary>
 #if DEBUG
     [HandlebarsHelperSpecification("{ test: 42 }", "{{pascal_case test}}", "42")]
-    [HandlebarsHelperSpecification("{ test: 'HELLO' }", "{{pascal_case test}}", "Hello")]
+    [HandlebarsHelperSpecification("{ test: 'HELLO' }", "{{pascal_case test}}", "HELLO")]
+    [HandlebarsHelperSpecification("{ test: 'HelloWorld' }", "{{pascal_case test}}", "HelloWorld")]
     [HandlebarsHelperSpecification("{ test: 'hello' }", "{{pascal_case test}}", "Hello")]
-    [HandlebarsHelperSpecification("{ test: 'heLlo wOrld' }", "{{pascal_case test}}", "HelloWorld")]
+    [HandlebarsHelperSpecification("{ test: 'heLlo wOrld' }", "{{pascal_case test}}", "HeLloWOrld")]
     [HandlebarsHelperSpecification("{ test: 'hello_world' }", "{{pascal_case test}}", "HelloWorld")]
     [HandlebarsHelperSpecification("{ test: 'hello-world' }", "{{pascal_case test}}", "HelloWorld")]
-    [HandlebarsHelperSpecification("{ test: 'hello-WORLD' }", "{{pascal_case test}}", "HelloWorld")]
+    [HandlebarsHelperSpecification("{ test: 'hello-WORLD' }", "{{pascal_case test}}", "HelloWORLD")]
 #endif
     public class PascalCase : SimpleStandardHelperBase<object, string>
     {
@@ -41,7 +42,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
                     sb.Append(upperNext ?
                         c.ToString().ToUpperInvariant() :
-                        c.ToString().ToLowerInvariant()
+                        c.ToString()
                         );
 
                     return (false, sb);

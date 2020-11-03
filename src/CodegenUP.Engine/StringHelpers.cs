@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CodegenUP
 {
@@ -111,6 +112,21 @@ namespace CodegenUP
 
             var result = aggregated.result.ToString();
             return result;
+        }
+
+        static readonly Regex _oneLinerRegex = new Regex(@" *[\r\n]+ *", RegexOptions.Compiled);
+        /// <summary>
+        /// taking out empty lines & meaningless whitespaces from the inner template
+        /// </summary>
+        public static string OnOneLine(string str, int? indent = null, bool? lineBreak = null)
+        {
+            str = _oneLinerRegex.Replace(str, "");
+            str =
+                new string(' ', indent ?? 0)
+                + str.Trim()
+                + (lineBreak ?? true ? "\n" : "")
+                ;
+            return str;
         }
     }
 }

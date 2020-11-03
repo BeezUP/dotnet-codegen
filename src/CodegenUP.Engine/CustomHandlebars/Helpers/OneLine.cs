@@ -33,7 +33,6 @@ namespace CodegenUP.CustomHandlebars.Helpers
 #endif
     public class OneLine : SimpleBlockHelperBase<object, int?, bool?>
     {
-        static readonly Regex regex = new Regex(@" *[\r\n]+ *", RegexOptions.Compiled);
 
         public OneLine() : base("one_line") { }
 
@@ -50,13 +49,10 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
             using var tr = new StreamReader(stream);
             var result = tr.ReadToEnd();
-            result = regex.Replace(result, "");
-            result = 
-                new string(' ', indent ?? 0) 
-                + result.Trim() 
-                + (lineBreak ?? true ? "\n" : "")
-                ;
+            result = StringHelpers.OnOneLine(result, indent, lineBreak);
             output.WriteSafeString(result);
         }
+
+
     }
 }

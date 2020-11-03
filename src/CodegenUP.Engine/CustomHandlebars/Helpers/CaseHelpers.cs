@@ -27,29 +27,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public override void HelperFunction(TextWriter output, object context, string toCase, object[] otherArguments)
         {
-            if (!string.IsNullOrEmpty(toCase))
-            {
-                var chars = toCase.Trim().ToArray();
-                var seed = (upperNext: true, result: new StringBuilder());
-                var aggregated = chars.Aggregate(seed, (s, c) =>
-                {
-                    var (upperNext, sb) = s;
-
-                    if (c == ' ' || c == '_' || c == '-')
-                    {
-                        return (upperNext: true, sb);
-                    }
-
-                    sb.Append(upperNext ?
-                        c.ToString().ToUpperInvariant() :
-                        c.ToString()
-                        );
-
-                    return (false, sb);
-                });
-
-                output.Write(aggregated.result.ToString());
-            }
+            output.Write(StringHelpers.ToPascalCase(toCase));
         }
     }
 
@@ -74,36 +52,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public override void HelperFunction(TextWriter output, object context, string toCase, object[] otherArguments)
         {
-            if (!string.IsNullOrEmpty(toCase))
-            {
-                var chars = toCase.Trim().ToArray();
-                var seed = (upperNext: (bool?)false, result: new StringBuilder());
-                var aggregated = chars.Aggregate(seed, (s, c) =>
-                {
-                    var (upperNext, sb) = s;
-
-                    if (c == ' ' || c == '_' || c == '-')
-                    {
-                        return (upperNext: true, sb);
-                    }
-
-                    if (upperNext.HasValue)
-                    {
-                        sb.Append(upperNext.Value ?
-                            c.ToString().ToUpperInvariant() :
-                            c.ToString().ToLowerInvariant()
-                            );
-                    }
-                    else
-                    {
-                        sb.Append(c);
-                    }
-
-                    return (null, sb);
-                });
-
-                output.Write(aggregated.result.ToString());
-            }
+            output.Write(StringHelpers.ToCamelCase(toCase));
         }
     }
 
@@ -135,41 +84,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public override void HelperFunction(TextWriter output, object context, string toCase, object[] otherArguments)
         {
-            if (!string.IsNullOrEmpty(toCase))
-            {
-                var chars = toCase.Trim().ToArray();
-                var seed = (previousUnderscore: true, previousUpper: true, result: new StringBuilder());
-                var aggregated = chars.Aggregate(seed, (s, c) =>
-                {
-                    Trace.WriteLine($"{s}");
-                    var (previousUnderscore, previousUpper, sb) = s;
-
-                    //if ()
-                    //{
-                    //    return (true, previousUnderscore, sb);
-                    //}
-
-                    if ((c == '_' || c == ' ' || c == '-'))
-                    {
-                        if (!previousUnderscore)
-                            sb.Append('_');
-                        return (true, false, sb);
-                    }
-
-                    var isUpper = char.IsUpper(c);
-
-                    if (isUpper && !previousUnderscore && !previousUpper)
-                    {
-                        sb.Append('_');
-                    }
-
-                    sb.Append(c.ToString().ToLower());
-
-                    return (false, isUpper, sb);
-                });
-
-                output.Write(aggregated.result.ToString());
-            }
+            output.Write(StringHelpers.ToSnakeCase(toCase));
         }
     }
 }

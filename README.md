@@ -1,5 +1,9 @@
 # CodegenUP
 
+![https://www.nuget.org/packages/CodegenUP](https://img.shields.io/nuget/v/CodegenUP?label=Nuget%20CodegenUP)
+![https://www.nuget.org/packages/CodegenUP.Engine](https://img.shields.io/nuget/v/CodegenUP.Engine?label=Nuget%20CodegenUP.Engine)
+![https://www.nuget.org/packages/CodegenUP.DocumentRefLoader](https://img.shields.io/nuget/v/CodegenUP.DocumentRefLoader?label=Nuget%20CodegenUP.DocumentRefLoader)
+
 A global tool to execute handlebars templates in order to generate code (think about swagger/openapi/graphql ...)
 
 ## Installation

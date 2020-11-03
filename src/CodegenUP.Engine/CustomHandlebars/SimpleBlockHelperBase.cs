@@ -24,7 +24,7 @@ namespace CodegenUP.CustomHandlebars
             if (!TryGetArgumentAs<TArgument3>(arguments, 2, out var argument3))
                 throw new CodeGenHelperException(Name, $"Unable to get the second argument as a {typeof(TArgument3).Name}");
 
-            HelperFunction(output, options, ctx, argument1, argument2, argument3, arguments.Skip(2).ToArray());
+            HelperFunction(output, options, ctx, argument1, argument2, argument3, arguments.Skip(3).ToArray());
         }
 
         public abstract void HelperFunction(TextWriter output, HelperOptions options, TContext context, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, object[] otherArguments);

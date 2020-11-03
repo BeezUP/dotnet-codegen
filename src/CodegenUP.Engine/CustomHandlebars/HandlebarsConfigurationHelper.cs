@@ -120,8 +120,7 @@ namespace CodegenUP.CustomHandlebars
             var partialPath = Path.Combine(directory, $"_{partialName}.hbs");
             if (!File.Exists(partialPath))
             {
-                //return false;
-                throw new IOException($"Unable to find the partial template file {partialPath}");
+                return false;
             }
             env.RegisterTemplate(partialName, File.ReadAllText(partialPath));
             return true;
@@ -138,12 +137,12 @@ namespace CodegenUP.CustomHandlebars
 
             public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
             {
-                var result = true;
                 foreach (var directory in _directories)
                 {
-                    result = result && TryRegisterPartialFile(directory, env, partialName);
+                    if (TryRegisterPartialFile(directory, env, partialName))
+                        return true;
                 }
-                return result;
+                return false;
             }
         }
 

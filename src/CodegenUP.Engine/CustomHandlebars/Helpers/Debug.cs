@@ -18,7 +18,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public override void Helper(TextWriter output, object context, object[] arguments)
         {
-            Output(output, context);
+            //Output(output, context);
             for (int i = 0; i < arguments.Length; i++)
             {
                 Output(output, arguments[i]);

@@ -6,6 +6,8 @@ namespace CodegenUP.Instructions
 {
     public class WriteLineToFileInstruction : BaseInstruction
     {
+        public const string EOF = "EOF";
+
         private StreamWriter? _stream;
 
         public WriteLineToFileInstruction(string command) : base(command) { }
@@ -15,6 +17,11 @@ namespace CodegenUP.Instructions
         public override Task InitializeInstructionAsync(IProcessorContext context, params string[] parameters)
         {
             _stream?.Dispose();
+            _stream = null;
+
+            var filePath = parameters.First();
+
+            if (filePath == EOF) return Task.CompletedTask;
 
             var path = Path.Combine(context.OutputDirectory, parameters.First());
             var directory = Path.GetDirectoryName(path);

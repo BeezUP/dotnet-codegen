@@ -108,6 +108,7 @@ namespace CodegenUP.CustomHandlebars
         }
 
         private static readonly Type STRING_TYPE = typeof(string);
+        private static readonly Type OBJECT_TYPE = typeof(object);
         private static readonly Type NULLABLE_TYPE = typeof(Nullable<>);
 
         private static bool TryObjectToType(object? o, Type expectedType, out object? result)
@@ -115,6 +116,12 @@ namespace CodegenUP.CustomHandlebars
             result = null;
 
             var inputIsNull = o == null;
+
+            if (expectedType == OBJECT_TYPE) // no strong expectations, let's not do too much
+            {
+                result = o;
+                return true;
+            }
 
             bool nullable = IsNullableType(expectedType);
             if (nullable)

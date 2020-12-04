@@ -19,6 +19,8 @@ namespace CodegenUP.CustomHandlebars.Helpers
     [HandlebarsHelperSpecification("{ test: 'hello_world' }", "{{pascal_case test}}", "HelloWorld")]
     [HandlebarsHelperSpecification("{ test: 'hello-world' }", "{{pascal_case test}}", "HelloWorld")]
     [HandlebarsHelperSpecification("{ test: 'hello-WORLD' }", "{{pascal_case test}}", "HelloWORLD")]
+    [HandlebarsHelperSpecification("{ test: 'hello/WORLD' }", "{{pascal_case test}}", "HelloWORLD")]
+    [HandlebarsHelperSpecification("{ test: 'hello\\\\WORLD' }", "{{pascal_case test}}", "HelloWORLD")]
 #endif
     public class PascalCase : SimpleStandardHelperBase<object, string>
     {

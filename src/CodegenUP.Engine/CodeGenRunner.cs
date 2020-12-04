@@ -42,6 +42,7 @@ namespace CodegenUP
                 using var processor = new FilesProcessor(context,
                     new WriteLineToFileInstruction("FILE"),
                     new WriteLineToConsoleInstruction("CONSOLE"),
+                    new CleanInstruction("CLEAN"),
                     new SuppressLineInstruction()
                     );
 

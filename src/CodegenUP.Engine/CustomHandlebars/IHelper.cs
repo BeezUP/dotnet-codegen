@@ -5,8 +5,12 @@ using System.Text;
 
 namespace CodegenUP.CustomHandlebars
 {
-    public interface IHelper
+    public interface IHelperBase
     {
         void Setup(HandlebarsConfiguration configuration);
+    }
+
+    public interface IHelper : IHelperBase
+    {
     }
 }

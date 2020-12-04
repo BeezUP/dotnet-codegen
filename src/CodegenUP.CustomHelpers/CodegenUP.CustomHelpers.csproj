@@ -23,6 +23,6 @@
     <ProjectReference Include="../CodegenUP.Engine/CodegenUP.Engine.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!Exists('../CodegenUP.Engine/CodegenUP.Engine.csproj')">
-    <PackageReference Include="CodegenUP.Engine" Version="0.0.0.10" />
+    <PackageReference Include="CodegenUP.Engine" Version="0.0.0.15" />
   </ItemGroup>
 </Project>

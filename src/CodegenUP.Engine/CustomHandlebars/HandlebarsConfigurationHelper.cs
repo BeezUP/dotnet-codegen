@@ -89,26 +89,28 @@ namespace CodegenUP.CustomHandlebars
 #pragma warning restore S3963 // "static" fields should be initialized inline
 #pragma warning restore CA1810 // Initialize reference type static fields inline
 
-        private static void RegisterDefaultHelpers(HandlebarsConfiguration handlebarsConfiguration)
+        private static void RegisterDefaultHelpers(this HandlebarsConfiguration handlebarsConfiguration)
+            => RegisterHelpers(handlebarsConfiguration, _Helpers);
+
+        private static void RegisterHelpers(this HandlebarsConfiguration handlebarsConfiguration, IEnumerable<IHelperBase> helpers)
         {
-            foreach (var h in _Helpers)
-            {
+            foreach (var h in helpers)
                 h.Setup(handlebarsConfiguration);
-            }
         }
 
-        public static IHandlebars GetHandlebars(string rootDirectory) => Handlebars.Create(GetHandlebarsConfiguration(rootDirectory));
-        public static IHandlebars GetHandlebars(IEnumerable<string> directories) => Handlebars.Create(GetHandlebarsConfiguration(directories));
+        public static IHandlebars GetHandlebars(string rootDirectory, IEnumerable<IHelperBase> moreHelpers) => Handlebars.Create(GetHandlebarsConfiguration(rootDirectory, moreHelpers));
+        public static IHandlebars GetHandlebars(IEnumerable<string> directories, IEnumerable<IHelperBase> moreHelpers) => Handlebars.Create(GetHandlebarsConfiguration(directories, moreHelpers));
 
-        public static HandlebarsConfiguration GetHandlebarsConfiguration(string rootDirectory)
-            => GetHandleBarsConfiguration(new SameDirectoryPartialTemplateResolver(rootDirectory));
-        public static HandlebarsConfiguration GetHandlebarsConfiguration(IEnumerable<string> directories)
-            => GetHandleBarsConfiguration(new MultipleDirectoriesPartialTemplateResolver(directories));
+        public static HandlebarsConfiguration GetHandlebarsConfiguration(string rootDirectory, IEnumerable<IHelperBase> moreHelpers)
+            => GetHandleBarsConfiguration(new SameDirectoryPartialTemplateResolver(rootDirectory), moreHelpers);
+        public static HandlebarsConfiguration GetHandlebarsConfiguration(IEnumerable<string> directories, IEnumerable<IHelperBase> moreHelpers)
+            => GetHandleBarsConfiguration(new MultipleDirectoriesPartialTemplateResolver(directories), moreHelpers);
 
-        private static HandlebarsConfiguration GetHandleBarsConfiguration(IPartialTemplateResolver templateResolver)
+        private static HandlebarsConfiguration GetHandleBarsConfiguration(IPartialTemplateResolver templateResolver, IEnumerable<IHelperBase> moreHelpers)
         {
             var configuration = new HandlebarsConfiguration();
-            RegisterDefaultHelpers(configuration);
+            configuration.RegisterDefaultHelpers();
+            configuration.RegisterHelpers(moreHelpers);
             configuration.PartialTemplateResolver = templateResolver;
             return configuration;
         }
@@ -118,8 +120,7 @@ namespace CodegenUP.CustomHandlebars
             var partialPath = Path.Combine(directory, $"_{partialName}.hbs");
             if (!File.Exists(partialPath))
             {
-                //return false;
-                throw new IOException($"Unable to find the partial template file {partialPath}");
+                return false;
             }
             env.RegisterTemplate(partialName, File.ReadAllText(partialPath));
             return true;
@@ -136,12 +137,12 @@ namespace CodegenUP.CustomHandlebars
 
             public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
             {
-                var result = true;
                 foreach (var directory in _directories)
                 {
-                    result = result && TryRegisterPartialFile(directory, env, partialName);
+                    if (TryRegisterPartialFile(directory, env, partialName))
+                        return true;
                 }
-                return result;
+                return false;
             }
         }
 

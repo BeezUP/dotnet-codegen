@@ -100,37 +100,15 @@ namespace CodegenUP.CustomHandlebars
         }
 #nullable restore
 
-        //protected bool TryGetArgumentAsString(object[] arguments, int argumentIndex, out string result)
-        //{
-        //    if (argumentIndex >= arguments.Length)
-        //    {
-        //        result = string.Empty;
-        //        return false;
-        //    }
-
-        //    object arg = arguments[argumentIndex];
-        //    var (ok, res) = ObjectTo<string>(arg);
-        //    if (!ok)
-        //    {
-        //        result = string.Empty;
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        result = res;
-        //        return true;
-        //    }
-        //}
-
         protected (bool ok, T result) ObjectTo<T>(object? o)
         {
-            return TryObjectToType(o, typeof(T), out var result) //&& result != null
-                ? (true, (T)result)
-                : (false, default);
+            return (TryObjectToType(o, typeof(T), out var result))
+                ? (true, (T)result!)
+                : (false, default!);
         }
 
-        //private static readonly Type JTOKEN_TYPE = typeof(JToken);
         private static readonly Type STRING_TYPE = typeof(string);
+        private static readonly Type OBJECT_TYPE = typeof(object);
         private static readonly Type NULLABLE_TYPE = typeof(Nullable<>);
 
         private static bool TryObjectToType(object? o, Type expectedType, out object? result)
@@ -138,6 +116,12 @@ namespace CodegenUP.CustomHandlebars
             result = null;
 
             var inputIsNull = o == null;
+
+            if (expectedType == OBJECT_TYPE) // no strong expectations, let's not do too much
+            {
+                result = o;
+                return true;
+            }
 
             bool nullable = IsNullableType(expectedType);
             if (nullable)

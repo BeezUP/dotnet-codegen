@@ -23,13 +23,13 @@ namespace CodegenUP
             await RunAsync(jsonObject, templatesPaths, outputPath, customHelpers, templateDuplicationHandlingStrategy);
         }
 
-        public static async Task RunAsync(JToken json, IEnumerable<string> templatesPaths, string outputPath, IEnumerable<IHelper>? customHelpers, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
+        public static async Task RunAsync(JToken json, IEnumerable<string> templatesPaths, string outputPath, IEnumerable<IHelperBase>? helpers, TemplateDuplicationHandlingStrategy templateDuplicationHandlingStrategy = TemplateDuplicationHandlingStrategy.Throw)
         {
-            customHelpers ??= new IHelper[0];
+            helpers ??= new IHelper[0];
 
             var templates = GetTemplates(templatesPaths, templateDuplicationHandlingStrategy);
 
-            var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatesPaths);
+            var handlebars = HandlebarsConfigurationHelper.GetHandlebars(templatesPaths, helpers);
 
             foreach (var template in templates)
             {
@@ -42,6 +42,7 @@ namespace CodegenUP
                 using var processor = new FilesProcessor(context,
                     new WriteLineToFileInstruction("FILE"),
                     new WriteLineToConsoleInstruction("CONSOLE"),
+                    new CleanInstruction("CLEAN"),
                     new SuppressLineInstruction()
                     );
 

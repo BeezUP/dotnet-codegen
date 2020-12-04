@@ -21,7 +21,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public NoEmptyLines() : base("no_empty_lines") { }
 
-        public override void HelperFunction(TextWriter output, HelperOptions options, object context, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object? context, object[] otherArguments)
         {
             using var stream = new MemoryStream();
             using (var tw = new StreamWriter(stream, Encoding.Default, 500, true))

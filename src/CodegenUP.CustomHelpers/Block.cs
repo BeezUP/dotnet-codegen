@@ -14,7 +14,7 @@ public class Block : SimpleBlockHelperBase
 {
     public Block() : base("is_ok") { }
 
-    public override void Helper(TextWriter output, HelperOptions options, object context, object[] arguments)
+    public override void Helper(TextWriter output, HelperOptions options, object? context, object[] arguments)
     {
         EnsureArgumentsCountMax(arguments, 1);
 
@@ -36,7 +36,7 @@ public class SameBlock : SimpleBlockHelperBase<object, string>
 {
     public SameBlock() : base("is_ok2") { }
 
-    public override void HelperFunction(TextWriter output, HelperOptions options, object context, string argument, object[] otherArguments)
+    public override void HelperFunction(TextWriter output, HelperOptions options, object? context, string argument, object[] otherArguments)
     {
         EnsureArgumentsCountMax(otherArguments, 0);
 

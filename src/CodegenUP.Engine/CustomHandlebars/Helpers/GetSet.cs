@@ -7,6 +7,9 @@ namespace CodegenUP.CustomHandlebars.Helpers
     /// <summary>
     /// Give the ability to set a variable in template.
     /// It's like a key/value store : {{set 'key' value}} {{get 'key'}}
+    /// 
+    /// An other stack setter, able to clear the value to clear the value at the end of the block helper.
+    /// It's like a key/value store : {{#with_set 'key' value}} {{get 'key'}} {{/with_set}}
     /// </summary>
 #if DEBUG
     [HandlebarsHelperSpecification("{}", "{{set 'key', 'value'}}{{get 'key'}}", "value")]

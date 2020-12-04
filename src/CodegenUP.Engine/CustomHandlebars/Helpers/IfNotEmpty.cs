@@ -14,7 +14,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public IfNotEmpty() : base("if_not_empty") { }
 
-        public override void HelperFunction(TextWriter output, HelperOptions options, object context, string arg, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object? context, string arg, object[] otherArguments)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {

@@ -66,12 +66,13 @@ namespace CodegenUP.CustomHandlebars
 
 
         protected T GetArgumentAs<T>(object[] arguments, int argumentIndex)
+            where T : class
         {
             object arg = GetArgumentOrThrow(arguments, argumentIndex);
             var (ok, result) = ObjectTo<T>(arg);
             if (!ok)
                 throw new CodeGenHelperException(Name, $"Couldn't convert argument at index {argumentIndex} as {typeof(T).Name}");
-            return result;
+            return result ?? throw new CodeGenHelperException(Name, $"Argument is null");
         }
 
 #nullable disable
@@ -100,7 +101,7 @@ namespace CodegenUP.CustomHandlebars
         }
 #nullable restore
 
-        protected (bool ok, T result) ObjectTo<T>(object? o)
+        protected (bool ok, T? result) ObjectTo<T>(object? o)
         {
             return TryObjectToType(o, typeof(T), out var result) //&& result != null
                 ? (true, (T)result)
@@ -110,6 +111,7 @@ namespace CodegenUP.CustomHandlebars
         private static readonly Type STRING_TYPE = typeof(string);
         private static readonly Type OBJECT_TYPE = typeof(object);
         private static readonly Type NULLABLE_TYPE = typeof(Nullable<>);
+
 
         private static bool TryObjectToType(object? o, Type expectedType, out object? result)
         {

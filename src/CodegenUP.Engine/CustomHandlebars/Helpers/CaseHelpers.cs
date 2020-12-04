@@ -25,7 +25,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         public PascalCase() : base("pascal_case") { }
         protected PascalCase(string name) : base(name) { }
 
-        public override void HelperFunction(TextWriter output, object context, string toCase, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, object? context, string toCase, object[] otherArguments)
         {
             output.Write(StringHelpers.ToPascalCase(toCase));
         }
@@ -50,7 +50,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         public CamelCase() : base("camel_case") { }
         protected CamelCase(string name) : base(name) { }
 
-        public override void HelperFunction(TextWriter output, object context, string toCase, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, object? context, string toCase, object[] otherArguments)
         {
             output.Write(StringHelpers.ToCamelCase(toCase));
         }
@@ -82,7 +82,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         public SnakeCase() : base("snake_case") { }
         protected SnakeCase(string name) : base(name) { }
 
-        public override void HelperFunction(TextWriter output, object context, string toCase, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, object? context, string toCase, object[] otherArguments)
         {
             output.Write(StringHelpers.ToSnakeCase(toCase));
         }

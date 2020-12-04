@@ -25,7 +25,7 @@ namespace CodegenUP.CustomHandlebars
             HelperFunction(output, ctx, argument1, argument2, argument3, arguments.Skip(3).ToArray());
         }
 
-        public abstract void HelperFunction(TextWriter output, TContext context, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, object[] otherArguments);
+        public abstract void HelperFunction(TextWriter output, TContext? context, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, object[] otherArguments);
     }
 
     public abstract class SimpleStandardHelperBase<TContext, TArgument1, TArgument2> : SimpleStandardHelperBase
@@ -44,7 +44,7 @@ namespace CodegenUP.CustomHandlebars
             HelperFunction(output, ctx, argument1, argument2, arguments.Skip(2).ToArray());
         }
 
-        public abstract void HelperFunction(TextWriter output, TContext context, TArgument1 argument1, TArgument2 argument2, object[] otherArguments);
+        public abstract void HelperFunction(TextWriter output, TContext? context, TArgument1 argument1, TArgument2 argument2, object[] otherArguments);
     }
 
     public abstract class SimpleStandardHelperBase<TContext, TArgument1> : SimpleStandardHelperBase
@@ -61,7 +61,7 @@ namespace CodegenUP.CustomHandlebars
             HelperFunction(output, ctx, argument1, arguments.Skip(1).ToArray());
         }
 
-        public abstract void HelperFunction(TextWriter output, TContext context, TArgument1 argument1, object[] otherArguments);
+        public abstract void HelperFunction(TextWriter output, TContext? context, TArgument1 argument1, object[] otherArguments);
     }
 
     public abstract class SimpleStandardHelperBase<TContext> : SimpleStandardHelperBase
@@ -75,7 +75,7 @@ namespace CodegenUP.CustomHandlebars
             HelperFunction(output, ctx, arguments);
         }
 
-        public abstract void HelperFunction(TextWriter output, TContext context, object[] otherArguments);
+        public abstract void HelperFunction(TextWriter output, TContext? context, object[] otherArguments);
     }
 
 

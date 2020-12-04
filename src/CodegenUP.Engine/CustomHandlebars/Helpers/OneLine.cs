@@ -36,7 +36,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
 
         public OneLine() : base("one_line") { }
 
-        public override void HelperFunction(TextWriter output, HelperOptions options, object context, int? indent, bool? lineBreak, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, HelperOptions options, object? context, int? indent, bool? lineBreak, object[] otherArguments)
         {
             EnsureArgumentsCountMax(otherArguments, 0);
 

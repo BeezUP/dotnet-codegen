@@ -18,7 +18,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public UppercaseFirstLetter() : base("uppercase_first_letter") { }
 
-        public override void HelperFunction(TextWriter output, object context, string argument, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, object? context, string argument, object[] otherArguments)
         {
             output.Write(StringUppercaseFirstLetter(argument));
         }

@@ -20,7 +20,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
         public Trim() : base("trim") { }
         protected Trim(string name) : base(name) { }
 
-        public override void HelperFunction(TextWriter output, object context, string toTrim, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, object? context, string toTrim, object[] otherArguments)
         {
             EnsureArgumentsCountMax(otherArguments, 1); // todo :: this argument position is false because the `otherAguments` are skiped from already there args
 

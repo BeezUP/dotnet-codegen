@@ -15,7 +15,7 @@ namespace CodegenUP.CustomHandlebars.Helpers
     {
         public RegexTransform() : base("regex_transform") { }
 
-        public override void HelperFunction(TextWriter output, object context, string arg, string regexPattern, string regexReplacement, object[] otherArguments)
+        public override void HelperFunction(TextWriter output, object? context, string arg, string regexPattern, string regexReplacement, object[] otherArguments)
         {
             var replaced = Regex.Replace(arg, regexPattern, regexReplacement);
             output.WriteSafeString(replaced);

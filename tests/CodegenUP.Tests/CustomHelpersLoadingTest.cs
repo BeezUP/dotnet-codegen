@@ -28,7 +28,7 @@ namespace CodegenUP.Tests
             {
                 var helpers = HandlebarsConfigurationHelper.GetHelpersFromFolder(customHelpersProjectPath, tmpFolder);
                 _output.WriteLine(string.Join(Environment.NewLine, helpers.Select(h => h.ToString())));
-                helpers.Length.ShouldBe(2);
+                helpers.Length.ShouldNotBe(0);
             }
             finally
             {

@@ -18,6 +18,9 @@ namespace CodegenUP.Tests
         [InlineData("heLlo wOrld", "HeLloWOrld")]
         [InlineData("hello_world", "HelloWorld")]
         [InlineData("hello-world", "HelloWorld")]
+        [InlineData("hello\\world", "HelloWorld")]
+        [InlineData("hello|world", "HelloWorld")]
+        [InlineData("hello/world", "HelloWorld")]
         [InlineData("hello-WORLD", "HelloWORLD")]
         public void ToPascalCase(string toCase, string expected)
         {
@@ -35,6 +38,9 @@ namespace CodegenUP.Tests
         [InlineData("hello-world", "helloWorld")]
         [InlineData("hello-WORLD", "helloWORLD")]
         [InlineData("HelloWorld", "helloWorld")]
+        [InlineData("Hello\\world", "helloWorld")]
+        [InlineData("Hello||world", "helloWorld")]
+        [InlineData("Hello/world", "helloWorld")]
         public void ToCamelCase(string toCase, string expected)
         {
             StringHelpers.ToCamelCase(toCase).ShouldBe(expected);
@@ -51,6 +57,9 @@ namespace CodegenUP.Tests
         [InlineData("hello--world", "hello_world")]
         [InlineData("hello__World", "hello_world")]
         [InlineData("hello-World", "hello_world")]
+        [InlineData("hello/World", "hello_world")]
+        [InlineData("hello|World", "hello_world")]
+        [InlineData("hello\\World", "hello_world")]
         [InlineData("hello _ world", "hello_world")]
         [InlineData("hello - world", "hello_world")]
         [InlineData("HelloWorld", "hello_world")]

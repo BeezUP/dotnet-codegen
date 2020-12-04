@@ -8,6 +8,8 @@ namespace CodegenUP
 {
     public static class StringHelpers
     {
+        static bool IsOutOfCase(char c) => c == ' ' || c == '_' || c == '-' || c == '\\' || c == '|' || c == '/';
+
         /// <summary>
         /// Pascal case the string
         /// </summary>
@@ -22,7 +24,7 @@ namespace CodegenUP
             {
                 var (upperNext, sb) = s;
 
-                if (c == ' ' || c == '_' || c == '-')
+                if (IsOutOfCase(c))
                 {
                     return (upperNext: true, sb);
                 }
@@ -53,7 +55,7 @@ namespace CodegenUP
             {
                 var (upperNext, sb) = s;
 
-                if (c == ' ' || c == '_' || c == '-')
+                if (IsOutOfCase(c))
                 {
                     return (upperNext: true, sb);
                 }
@@ -91,7 +93,7 @@ namespace CodegenUP
             {
                 var (previousUnderscore, previousUpper, sb) = s;
 
-                if ((c == '_' || c == ' ' || c == '-'))
+                if (IsOutOfCase(c))
                 {
                     if (!previousUnderscore)
                         sb.Append('_');

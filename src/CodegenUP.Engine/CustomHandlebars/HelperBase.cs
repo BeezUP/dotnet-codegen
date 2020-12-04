@@ -102,9 +102,9 @@ namespace CodegenUP.CustomHandlebars
 
         protected (bool ok, T result) ObjectTo<T>(object? o)
         {
-            return TryObjectToType(o, typeof(T), out var result) //&& result != null
-                ? (true, (T)result)
-                : (false, default);
+            return (TryObjectToType(o, typeof(T), out var result))
+                ? (true, (T)result!)
+                : (false, default!);
         }
 
         private static readonly Type STRING_TYPE = typeof(string);

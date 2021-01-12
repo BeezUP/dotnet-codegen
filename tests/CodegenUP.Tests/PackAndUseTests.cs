@@ -61,7 +61,7 @@ namespace CodegenUP.Tests
                     UseShellExecute = false,
                 }))
                 {
-                    process.WaitForExit();
+                    process!.WaitForExit();
                     _output.WriteLine(process.StandardOutput.ReadToEnd());
                     _output.WriteLine(process.StandardError.ReadToEnd());
 
@@ -89,7 +89,7 @@ namespace CodegenUP.Tests
                 WorkingDirectory = solutionFolder
             }))
             {
-                process.WaitForExit();
+                process!.WaitForExit();
                 //Output(output, process);
                 OutputIfError(output, process);
             }
@@ -106,7 +106,7 @@ namespace CodegenUP.Tests
                 UseShellExecute = false,
             }))
             {
-                process.WaitForExit();
+                process!.WaitForExit();
                 OutputIfError(output, process);
                 output.WriteLine($"Tools list : '\n{process.StandardOutput.ReadToEnd()}\n'");
             }
@@ -124,7 +124,7 @@ namespace CodegenUP.Tests
                 WorkingDirectory = solutionFolder
             }))
             {
-                process.WaitForExit();
+                process!.WaitForExit();
             }
         }
 
@@ -140,7 +140,7 @@ namespace CodegenUP.Tests
                 WorkingDirectory = solutionFolder
             }))
             {
-                process.WaitForExit();
+                process!.WaitForExit();
                 OutputIfError(output, process);
             }
         }

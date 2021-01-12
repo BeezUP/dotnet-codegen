@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>netcoreapp5.0;netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AssemblyName>codegenup</AssemblyName>
     <ToolCommandName>codegenup</ToolCommandName>

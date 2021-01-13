@@ -12,6 +12,13 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    useGlobalJson: true
+
 - script: dotnet restore
   displayName: 'dotnet restore'
 
